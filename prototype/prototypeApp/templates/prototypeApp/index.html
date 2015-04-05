@@ -68,8 +68,43 @@
             <p class="lead">To see what your friends are doing, click I'M FREE.</p>
             <p class="lead">To propose an event to your friends, click CREATE EVENTS</p>
             <p class="lead">
-              <a href="#" class="btn btn-lg btn-success">I'M FREE</a>
-              <a href="#" class="btn btn-lg btn-danger">CREATE EVENTS</a>
+              <a href="#" class="btn btn-lg btn-danger">I'M FREE</a>
+              <!--<a href="#" class="btn btn-lg btn-success">CREATE EVENTS</a>-->
+              <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE EVENTS</button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="exampleModalLabel">New event</h4>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="event-name" class="control-label">Event name:</label>
+                          <input type="text" class="form-control" id="event-name">
+                        </div>
+                        <div class="form-group">
+                          <label for="start-time" class="control-label">Start time:</label>
+                          <input type="text" class="form-control" id="start-time">
+                        </div>
+                        <div class="form-group">
+                          <label for="end-time" class="control-label">End time:</label>
+                          <input type="text" class="form-control" id="end-time">
+                        </div>
+                        <div class="form-group">
+                          <label for="invite-friends" class="control-label">Invite friends:</label>
+                          <input type="text" class="form-control" id="invite-friends">
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-success">Create event</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </p>
           </div>
           {% if event_list %}
