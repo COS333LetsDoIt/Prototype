@@ -26,8 +26,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <!-- Custom styles for this template -->
-    <!--link href="cover.css" rel="stylesheet"-->
-    <link href = "{% static "prototypeApp/cover.css" %}" rel = "stylesheet">
+    <!--link href="index.css" rel="stylesheet"-->
+    <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -72,35 +72,46 @@
               <!--<a href="#" class="btn btn-lg btn-success">CREATE EVENTS</a>-->
               <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE EVENTS</button>
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="exampleModalLabel">New event</h4>
-                    </div>
-                    <div class="modal-body">
-                      <form>
-                        <div class="form-group">
-                          <label for="event-name" class="control-label">Event name:</label>
-                          <input type="text" class="form-control" id="event-name">
-                        </div>
-                        <div class="form-group">
-                          <label for="start-time" class="control-label">Start time:</label>
-                          <input type="text" class="form-control" id="start-time">
-                        </div>
-                        <div class="form-group">
-                          <label for="end-time" class="control-label">End time:</label>
-                          <input type="text" class="form-control" id="end-time">
-                        </div>
-                        <div class="form-group">
-                          <label for="invite-friends" class="control-label">Invite friends:</label>
-                          <input type="text" class="form-control" id="invite-friends">
-                        </div>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-success">Create event</button>
+                <div id="create-event-form">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">New event</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label for="event-name" classes="col-sm-4">Event name:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="event-name">
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="start-time" classes="col-sm-4">Start time:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="start-time">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="end-time" classes="col-sm-8">End time:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="end-time">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="invite-friends" classes="col-sm-8 control-label">Invite friends:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="invite-friends">
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success">Create event</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -109,16 +120,18 @@
           </div>
           {% if event_list %}
 
-            <div id="event-panel">
+            <div class="event-panel">
+              <h2>
+                Events
+              </h2>
               <div class="container">
                 <div class="row clearfix">
-              
                   {% for event in event_list %}
-                    <div class="well">
-                      <div class="col-md-4 column">
-                        <h2>
+                    <div class="col-md-4 column">
+                      <div class="event-box">  
+                        <h3>
                           {{event.name}}
-                        </h2>
+                        </h3>
                         <p>
                           {{event.starttime}}-{{event.endtime}}
                         </p>

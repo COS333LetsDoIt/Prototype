@@ -129,6 +129,38 @@ body {
 
 
 /*
+ * Forms
+ */
+
+#create-event-form {
+  color: black;
+  text-shadow: none;
+}
+
+#create-event-form .form-group {
+  text-align: left;
+}
+
+/*
+ * Event Panel
+ */
+.event-panel {
+  background-color: #555;
+}
+
+/*
+ * Event Box in the Panel
+ */
+.event-box {
+  border: 1px solid #222;
+  background-color:  black;
+  text-align: left;
+  margin: 10px;
+  padding: 10px;
+}
+
+
+/*
  * Affix and center
  */
 
@@ -157,8 +189,7 @@ body {
 @media (min-width: 992px) {
   .masthead,
   .mastfoot,
-  .cover-container {
+  /*.cover-container {
     width: 700px;
-  }
+  }*/
 }
-
