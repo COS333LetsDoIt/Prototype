@@ -23,11 +23,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.jFs"></script>
 
     <!-- Custom styles for this template -->
     <!--link href="index.css" rel="stylesheet"-->
     <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
+
+    <!-- The extra stuff for the event-form -->
+    {{ form.media }}
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -80,6 +83,12 @@
                         <h4 class="modal-title" id="exampleModalLabel">New event</h4>
                       </div>
                       <div class="modal-body">
+                        <form  action="/prototypeApp/" method="POST">
+                          {% csrf_token %}
+                          {{ form.as_table }}
+                          <input id="submit" type="submit" value="Submit">
+                        </form>
+            <!--
                         <form class="form-horizontal">
                           <div class="form-group">
                             <label for="event-name" classes="col-sm-4">Event name:</label>
@@ -107,11 +116,13 @@
                             </div>
                           </div>
                         </form>
-                      </div>
-                      <div class="modal-footer">
+                         <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-success">Create event</button>
                       </div>
+            -->
+                      </div>
+                     
                     </div>
                   </div>
                 </div>
