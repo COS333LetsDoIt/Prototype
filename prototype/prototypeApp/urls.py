@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^index$', views.index, name='index'),
     url(r'^group$', views.group, name='group'),
     url(r'^event/$', views.index, name='index'),
-    url(r'^login/$', views.login, name='login'),
+    url(r'^login/$', views.login_view, name='login'),
 	url(r'^logout/$', views.logout_view, name='logout'),
     
     #url('^', include('django.contrib.auth.urls')),

@@ -61,11 +61,16 @@ def signup(request):
     return render(request, 'prototypeApp/index.html', context)
 
 # signin page
-def login_view(request, error_msg):
+def login_view(request):
     state = "Please log in:"
+    username = ""
 
-    if request.POST:
-        username = request.POST['username']
+    # if request.POST:
+    #     state = request.POST
+
+    if request.POST and 'inputEmail' in request.POST and 'password' in request.POST:
+        state = ""
+        username = request.POST['inputEmail']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -78,12 +83,9 @@ def login_view(request, error_msg):
         else:
             state = "The email or password you entered is incorrect."
             # Return an 'invalid login' error message.
-                        
+
     return render(request, 'prototypeApp/signin.html', {'state':state, 'username': username})    
 
-# confirm login
-def my_view(request):
-    
 # after logging out, return to login
 def logout_view(request):
     logout(request)

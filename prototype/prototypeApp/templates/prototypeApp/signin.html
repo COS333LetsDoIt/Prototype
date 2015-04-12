@@ -50,12 +50,18 @@
             </div>
           </div>
 
-      <form class="form-signin" method="POST">
+      <form class="form-signin" action="" method="POST">
+        {% csrf_token %}
+        
         <h2 class="form-signin-heading">Let's sign in!</h2>
+        <h5> {{state}} </h5>
+        
         <label for="inputEmail" class="sr-only">Email address</label>
         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
+        
+        <label for="inputPassword" value="{{password}}"class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        
         <div class="checkbox">
           <label>
             <input type="checkbox" value="remember-me"> Remember me
