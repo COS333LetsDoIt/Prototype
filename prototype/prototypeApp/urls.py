@@ -13,5 +13,7 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^index$', views.index, name='index'),
+    url(r'^group$', views.group, name='group'),
     url(r'^event/$', views.index, name='index'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

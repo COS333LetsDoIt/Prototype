@@ -45,6 +45,13 @@ def index(request):
     context = {"event_list": event_list, 'form': event_form}
     return render(request, 'prototypeApp/index.html', context)
 
+# Create your views here.
+def group(request):
+    group_list = Group.objects.order_by('name')
+    context = {"group_list": group_list}
+    return render(request, 'prototypeApp/group.html', context)
+
+
 def signup(request):
     event_list = Event.objects.order_by('starttime')
     context = {"event_list": event_list}
