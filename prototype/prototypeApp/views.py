@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth import views
 
+from django.contrib.auth import authenticate
+
 
 class EventForm(ModelForm):
     class Meta:
@@ -65,13 +67,10 @@ def login_view(request):
     state = "Please log in:"
     username = ""
 
-    # if request.POST:
-    #     state = request.POST
-
-    if request.POST and 'inputEmail' in request.POST and 'password' in request.POST:
+    if request.method == "POST":
         state = ""
-        username = request.POST['inputEmail']
-        password = request.POST['password']
+        username = request.POST.get('inputEmail', '')
+        password = request.POST.get('inputPassword', '')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
