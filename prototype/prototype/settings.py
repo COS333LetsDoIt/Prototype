@@ -13,6 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 STATIC_URL = '/static/'
+LOGIN_URL = '/signin/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prototypeApp',
-    'datetimewidget'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,5 +84,3 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
-STATIC_URL = '/static/'
