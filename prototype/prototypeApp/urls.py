@@ -14,5 +14,6 @@ from django.conf.urls.static import static
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^event/$', views.index, name='index'),
-    (r'^accounts/login/$', 'django.contrib.auth.views.login')
+    #(r'^accounts/login/$', 'django.contrib.auth.views.login')
+    url(r'^login/$', views.login, name='login'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

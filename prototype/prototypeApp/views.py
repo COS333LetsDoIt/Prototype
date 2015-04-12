@@ -39,7 +39,7 @@ def get_event_form(request):
     return form
 
 # Create your views here.
-@login_required
+@login_required(login_url='prototypeApp/login/')
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
@@ -53,12 +53,13 @@ def signup(request):
 
 # signin page
 def login(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    context = {}
+    return render(request, 'prototypeApp/signin_error.html', context)    
+    # username = request.POST['username']
+    # password = request.POST['password']
+    # user = authenticate(username=username, password=password)
+    # context = {}
 
-    if user is not None and user.is_active:
-        login(request, user)
-    else:
-        return render(request, 'prototypeApp/sigin_error.html', context)
+    # if user is not None and user.is_active:
+    #     login(request, user)
+    # else:
+    #     return render(request, 'prototypeApp/sigin_error.html', context)
