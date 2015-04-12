@@ -53,7 +53,8 @@ def signup(request):
 
 # signin page
 def login(request):
-    return render(request, 'prototypeApp/signin_error.html', context)    
+    context = {}
+    return render(request, 'prototypeApp/signin.html', context)    
     # username = request.POST['username']
     # password = request.POST['password']
     # user = authenticate(username=username, password=password)
