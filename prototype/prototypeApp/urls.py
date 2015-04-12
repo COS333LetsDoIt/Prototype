@@ -17,5 +17,8 @@ urlpatterns = patterns('',
     url(r'^group$', views.group, name='group'),
     url(r'^event/$', views.index, name='index'),
     url(r'^login/$', views.login, name='login'),
+	url(r'^logout/$', views.logout_view, name='logout'),
+    
+    #url('^', include('django.contrib.auth.urls')),
     #(r'^accounts/login/$', 'django.contrib.auth.views.login')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

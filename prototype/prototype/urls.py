@@ -1,6 +1,9 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+urlpatterns = [
+    url('^', include('django.contrib.auth.urls'))
+]
 
 urlpatterns = patterns('',
     # Examples:

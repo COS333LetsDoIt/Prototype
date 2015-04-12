@@ -7,6 +7,8 @@ from django.forms import ModelForm
 import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib.auth import views
 
 
 class EventForm(ModelForm):
@@ -39,7 +41,7 @@ def get_event_form(request):
     return form
 
 # Create your views here.
-@login_required(login_url='prototypeApp/login/')
+@login_required(login_url='login/')
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
@@ -59,15 +61,30 @@ def signup(request):
     return render(request, 'prototypeApp/index.html', context)
 
 # signin page
-def login(request):
-    context = {}
-    return render(request, 'prototypeApp/signin.html', context)    
-    # username = request.POST['username']
-    # password = request.POST['password']
-    # user = authenticate(username=username, password=password)
-    # context = {}
+def login_view(request, error_msg):
+    state = "Please log in:"
 
-    # if user is not None and user.is_active:
-    #     login(request, user)
-    # else:
-    #     return render(request, 'prototypeApp/sigin_error.html', context)
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                HttpResponseRedirect(reverse('prototypeApp:index'))
+            else:
+                # Return a 'disabled account' error message
+                state = "Please user a nondisabled user:"
+        else:
+            state = "The email or password you entered is incorrect."
+            # Return an 'invalid login' error message.
+                        
+    return render(request, 'prototypeApp/signin.html', {'state':state, 'username': username})    
+
+# confirm login
+def my_view(request):
+    
+# after logging out, return to login
+def logout_view(request):
+    logout(request)
+    return render(request, 'prototypeApp/signin.html', {})
