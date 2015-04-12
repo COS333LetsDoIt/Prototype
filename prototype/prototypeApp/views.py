@@ -3,10 +3,10 @@ from prototypeApp.models import Person, Group, Event
 from django import forms
 from django.db import models
 from django.forms import ModelForm
-
 #from datetimewidget.widgets import DateTimeWidget
 import datetime
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 
 class EventForm(ModelForm):
@@ -39,6 +39,7 @@ def get_event_form(request):
     return form
 
 # Create your views here.
+@login_required
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
@@ -56,3 +57,15 @@ def signup(request):
     event_list = Event.objects.order_by('starttime')
     context = {"event_list": event_list}
     return render(request, 'prototypeApp/index.html', context)
+
+# signin page
+def login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    context = {}
+
+    if user is not None and user.is_active:
+        login(request, user)
+    else:
+        return render(request, 'prototypeApp/sigin_error.html', context)
