@@ -135,10 +135,23 @@ body {
 #create-event-form {
   color: black;
   text-shadow: none;
-}
 
+}
 #create-event-form .form-group {
   text-align: left;
+}
+.LDI-event-form {
+  color: black;
+  text-shadow: none;
+  text-align: center;
+}
+.LDI-dialog-box {
+  text-align: left;
+  background-color: #333;
+  color: #fff;
+}
+.LDI-submit-button {
+  text-align: center;
 }
 
 /*
@@ -147,10 +160,22 @@ body {
 .event-panel {
   background-color: #555;
 }
+/* Dialog Box */
+#dialog-box-body {
+  background-color: #333;
+  color: #fff;
+}
+#dialog-box-header {
+  background-color: #fff;
+  color: #333;
+}
 
-/*
- * Event Box in the Panel
- */
+/* Text Box */
+#text-box {
+  color: #333;
+}
+
+/* Event Box in the Panel */
 .event-box {
   border: 1px solid #222;
   background-color:  black;
