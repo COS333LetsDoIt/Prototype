@@ -13,7 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 STATIC_URL = '/static/'
-LOGIN_URL = '/signin/'
+LOGIN_URL = 'login/'
 
 
 # Quick-start development settings - unsuitable for production
