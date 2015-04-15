@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from prototypeApp.models import Person, Group, Event
 from django import forms
 from django.db import models
@@ -49,3 +49,9 @@ def signup(request):
     event_list = Event.objects.order_by('starttime')
     context = {"event_list": event_list}
     return render(request, 'prototypeApp/index.html', context)
+
+def event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    print event.person_set.all()
+    context = {"event": event}
+    return render(request, 'prototypeApp/event.html', context)

@@ -13,5 +13,5 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^event/$', views.index, name='index'),
+    url(r'^event/(?P<event_id>\d+)/$', views.event, name='event'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
