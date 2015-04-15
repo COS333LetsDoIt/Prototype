@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404
-=======
-from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_protect
->>>>>>> master
 from prototypeApp.models import Person, Group, Event
 from django import forms
 from django.db import models
