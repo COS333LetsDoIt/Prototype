@@ -1,0 +1,188 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Theme Template for Bootstrap</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- include jQuery manually-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.jFs"></script>
+
+    <!-- Custom styles for this template -->
+    <!--link href="index.css" rel="stylesheet"-->
+    <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
+
+    <!-- The extra stuff for the event-form -->
+    {{ form.media }}
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<!--    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>  -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>                                                                                                                                                                
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>                                                                                                
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>                                                                                                    
+    <![endif]-->
+  </head>
+
+  <body role="document">
+      <!--<p>
+        <button type="button" class="btn btn-lg btn-success">I'M FREE</button>
+        <button type="button" class="btn btn-lg btn-danger">CREATE EVENTS</button>
+      </p>-->
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Let's Do It!</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="#">Home</a></li>
+                  <li><a href="#">Events</a></li>
+                  <li><a href="#">Groups</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading">Let's Do It!</h1>
+            <p class="lead">To see what your friends are doing, click I'M FREE.</p>
+            <p class="lead">To propose an event to your friends, click CREATE EVENTS</p>
+            <p class="lead">
+              <a href="#" class="btn btn-lg btn-danger">I'M FREE</a>
+              <!--<a href="#" class="btn btn-lg btn-success">CREATE EVENTS</a>-->
+              <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE EVENTS</button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div id="create-event-form">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">New event</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form  action="/prototypeApp/" method="POST">
+                          {% csrf_token %}
+                          {{ form.as_table }}
+                          <input id="submit" type="submit" value="Submit">
+                        </form>
+            <!--
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label for="event-name" classes="col-sm-4">Event name:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="event-name">
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="start-time" classes="col-sm-4">Start time:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="start-time">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="end-time" classes="col-sm-8">End time:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="end-time">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="invite-friends" classes="col-sm-8 control-label">Invite friends:</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="invite-friends">
+                            </div>
+                          </div>
+                        </form>
+                         <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success">Create event</button>
+                      </div>
+            -->
+                      </div>
+                     
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p>
+          </div>
+          {% if event_list %}
+
+            <div class="event-panel">
+              <h2>
+                Events
+              </h2>
+              <div class="container">
+                <div class="row clearfix">
+                  {% for event in event_list %}
+                    <div class="col-md-4 column">
+                      <div class="event-box">  
+                        <h3>
+                          {{event.name}}
+                        </h3>
+                        <p>
+                          {{event.starttime}}-{{event.endtime}}
+                        </p>
+                        <div>
+                          other people
+                        </div>
+                        
+                        <p>
+                          <a class="btn" href="#">Edit</a>
+                        </p>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% else %}
+              <p>No events are available.</p>
+          {% endif %}
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Created by Let's Do It! </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+   <!-- Bootstrap core JavaScript                                                                                                                                                   
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!--<script src="../../dist/js/docs.min.js"></script>-->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+
+  </body>
+</html>
