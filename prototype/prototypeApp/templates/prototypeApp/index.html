@@ -8,6 +8,15 @@
   <!-- The extra stuff for the event-form -->
   {{ form.media }}
 {% endblock %}
+{% block header %}
+  <nav>
+    <ul class="nav masthead-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="/prototypeApp/group">Groups</a></li>
+      <li><a href="/prototypeApp/people">Friends</a></li>
+    </ul>
+  </nav>
+{% endblock %}
 {% block content %}
 <div class="inner cover">
   <h1 class="cover-heading">Let's Do It!</h1>

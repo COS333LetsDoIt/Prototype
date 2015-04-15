@@ -57,6 +57,13 @@ def group(request):
     context = {"group_list": group_list}
     return render(request, 'prototypeApp/group.html', context)
 
+# Create your views here.
+@login_required()
+def people(request):
+    friends_list = Person.objects.order_by('name')
+    context = {"friends_list": friends_list}
+    return render(request, 'prototypeApp/people.html', context)
+
 
 def signup(request):
     event_list = Event.objects.order_by('starttime')

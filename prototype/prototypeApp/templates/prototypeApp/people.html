@@ -9,8 +9,8 @@
   <nav>
     <ul class="nav masthead-nav">
       <li><a href="/prototypeApp/index">Home</a></li>
-      <li class="active"><a href="">Groups</a></li>
-      <li><a href="/prototypeApp/people">Friends</a></li>
+      <li><a href="/prototypeApp/group">Groups</a></li>
+      <li class="active"><a href="#">Friends</a></li>
     </ul>
   </nav>
 {% endblock %}
@@ -22,21 +22,15 @@
   {% if group_list %}
     <div class="event-panel">
       <h2>
-        Events
+        Friends
       </h2>
       <div class="container">
         <div class="row clearfix">
-          {% for group in group_list %}          
+          {% for person in friends_list %}          
             <div class="group-box">  
               <h3>
-                {{group.name}}
+                {{person.name}}
               </h3>
-              <p>
-                {{group.name}}
-              </p>
-              {% for people in group.people %}
-                show popele
-              {% endfor %}
               <p>
                 <a class="btn" href="#">Edit</a>
               </p>
@@ -46,6 +40,6 @@
       </div>
     </div>
   {% else %}
-      <p>You have no groups. Would you like to add some?</p>
+      <p>You have no friends. Would you like to add some?</p>
   {% endif %}
 {% endblock %}
