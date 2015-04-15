@@ -47,7 +47,6 @@ class Person(models.Model):
     friends = models.ManyToManyField('self', blank=True)
     events = models.ManyToManyField(Event, blank=True)
     groups = models.ManyToManyField(Group, blank=True)
-
     def __str__(self):
         return self.name
 

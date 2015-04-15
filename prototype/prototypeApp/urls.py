@@ -13,5 +13,14 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^index$', views.index, name='index'),
+    url(r'^group$', views.group, name='group'),
     url(r'^event/(?P<event_id>\d+)/$', views.event, name='event'),
+    url(r'^login/$', views.login_view, name='login'),
+    url(r'^register/$', views.register, name='register'),
+	url(r'^logout/$', views.logout_view, name='logout'),
+    
+    #url('^', include('django.contrib.auth.urls')),
+    #(r'^accounts/login/$', 'django.contrib.auth.views.login')
+>>>>>>> master
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

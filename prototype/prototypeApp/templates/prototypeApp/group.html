@@ -1,0 +1,110 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Let's Do It</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- include jQuery manually-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.jFs"></script>
+
+    <!-- Custom styles for this template -->
+    <!--link href="index.css" rel="stylesheet"-->
+    <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
+
+    <!-- The extra stuff for the event-form -->
+    {{ form.media }}
+  </head>
+
+  <body role="document">
+      <!--<p>
+        <button type="button" class="btn btn-lg btn-success">I'M FREE</button>
+        <button type="button" class="btn btn-lg btn-danger">CREATE EVENTS</button>
+      </p>-->
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <p> <a href="/prototypeApp/logout">Logout</a> </p>
+            <div class="inner">
+              <h3 class="masthead-brand">Let's Do It!</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li><a href="/prototypeApp/index">Home</a></li>
+                  <li class="active"><a href="#">Groups</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <div class="inner cover">
+            <h1 class="cover-heading">Let's Do It!</h1>
+          </div>
+          {% if group_list %}
+
+            <div class="event-panel">
+              <h2>
+                Events
+              </h2>
+              <div class="container">
+                <div class="row clearfix">
+                  {% for group in group_list %}
+                    
+                      <div class="group-box">  
+                        <h3>
+                          {{group.name}}
+                        </h3>
+                        <p>
+                          {{group.name}}
+                        </p>
+                        {% for people in group.people %}
+                          show popele
+                        {% endfor %}
+                        <p>
+                          <a class="btn" href="#">Edit</a>
+                        </p>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% else %}
+              <p>You have no groups. Would you like to add some?</p>
+          {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+
+
+   <!-- Bootstrap core JavaScript                                                                                                                                                   
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!--<script src="../../dist/js/docs.min.js"></script>-->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+
+  </body>
+</html>
