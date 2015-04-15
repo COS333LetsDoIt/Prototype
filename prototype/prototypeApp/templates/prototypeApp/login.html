@@ -1,0 +1,36 @@
+{% extends "prototypeApp/base.html" %} 
+{% load staticfiles %}
+
+{% block title %} Signin For Let's Do It! {% endblock %}
+
+{% block custominclude %}    
+<link href = "{% static "prototypeApp/login.css" %}" rel = "stylesheet">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <form class="form-signin" action="{% url 'prototypeApp:login' %}" method="post">
+      {% csrf_token %}
+      
+      <h2 class="form-signin-heading">Let's sign in!</h2>
+      <h5 class="form-signin-heading"> {{state}} </h5>
+      
+      <label for="username" class="sr-only">User name</label>
+      <input type="username" name="username" class="form-control" value="{{username}}" placeholder="User name" required autofocus>
+      
+      <label for="password" value="{{password}}"class="sr-only">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="Password" required>
+      
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+    <p class="other-links"> <a href="/prototypeApp/register">Create an account</a> </p>
+  </div> <!-- /container -->
+{% endblock %}

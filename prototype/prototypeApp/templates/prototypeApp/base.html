@@ -1,0 +1,66 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{% block title %} Let's Do It! {% endblock %}</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+    <!-- include jQuery manually -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <!--<link href=".bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href=".bootstrap/css/signin.css" rel="stylesheet">-->
+
+    {% block custominclude %}
+    <!-- Custom styles for this template -->
+    <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet"
+      {% endblock %}
+  </head>
+
+  <body role="document">
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="header">
+            <div class="masthead clearfix">
+              <p> <a href="/prototypeApp/logout">Logout</a> </p>
+              <div class="inner">
+                <h3 class="masthead-brand">Let's Do It!</h3>
+                {% block header %}
+                <nav>  
+                  <ul class="nav masthead-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="/prototypeApp/group">Groups</a></li>
+                  </ul>
+                </nav>
+                {% endblock %}
+              </div>
+            </div>
+          </div>
+          <div id="content">
+            {% block content %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
