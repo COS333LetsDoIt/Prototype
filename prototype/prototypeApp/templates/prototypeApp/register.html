@@ -1,4 +1,4 @@
-{% extends "prototypeApp/base.html" %} 
+{% extends "prototypeApp/baseloggedout.html" %} 
 {% load staticfiles %}
 
 {% block custominclude %}    
@@ -6,8 +6,6 @@
 {% endblock %}
 
 {% block title %} Register For Let's Do It! {% endblock %}
-{% block logout %}{% endblock %}
-{% block header %}{% endblock %}
 {% block content %}
   <form class="form-signin" action="{% url 'prototypeApp:register' %}" method="post">
     {% csrf_token %}

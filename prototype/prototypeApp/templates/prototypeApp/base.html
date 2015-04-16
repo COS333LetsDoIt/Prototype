@@ -33,10 +33,9 @@
   </head>
 
   <body role="document">
-    <!--<div class="site-wrapper">
+    <div class="site-wrapper">
       <div class="site-wrapper-inner">
         <div class="cover-container">
-        -->        
           <!-- Navigation -->
           <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
@@ -48,10 +47,10 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/prototypeApp/"">Let's Do It!</a>
+                <a class="navbar-brand" href="/prototypeApp/">Let's Do It!</a>
               </div>
               <!-- Collect the nav links, forms, and other content for toggling -->
-              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                   {% block header %}
                     <li class="active">
@@ -65,6 +64,13 @@
                     </li>
                   {% endblock %}
                 </ul>
+                {% block logout %}
+                <ul class="nav navbar-nav navbar-right">
+                  <li>
+                    <a class="navbar-link" href="/prototypeApp/logout"> Logout </a>
+                  </li>
+                </ul>
+                {% endblock %}
               </div>
               <!-- /.navbar-collapse -->
             </div>
@@ -72,22 +78,65 @@
           </nav>
           <div class="container" id="content">
             {% block content %}{% endblock %}
-          </div>
-    <!--    </div>
-      </div>-->
-      
-      <hr>
-      
-      <!-- Footer -->
-      <footer>
-          <div class="row">
-              <div class="col-lg-12">
-                  <p>Copyright &copy; Let's Do It! 2015</p>
+
+            {% block collection %}
+            <div class="collection">
+              {% block collection-title %}
+              <!-- Title -->
+              <div class="row">
+                  <div class="col-lg-12">
+                      <h3>Friends in this event</h3>
+                  </div>
               </div>
+              <!-- /.row -->
+              {% endblock %}
+              {% block collection-components%}
+              <!-- Page Features -->
+              {% if event.person_set.all %}
+              <div class="row text-center">
+                {% for person in event.person_set.all %}
+                {% cycle 1 2 3 4 5 6 as colnumber silent %}
+                {% if colnumber == 1 %}
+                  </div>
+                  <div class="row text-center">    
+                {% endif %}
+                <div class="col-md-2 col-sm-2 hero-feature">
+                  <div class="thumbnail">
+                    <img src="http://placehold.it/800x500" alt="">
+                    <div class="caption">
+                      <h3>{{person}}</h3>
+                      <p>Creator of the event?</p>
+                      <p>Time of joining this event?</p>
+                      <p>Display personal comments regarding this event?</p>
+                      <p>
+                        <a href="#" class="btn btn-primary">Say Hi!</a> <a href="#" class="btn btn-default">His/her events?</a>
+                     </p>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p> No friends are currently going to this event. </p>
+              {% endif %}
+              <!-- /.row -->
+              {% endblock %}
           </div>
-      </footer>      
-    
-    <!--</div>-->
+          {% endblock %}
+        </div>
+        <hr>
+        
+        <!-- Footer -->
+        <div id="footer">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Let's Do It! 2015</p>
+                </div>
+            </div>
+        </div>      
+      </div>
+      
+    </div>
     
     <!-- Bootstrap core JavaScript                                                                                                                                                   
     ================================================== -->

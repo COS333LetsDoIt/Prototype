@@ -4,9 +4,20 @@
 
 
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    padding-bottom: 50px; /* For footer */
 }
 
+.jumbotron {
+  background-color: darkgray;
+  padding: 10px 10px 10px 10px;
+}
+
+.collection {
+  background-color: darkgray;
+  padding: 10px;
+  color: black;
+}
 .hero-spacer {
     margin-top: 50px;
 }
@@ -15,15 +26,24 @@ body {
     margin-bottom: 30px;
 }
 
-footer {
-    margin: 50px 0;
+#footer {
+    bottom: 0;
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    padding: 15px;
+    float: left;
+    background-color: #222; /* dark grayish */
+    color: white;
 }
 
 /* Links */
-a,
+a {
+  color: gray;
+}
 a:focus,
 a:hover {
-  color: #fff;
+  color: black;
 }
 
 /* Custom default button */
@@ -36,7 +56,6 @@ a:hover {
   border: 1px solid #fff;
 }
 
-
 /*
  * Base structure
  */
@@ -44,10 +63,10 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  background-color: lightgray;
 }
 body {
-  color: #fff;
+  color: black;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
@@ -62,7 +81,7 @@ body {
           box-shadow: inset 0 0 100px rgba(0,0,0,.5);
 }
 .site-wrapper-inner {
-  display: table-cell;
+  display: table-row;
   vertical-align: top;
 }
 .cover-container {

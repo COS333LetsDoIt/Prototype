@@ -21,33 +21,51 @@
   <div class="inner cover">
     <h1 class="cover-heading">Let's Do It!</h1>
   </div>
-  {% if group_list %}
-    <div class="event-panel">
-      <h2>
-        Events
-      </h2>
-      <div class="container">
-        <div class="row clearfix">
-          {% for group in group_list %}          
-            <div class="group-box">  
-              <h3>
-                {{group.name}}
-              </h3>
-              <p>
-                {{group.name}}
-              </p>
-              {% for people in group.people %}
-                show popele
-              {% endfor %}
-              <p>
-                <a class="btn" href="#">Edit</a>
-              </p>
-            </div>
-          {% endfor %}
-        </div>
+{% endblock %}
+
+{% block collection-title %}
+  <!-- Title -->
+  <div class="row">
+      <div class="col-lg-12">
+          <h2>Events</h2>
       </div>
-    </div>
+  </div>
+  <!-- /.row -->
+{% endblock %}  
+
+{% block collection-components%}
+  <!-- Page Features -->
+  {% if group_list %}
+  <div class="row text-center">
+      {% for group in group_list %}
+      {% cycle 1 2 3 as colnumber silent %}
+      {% if colnumber == 1 %}
+        </div>
+        <div class="row text-center">    
+      {% endif %}
+      <div class="col-md-4 col-sm-4 hero-feature">
+          <div class="thumbnail">
+              <img src="http://placehold.it/800x300" alt="">
+              <div class="caption">
+                  <h3>
+                    {{group.name}}
+                  </h3>
+                  <p>
+                    {{group.name}}
+                  </p>
+                  {% for people in group.people %}
+                    show popele
+                  {% endfor %}
+                  <p>
+                    <a class="btn" href="#">Edit</a>
+                  </p>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
   {% else %}
-      <p>You have no groups. Would you like to add some?</p>
+  <p> No friends are currently going to this event. </p>
   {% endif %}
+  <!-- /.row -->
 {% endblock %}

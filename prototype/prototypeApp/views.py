@@ -70,6 +70,7 @@ def signup(request):
     context = {"event_list": event_list}
     return render(request, 'prototypeApp/index.html', context)
 
+@login_required()
 def event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     print event.person_set.all()

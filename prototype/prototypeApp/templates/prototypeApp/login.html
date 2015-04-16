@@ -1,4 +1,4 @@
-{% extends "prototypeApp/base.html" %} 
+{% extends "prototypeApp/baseloggedout.html" %} 
 {% load staticfiles %}
 
 {% block title %} Signin For Let's Do It! {% endblock %}
@@ -6,10 +6,6 @@
 {% block custominclude %}    
 <link href = "{% static "prototypeApp/login.css" %}" rel = "stylesheet">
 {% endblock %}
-
-{% block header %}{% endblock %}
-
-{% block logout %}{% endblock %}
 
 {% block content %}
   <div class="container">

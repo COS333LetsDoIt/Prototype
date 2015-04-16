@@ -21,27 +21,45 @@
   <div class="inner cover">
     <h1 class="cover-heading">Let's Do It!</h1>
   </div>
-  {% if friends_list %}
-    <div class="event-panel">
-      <h2>
-        Friends
-      </h2>
-      <div class="container">
-        <div class="row clearfix">
-          {% for person in friends_list %}          
-            <div class="group-box">  
-              <h3>
-                {{person.name}}
-              </h3>
-              <p>
-                <a class="btn" href="#">Edit</a>
-              </p>
-            </div>
-          {% endfor %}
-        </div>
+{% endblock %}
+
+{% block collection-title %}
+  <!-- Title -->
+  <div class="row">
+      <div class="col-lg-12">
+          <h2>Friends</h2>
       </div>
-    </div>
+  </div>
+  <!-- /.row -->
+{% endblock %}  
+
+{% block collection-components%}
+ <!-- Page Features -->
+  {% if friends_list %}
+  <div class="row text-center">
+      {% for person in friends_list %}
+      {% cycle 1 2 3 4 5 6 as colnumber silent %}
+      {% if colnumber == 1 %}
+        </div>
+        <div class="row">    
+      {% endif %}
+      <div class="col-md-2 col-sm-2 hero-feature">
+          <div class="thumbnail">
+              <img src="http://placehold.it/400x250" alt="">
+              <div class="caption">
+                <h3>
+                  {{person.name}}
+                </h3>
+                <p>
+                  <a class="btn" href="#">Edit</a>
+                </p>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
   {% else %}
-      <p>You have no friends. Would you like to add some?</p>
+    <p>You have no friends. Would you like to add some?</p>
   {% endif %}
+  <!-- /.row -->
 {% endblock %}

@@ -27,9 +27,9 @@
 /*
  * Event Panel
  */
-.event-panel {
+/*.event-panel {
   background-color: #555;
-}
+}*/
 /* Dialog Box */
 #dialog-box-body {
   background-color: #333;
@@ -46,10 +46,10 @@
 }
 
 /* Event Box in the Panel */
-.event-box {
+/*.event-box {
   border: 1px solid #222;
   background-color:  black;
   text-align: left;
   margin: 10px;
   padding: 10px;
-}
+}*/
