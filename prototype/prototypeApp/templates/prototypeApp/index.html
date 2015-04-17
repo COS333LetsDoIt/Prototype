@@ -8,37 +8,60 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
 
+
   <!-- The extra stuff for the event-form -->
   {{ form.media }}
 {% endblock %}
 {% block customjs %}
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+  <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
   <script>
-    $('#tokenfield').tokenfield({
-        autocomplete: {
-            source: ['red','blue','green','yellow','violet','brown','purple','black','white'],
-            delay: 100
-        },
-        showAutocompleteOnFocus: true
+
+    var engine = new Bloodhound({
+      local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
+      datumTokenizer: function(d) {
+        return Bloodhound.tokenizers.whitespace(d.value);
+      },
+      queryTokenizer: Bloodhound.tokenizers.whitespace
     });
-    $('#tokenfield').on('tokenfield:createtoken', function (event) {
-        var available_tokens = bloodhound_tokens.index.datums
-        var exists = true;
-        $.each(available_tokens, function(index, token) {
-            if (token.value === event.attrs.value)
-                exists = false;
-        });
-        if(exists === true)
-            event.preventDefault();
+
+    engine.initialize();
+
+    $('#tokenfield-typeahead').tokenfield({
+      typeahead: [null, { source: engine.ttAdapter() }]
     });
-    $('#tokenfield').on('tokenfield:createtoken', function (event) {
-        var existingTokens = $(this).tokenfield('getTokens');
-        $.each(existingTokens, function(index, token) {
-            if (token.value === event.attrs.value)
-                event.preventDefault();
-        });
+
+    // Prevents duplicate tokens
+    $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
+      var existingTokens = $(this).tokenfield('getTokens');
+      $.each(existingTokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              event.preventDefault();
+      });
     });
+     
+    // Disables the submission of form upon pressing "Enter"
+    $(document).ready(function() {
+      $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+      });
+    });
+
+    // Prevents non-existing tokens (doesn't work with bloodhound_tokens)
+    // $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
+    //   var available_tokens = bloodhound_tokens.index.datums
+    //   var exists = true;
+    //   $.each(available_tokens, function(index, token) {
+    //       if (token.value === event.attrs.value)
+    //           exists = false;
+    //   });
+    //   if(exists === true)
+    //       event.preventDefault();
+    // })
 
   </script>
 
@@ -98,7 +121,8 @@
                   <div class="form-group">
                     <label for="friends" class="col-sm-4">Friends</label>
                     <div class="col-sm-8" id="text-box">
-                      <input type="text" class="form-control" id="tokenfield" value="red,green,blue" placeholder="Type something and hit enter"/>
+                      <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/>
+                      <!-- <input type="text" class="form-control" id="tokenfield" value="red,blue" placeholder="Type in the names of your friends"/> -->
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
