@@ -42,6 +42,11 @@ def get_event_form(request):
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
     return form
 
+def token(request):
+    #group_list = Group.objects.order_by('name')
+    #context = {"group_list": group_list}
+    return render(request, 'prototypeApp/token.html', {})
+
 # Create your views here.
 @login_required()
 def index(request):

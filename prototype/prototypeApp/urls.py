@@ -13,6 +13,7 @@ from django.conf.urls.static import static
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^token$', views.token, name='token'),
     url(r'^index$', views.index, name='index'),
     url(r'^group$', views.group, name='group'),
     url(r'^people$', views.people, name='people'),
