@@ -19,8 +19,7 @@
   <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
   <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
-
-
+    // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
         source: {{friends_list|safe}},
@@ -135,6 +134,7 @@
                     <div class="col-sm-8" id="text-box">
                       <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                       <input type="text" class="form-control" id="tokenfield" value="red,blue" placeholder="Type in the names of your friends"/>
+                      {{ form.invited_friends }}
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
