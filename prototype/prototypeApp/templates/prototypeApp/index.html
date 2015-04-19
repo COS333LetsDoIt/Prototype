@@ -44,21 +44,11 @@
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      console.log({{friends_list|safe}})
-      var existingTokens = {{friends_list|safe}};
+      console.log({{friends_list|safe}});
+      var existingTokens = $(this).tokenfield('getTokens');
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
-      });
-    });
-     
-    // Disables the submission of form upon pressing "Enter"
-    $(document).ready(function() {
-      $(window).keydown(function(event){
-        if(event.keyCode == 13) {
-          event.preventDefault();
-          return false;
-        }
       });
     });
 
@@ -73,6 +63,16 @@
       if(exists === true)
           event.preventDefault();
     })
+
+    // Disables the submission of form upon pressing "Enter"
+    $(document).ready(function() {
+      $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+      });
+    });
 
   </script>
   <style type="text/css">
