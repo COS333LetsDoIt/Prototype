@@ -63,7 +63,8 @@ def group(request):
 # Create your views here.
 @login_required()
 def people(request):
-    friends_list = Person.objects.order_by('name')
+    #friends_list = Person.objects.order_by('name')
+    friends_list = request.user.person.friends.all()
     context = {"friends_list": friends_list}
     return render(request, 'prototypeApp/people.html', context)
 
