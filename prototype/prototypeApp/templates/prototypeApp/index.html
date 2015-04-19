@@ -28,6 +28,12 @@
       showAutocompleteOnFocus: true
     })
 
+    $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
+      var tokens = $(this).tokenfield('getTokens');
+      $('#friendids').val( tokens );
+      console.log(tokens); 
+    });
+
     // var engine = new Bloodhound({
     //   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
     //   datumTokenizer: function(d) {
@@ -44,8 +50,10 @@
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      console.log({{friends_list|safe}});
+      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
+      //console.log(existingTokens);
+
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -62,6 +70,8 @@
       });
       if(exists === true)
           event.preventDefault();
+      //console.log("Attrs:")
+      //console.log(event.attrs)
     })
 
     // Disables the submission of form upon pressing "Enter"
@@ -138,7 +148,8 @@
                     <label for="friends" class="col-sm-4">Friends</label>
                     <div class="col-sm-8" id="text-box">
                       <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
-                      <input type="text" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
+                      <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
+                      <input id="friendids" name="friendids" type="hidden">
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->

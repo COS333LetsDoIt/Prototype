@@ -34,6 +34,7 @@ def get_event_form(request):
         # create a form instance and populate it with data from the request:
         form = EventForm(request.POST)
         # check whether it's valid:
+        print request.POST
         if form.is_valid():
             # process the data in form.cleaned_data as required
             # ...
@@ -49,7 +50,7 @@ def get_event_form(request):
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
-    friends_list = json.dumps([{"label": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+    friends_list = json.dumps([{"label": friend.id, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
     context = {"event_list": event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
