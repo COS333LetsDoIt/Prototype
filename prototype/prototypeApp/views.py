@@ -13,6 +13,8 @@ from django.contrib.auth import logout, views, authenticate, login
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 
+import json
+
 
 class EventForm(ModelForm):
     class Meta:
@@ -47,7 +49,8 @@ def get_event_form(request):
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
-    context = {"event_list": event_list, 'form': event_form}
+    friends_list = json.dumps([{"label": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+    context = {"event_list": event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
 # Create your views here.

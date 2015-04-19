@@ -7,34 +7,46 @@
   <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
+  <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
 
 
   <!-- The extra stuff for the event-form -->
   {{ form.media }}
 {% endblock %}
 {% block customjs %}
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
   <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
+  <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
 
-    var engine = new Bloodhound({
-      local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
-      datumTokenizer: function(d) {
-        return Bloodhound.tokenizers.whitespace(d.value);
+
+    $('#tokenfield').tokenfield({
+      autocomplete: {
+        source: {{friends_list|safe}},
+        delay: 100
       },
-      queryTokenizer: Bloodhound.tokenizers.whitespace
-    });
+      showAutocompleteOnFocus: true
+    })
 
-    engine.initialize();
+    // var engine = new Bloodhound({
+    //   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
+    //   datumTokenizer: function(d) {
+    //     return Bloodhound.tokenizers.whitespace(d.value);
+    //   },
+    //   queryTokenizer: Bloodhound.tokenizers.whitespace
+    // });
 
-    $('#tokenfield-typeahead').tokenfield({
-      typeahead: [null, { source: engine.ttAdapter() }]
-    });
+    // engine.initialize();
+
+    // $('#tokenfield-typeahead').tokenfield({
+    //   typeahead: [null, { source: engine.ttAdapter() }]
+    // });
 
     // Prevents duplicate tokens
-    $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
-      var existingTokens = $(this).tokenfield('getTokens');
+    $('#tokenfield').on('tokenfield:createtoken', function (event) {
+      console.log({{friends_list|safe}})
+      var existingTokens = {{friends_list|safe}};
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -52,16 +64,16 @@
     });
 
     // Prevents non-existing tokens (doesn't work with bloodhound_tokens)
-    // $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
-    //   var available_tokens = bloodhound_tokens.index.datums
-    //   var exists = true;
-    //   $.each(available_tokens, function(index, token) {
-    //       if (token.value === event.attrs.value)
-    //           exists = false;
-    //   });
-    //   if(exists === true)
-    //       event.preventDefault();
-    // })
+    $('#tokenfield').on('tokenfield:createtoken', function (event) {
+      var available_tokens = {{friends_list|safe}};
+      var exists = true;
+      $.each(available_tokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              exists = false;
+      });
+      if(exists === true)
+          event.preventDefault();
+    })
 
   </script>
 
@@ -121,8 +133,8 @@
                   <div class="form-group">
                     <label for="friends" class="col-sm-4">Friends</label>
                     <div class="col-sm-8" id="text-box">
-                      <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/>
-                      <!-- <input type="text" class="form-control" id="tokenfield" value="red,blue" placeholder="Type in the names of your friends"/> -->
+                      <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
+                      <input type="text" class="form-control" id="tokenfield" value="red,blue" placeholder="Type in the names of your friends"/>
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
