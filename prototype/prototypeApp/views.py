@@ -73,8 +73,12 @@ def signup(request):
 @login_required()
 def event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    print event.person_set.all()
-    context = {"event": event}
+    if request.user.person in event.person_set.all():
+        user_in_event = True
+    else:
+        user_in_event = False
+    # print event.person_set.all()
+    context = {"event": event, "user_in_event": user_in_event}
     return render(request, 'prototypeApp/event.html', context)
 
 # signin page
@@ -83,33 +87,33 @@ def login_view(request):
     username = ""
     next = request.GET.get('next', "")
     if request.method == "POST":
-        print "POST request received"
+        #print "POST request received"
         username = request.POST.get('username', '')
-        print "username: " + username
+        #print "username: " + username
         password = request.POST.get('password', '')
-        print "password: " + password
+        #print "password: " + password
         user = authenticate(username=username, password=password)
-        print "The user is: " + str(user)
+        #print "The user is: " + str(user)
         next = request.POST.get('next', next)
         if user is not None:
             if user.is_active:
-                print "User worked"
+                #print "User worked"
                 login(request, user)
-                print "Redirecting to next"
-                print "next: " + next
-                print request
+                #print "Redirecting to next"
+                #print "next: " + next
+                #print request
                 if next == "":
                     return HttpResponseRedirect(reverse('prototypeApp:index'))
                 else:
                     return HttpResponseRedirect(next)
             else:
                 state = "Please user a nondisabled user:"
-                print "disabled account"
+                #print "disabled account"
                 # Return a 'disabled account' error message
         else:
             # Return an 'invalid login' error message.
             state = "The username or password you entered is incorrect."
-    print "Page outputted"
+    #print "Page outputted"
     context = {'state':state, 'username': username, 'next': next}
     return render(request, 'prototypeApp/login.html', context)    
 
@@ -122,13 +126,13 @@ def register(request):
     password = ""
 
     if request.method == "POST":
-        print "POST request received"
+        #print "POST request received"
         username = request.POST.get('username', "")
-        print "username: " + username
+        #print "username: " + username
         password = request.POST.get('password', "")
-        print "password: " + password
+        #print "password: " + password
         email = request.POST.get('email', "")
-        print "email: " + email
+        #print "email: " + email
         
         if User.objects.filter(username=username).exists():
             state = "That user is already taken"
@@ -137,12 +141,18 @@ def register(request):
         else:       
             user = None
             user = User.objects.create_user(username, email, password)
-            print "The user is: " + str(user)
+            #### Creates a new person object and links it to the user!
+            newPerson = Person()
+            newPerson.name = username
+            newPerson.user = user
+            newPerson.save()
+            #print "The user is: " + str(user)
             if user is not None:
-                print "User created"
+                #print "User created"
                 user = authenticate(username=username, password=password)
+
                 login(request, user)
-                print "User logged in"
+                #print "User logged in"
                 return HttpResponseRedirect(reverse('prototypeApp:index'))
             else:
                 state = "Something is wrong with your input. Try again."
@@ -154,5 +164,21 @@ def register(request):
 # after logging out, return to login
 def logout_view(request):
     logout(request)
-    print "User logged off"
+    #print "User logged off"
     return render(request, 'prototypeApp/login.html', {})
+
+# join event
+@login_required()
+def join_event(request, event_id):
+     event = get_object_or_404(Event, pk=event_id)
+     event.person_set.add(request.user.person)
+     event.save()
+     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
+
+#leave event
+@login_required()
+def leave_event(request, event_id):
+     event = get_object_or_404(Event, pk=event_id)
+     event.person_set.remove(request.user.person)
+     event.save()
+     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));

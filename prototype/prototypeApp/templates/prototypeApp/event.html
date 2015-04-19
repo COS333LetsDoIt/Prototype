@@ -26,7 +26,13 @@
       <p>{{event.starttime}} -- {{event.endtime}}</p>
       <p>Location</p>
       <p>Description</p>
-      <p><a class="btn btn-primary btn-large">Join</a>
+
+      {% if user_in_event %}
+      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
+      {% else %}
+      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:join_event' event.id %}">Join</a></p>
+      {% endif %}
+
       </p>
   </div>
 

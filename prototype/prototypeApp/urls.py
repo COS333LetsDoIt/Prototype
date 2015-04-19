@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     url(r'^login/$', views.login_view, name='login'),
     url(r'^register/$', views.register, name='register'),
 	url(r'^logout/$', views.logout_view, name='logout'),
+    url(r'^join_event/(?P<event_id>\d+)/$', views.join_event, name='join_event'),
+    url(r'^leave_event/(?P<event_id>\d+)/$', views.leave_event, name='leave_event'),
     
     #url('^', include('django.contrib.auth.urls')),
     #(r'^accounts/login/$', 'django.contrib.auth.views.login')

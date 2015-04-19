@@ -21,6 +21,7 @@ from django.forms import ModelForm
 #
 
 from django.forms import ModelForm
+from django.contrib.auth.models import User
 
 
 #class Event(models.Model):
@@ -44,6 +45,7 @@ class Group(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=100)
+    user = models.OneToOneField(User, blank=True, null=True)
     friends = models.ManyToManyField('self', blank=True)
     events = models.ManyToManyField(Event, blank=True)
     groups = models.ManyToManyField(Group, blank=True)
