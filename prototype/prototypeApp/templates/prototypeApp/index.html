@@ -20,7 +20,6 @@
   <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script>
 
-
     $('#tokenfield').tokenfield({
       autocomplete: {
         source: {{friends_list|safe}},
@@ -76,7 +75,12 @@
     })
 
   </script>
+  <style type="text/css">
+  .ui-front {
+      z-index: 1000;
+  }
 
+  </style>
 {% endblock %}
 
 {% block header %}
@@ -134,7 +138,7 @@
                     <label for="friends" class="col-sm-4">Friends</label>
                     <div class="col-sm-8" id="text-box">
                       <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
-                      <input type="text" class="form-control" id="tokenfield" value="red,blue" placeholder="Type in the names of your friends"/>
+                      <input type="text" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
