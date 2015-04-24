@@ -32,6 +32,8 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     starttime = models.DateTimeField('start time')
     endtime = models.DateTimeField('end time')
+    location = models.CharField(max_length=100, default="")
+    description = models.CharField(max_length=100, default="")
     def __unicode__(self):
         return self.name
 

@@ -19,7 +19,7 @@ import json
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['name','starttime','endtime']
+        fields = ['name','starttime','endtime', 'location', 'description']
 
 
 #starttime
@@ -45,6 +45,7 @@ def get_event_form(request):
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
                 #print "found friend"
+                new_event.person_set.add(request.user.person)
                 if friends.exists():
                     new_event.person_set.add(friends[0])
                     #friends[0].event_set.add(new_event)
@@ -59,7 +60,7 @@ def get_event_form(request):
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
-    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     context = {"event_list": event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
@@ -74,8 +75,15 @@ def group(request):
 @login_required()
 def people(request):
     #friends_list = Person.objects.order_by('name')
+    if request.method == 'POST':
+        for friend_name in request.POST.get("friends", '').split(', '):
+            friends = Person.objects.filter(name=friend_name)
+            #print "found friend"
+            if friends.exists():
+                request.user.person.friends.add(friends[0])
+    people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
     friends_list = request.user.person.friends.all()
-    context = {"friends_list": friends_list}
+    context = {"friends_list": friends_list, "people_list": people_list}
     return render(request, 'prototypeApp/people.html', context)
 
 
