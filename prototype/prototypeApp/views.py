@@ -40,6 +40,15 @@ def get_event_form(request):
             # ...
             # redirect to a new URL:
             new_event = form.save()
+            #print "hi"
+            #print request.POST.get("friends", '').split(', ')
+            for friend_name in request.POST.get("friends", '').split(', '):
+                friends = Person.objects.filter(name=friend_name)
+                #print "found friend"
+                if friends.exists():
+                    new_event.person_set.add(friends[0])
+                    #friends[0].event_set.add(new_event)
+                    #print "added friend to event"
     # if a GET (or any other method) we'll create a blank form
     
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
@@ -50,7 +59,7 @@ def get_event_form(request):
 def index(request):
     event_list = Event.objects.order_by('starttime')
     event_form = get_event_form(request)
-    friends_list = json.dumps([{"label": friend.id, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
     context = {"event_list": event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
