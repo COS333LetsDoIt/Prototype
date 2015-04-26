@@ -46,8 +46,11 @@ class Group(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=100)
     user = models.OneToOneField(User, blank=True, null=True)
-    friends = models.ManyToManyField('self', blank=True)
-    events = models.ManyToManyField(Event, blank=True)
+    profilePicture = models.URLField(max_length=100, default="http://www.clipartbest.com/cliparts/y4c/9jG/y4c9jGMTE.jpeg") 
+    friends = models.ManyToManyField('self', blank=True, related_name="friends")
+    invitedFriends = models.ManyToManyField('self', blank=True, related_name="pendingFriends")
+    events = models.ManyToManyField(Event, blank=True, related_name="members")
+    invitedEvents = models.ManyToManyField(Event, blank=True, related_name="pendingMembers")
     groups = models.ManyToManyField(Group, blank=True)
     def __unicode__(self):
         return self.name

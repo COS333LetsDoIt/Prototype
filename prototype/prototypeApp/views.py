@@ -95,7 +95,7 @@ def signup(request):
 @login_required()
 def event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    if request.user.person in event.person_set.all():
+    if request.user.person in event.members.all():
         user_in_event = True
     else:
         user_in_event = False
@@ -193,7 +193,7 @@ def logout_view(request):
 @login_required()
 def join_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
-     event.person_set.add(request.user.person)
+     event.members.add(request.user.person)
      event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
 
@@ -201,6 +201,6 @@ def join_event(request, event_id):
 @login_required()
 def leave_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
-     event.person_set.remove(request.user.person)
+     event.members.remove(request.user.person)
      event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
