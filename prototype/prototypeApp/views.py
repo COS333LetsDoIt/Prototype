@@ -45,9 +45,9 @@ def get_event_form(request):
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
                 #print "found friend"
-                new_event.person_set.add(request.user.person)
+                new_event.members.add(request.user.person)
                 if friends.exists():
-                    new_event.person_set.add(friends[0])
+                    new_event.members.add(friends[0])
                     #friends[0].event_set.add(new_event)
                     #print "added friend to event"
     # if a GET (or any other method) we'll create a blank form

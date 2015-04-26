@@ -24,8 +24,8 @@
   <div class="jumbotron hero-spacer">
       <h1>{{event}}</h1>
       <p>{{event.starttime}} -- {{event.endtime}}</p>
-      <p>Location</p>
-      <p>Description</p>
+      <p>Location: {{event.location|default:"TBD"}}</p>
+      <p>Description: {{event.description|default:"TBD"}}</p>
 
       {% if user_in_event %}
       <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
