@@ -51,9 +51,9 @@
 
 {% block collection-components%}
   <!-- Page Features -->
-  {% if event.person_set.all %}
+  {% if event.members.all %}
   <div class="row text-center">
-      {% for person in event.person_set.all %}
+      {% for person in event.members.all %}
       {% cycle 1 2 3 as colnumber silent %}
       {% if colnumber == 1 %}
         </div>
