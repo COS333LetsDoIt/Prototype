@@ -178,49 +178,7 @@
     </div>
   </p>
 </div>
+{% include "prototypeApp/collectionEvent.html" with numCol=6 objects=event_list %}
 {% endblock %}
 
-{% block collection-title %}
-  <!-- Title -->
-  <div class="row">
-      <div class="col-lg-12">
-          <h2>Events</h2>
-      </div>
-  </div>
-  <!-- /.row -->
-{% endblock %}
-
-{% block collection-components%}
-  <!-- Page Features -->
-  {% if event_list %}
-  <div class="row text-center">
-    {% for event in event_list %}
-      {% cycle 1 2 3 4 5 6 as colnumber silent %}
-      {% if colnumber == 1 %}
-        </div>
-        <div class="row text-center">    
-      {% endif %}
-      <div class="col-md-2 col-sm-2">
-        <div class="thumbnail">
-          <h3>
-            {{event.name}}
-          </h3>
-          <p>
-            {{event.starttime}}-{{event.endtime}}
-          </p>
-          <div>
-            other people
-          </div>                    
-          <p>
-            <a class="btn" href="{% url 'prototypeApp:event' event.id %}">Details/Join</a>              
-          </p>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p> No events are available. </p>
-  {% endif %}
-  <!-- /.row -->
-{% endblock %}
 

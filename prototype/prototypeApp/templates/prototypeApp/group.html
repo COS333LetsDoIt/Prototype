@@ -21,51 +21,6 @@
   <div class="inner cover">
     <h1 class="cover-heading">Let's Do It!</h1>
   </div>
+  {% include "prototypeApp/collectionGroups.html" with objects=group_lis numCol=3 %}
 {% endblock %}
 
-{% block collection-title %}
-  <!-- Title -->
-  <div class="row">
-      <div class="col-lg-12">
-          <h2>Groups</h2>
-      </div>
-  </div>
-  <!-- /.row -->
-{% endblock %}  
-
-{% block collection-components%}
-  <!-- Page Features -->
-  {% if group_list %}
-  <div class="row text-center">
-      {% for group in group_list %}
-      {% cycle 1 2 3 as colnumber silent %}
-      {% if colnumber == 1 %}
-        </div>
-        <div class="row text-center">    
-      {% endif %}
-      <div class="col-md-4 col-sm-4 hero-feature">
-          <div class="thumbnail">
-              <img src="http://placehold.it/800x300" alt="">
-              <div class="caption">
-                  <h3>
-                    {{group.name}}
-                  </h3>
-                  <p>
-                    {{group.name}}
-                  </p>
-                  {% for people in group.people %}
-                    show popele
-                  {% endfor %}
-                  <p>
-                    <a class="btn" href="#">Edit</a>
-                  </p>
-              </div>
-          </div>
-      </div>
-      {% endfor %}
-  </div>
-  {% else %}
-  <p> No friends are currently in this group. </p>
-  {% endif %}
-  <!-- /.row -->
-{% endblock %}

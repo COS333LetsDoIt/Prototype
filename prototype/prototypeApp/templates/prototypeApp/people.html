@@ -107,81 +107,42 @@
   <div class="inner cover">
     <h1 class="cover-heading">Let's Do It!</h1>
   </div>
-{% endblock %}
-
-{% block collection-title %}
-  <!-- Title -->
-  <div class="row">
-      <div class="col-lg-12">
-          <h2>Friends</h2>
-      </div>
-  </div>
-  <!-- /.row -->
-{% endblock %}  
-
-{% block collection-components%}
- <!-- Page Features -->
-  {% if friends_list %}
-  <div class="row text-center">
-      {% for person in friends_list %}
-      {% cycle 1 2 3 4 5 6 as colnumber silent %}
-      {% if colnumber == 1 %}
-        </div>
-        <div class="row">    
-      {% endif %}
-      <div class="col-md-2 col-sm-2 hero-feature">
-          <div class="thumbnail">
-              <img src="http://placehold.it/400x250" alt="">
-              <div class="caption">
-                <h3>
-                  {{person.name}}
-                </h3>
-                <p>
-                  <a class="btn" href="#">Edit</a>
-                </p>
-              </div>
+  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=3%}
+  <p class="lead">
+  <a href="#" ><p></p>
+  </a>
+  <button type="button" class="btn btn-lg" data-toggle="modal" data-target="#exampleModal">Would you like to add friends?</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="LDI-event-form">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" id="dialog-box-head">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">New Event</h4>
           </div>
-      </div>
-      {% endfor %}
-  </div>
-  {% else %}
-  <p> You have no friends! </p>
-  {% endif %}
-    <p class="lead">
-    <a href="#" ><p></p>
-    </a>
-    <button type="button" class="btn btn-lg" data-toggle="modal" data-target="#exampleModal">Would you like to add friends?</button>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="LDI-event-form">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header" id="dialog-box-head">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="exampleModalLabel">New Event</h4>
-            </div>
-            <div class="LDI-dialog-box">
-              <div class="modal-body">
-                <form  class="form-horizontal" action="/prototypeApp/people" method="POST" >
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <label for="friends" class="col-sm-4">Friends</label>
-                    <div class="col-sm-8" id="text-box">
-                      <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
-                      <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
-                      <input id="friendids" name="friendids" type="hidden">
-                      {{ form.invited_friends }}
-                    </div>
+          <div class="LDI-dialog-box">
+            <div class="modal-body">
+              <form  class="form-horizontal" action="/prototypeApp/people" method="POST" >
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="friends" class="col-sm-4">Friends</label>
+                  <div class="col-sm-8" id="text-box">
+                    <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
+                    <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
+                    <input id="friendids" name="friendids" type="hidden">
+                    {{ form.invited_friends }}
                   </div>
-                  <!--<BR>&nbsp;<BR> -->
-                  <div class="LDI-submit-button">
-                    <input class="btn btn-sm btn-success" id="submit" type="submit" value="Add">
-                  </div>
-                </form>
-              </div> 
-            </div>           
-          </div>
+                </div>
+                <!--<BR>&nbsp;<BR> -->
+                <div class="LDI-submit-button">
+                  <input class="btn btn-sm btn-success" id="submit" type="submit" value="Add">
+                </div>
+              </form>
+            </div> 
+          </div>           
         </div>
       </div>
     </div>
+  </div>
   <!-- /.row -->
 {% endblock %}
