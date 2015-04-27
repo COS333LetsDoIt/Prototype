@@ -2,7 +2,7 @@
 {% extends "prototypeApp/collection.html" %}
 
 {% block collection-title %}
-<h2>Friends</h2>
+<h2>Invited Friends</h2>
 {% endblock collection-title %}
 {% block display %}
 <div class="col-md-4 col-sm-4 hero-feature">
@@ -10,12 +10,11 @@
      <img src={{object.profilePicture}} alt="">
       <div class="caption">
         <h3>{{object}}</h3>
-        <p><a href="{% url 'prototypeApp:remove_friend' object.id %}"> Remove Friend </a></p>
-        <p>No Additional Information</p>
+        <p>Invitation Sent</p>
     </div>
   </div>
 </div>
 {% endblock display %}
 {% block otherwise %}
-  <p> You have no friends! </p>
+  <p> You have no outstanding friend requests. </p>
 {% endblock otherwise %}

@@ -80,10 +80,17 @@ def people(request):
             friends = Person.objects.filter(name=friend_name)
             #print "found friend"
             if friends.exists():
-                request.user.person.friends.add(friends[0])
+                add_friend(request, friends[0].id)
     people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
     friends_list = request.user.person.friends.all()
-    context = {"friends_list": friends_list, "people_list": people_list}
+    pending_friends_list = request.user.person.pendingFriends.all()
+    invited_friends_list = request.user.person.invitedFriends.all()
+    context = {
+        "friends_list": friends_list, 
+        "people_list": people_list, 
+        "pending_friends_list": pending_friends_list,
+        "invited_friends_list": invited_friends_list
+    }
     return render(request, 'prototypeApp/people.html', context)
 
 
@@ -182,6 +189,19 @@ def register(request):
     context = {'state':state, 'email': email, 'username': username}
     return render(request, 'prototypeApp/register.html', context)    
 
+def add_friend(request, friend_id):
+    friend = get_object_or_404(Person, pk=friend_id)
+    if request.user.person in friend.invitedFriends.all():
+        request.user.person.friends.add(friend)
+        request.user.person.pendingFriends.remove(friend)
+    else:
+        request.user.person.invitedFriends.add(friend)
+    return HttpResponseRedirect(reverse('prototypeApp:people'));
+
+def remove_friend(request, friend_id):
+    friend = get_object_or_404(Person, pk=friend_id)
+    request.user.person.friends.remove(friend)
+    return HttpResponseRedirect(reverse('prototypeApp:people'));
 
 # after logging out, return to login
 def logout_view(request):

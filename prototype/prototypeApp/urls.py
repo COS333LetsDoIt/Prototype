@@ -22,7 +22,9 @@ urlpatterns = patterns('',
 	url(r'^logout/$', views.logout_view, name='logout'),
     url(r'^join_event/(?P<event_id>\d+)/$', views.join_event, name='join_event'),
     url(r'^leave_event/(?P<event_id>\d+)/$', views.leave_event, name='leave_event'),
-    
+    url(r'^add_friend/(?P<friend_id>\d+)/$', views.add_friend, name='add_friend'),
+    url(r'^remove_friend/(?P<friend_id>\d+)/$', views.remove_friend, name='remove_friend'),
+
     #url('^', include('django.contrib.auth.urls')),
     #(r'^accounts/login/$', 'django.contrib.auth.views.login')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

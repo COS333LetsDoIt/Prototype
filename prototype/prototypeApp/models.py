@@ -48,7 +48,7 @@ class Person(models.Model):
     user = models.OneToOneField(User, blank=True, null=True)
     profilePicture = models.URLField(max_length=100, default="http://www.clipartbest.com/cliparts/y4c/9jG/y4c9jGMTE.jpeg") 
     friends = models.ManyToManyField('self', blank=True, related_name="friends")
-    invitedFriends = models.ManyToManyField('self', blank=True, related_name="pendingFriends")
+    invitedFriends = models.ManyToManyField('self', blank=True, related_name="pendingFriends", symmetrical=False)
     events = models.ManyToManyField(Event, blank=True, related_name="members")
     invitedEvents = models.ManyToManyField(Event, blank=True, related_name="pendingMembers")
     groups = models.ManyToManyField(Group, blank=True)
