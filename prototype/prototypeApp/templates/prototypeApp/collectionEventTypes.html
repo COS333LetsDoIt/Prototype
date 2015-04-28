@@ -1,0 +1,24 @@
+{% extends "prototypeApp/collection.html" %}
+
+<!-- Need objects and numCol in context -->
+{% block collection-title %}
+  <h2> {{ event_type }} </h2>
+{% endblock collection-title %}
+{% block display %}
+<div class="col-md-2 col-sm-2">
+  <div class="thumbnail">
+    <h3>
+      {{object.name}}
+    </h3>
+    <p>
+      {{object.starttime}}-{{object.endtime}}
+    </p>              
+    <p>
+      <a class="btn" href="{% url 'prototypeApp:event' object.id %}"> {{ message }}</a>              
+    </p>
+  </div>
+</div>
+{% endblock display %}
+{% block otherwise %}
+  <p> No events are available </p>
+{% endblock otherwise %}

@@ -8,7 +8,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
   <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css
+">
 
+  <link rel="stylesheet" type="text/css" href="{% static 'prototypeApp/jquery.datetimepicker.css' %}">
+  
 
   <!-- The extra stuff for the event-form -->
   {{ form.media }}
@@ -18,7 +22,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
   <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
   <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+  <script type="text/javascript">
+    var d = new Date();
+    d.setMinutes (d.getMinutes() + 60);
+    d.setMinutes (0);
+    $('#datetimepicker_start_time').datetimepicker({
+      defaultDate: d,
+      //onChangeDateTime:  function(current_time,$input){ alert(current_time);}
+    });
+    d.setMinutes (d.getMinutes() + 60);
+    $('#datetimepicker_end_time').datetimepicker({
+      defaultDate: d,
+    });
+  </script>
+  <script type="text/javascript">
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
@@ -113,32 +133,33 @@
                   <div class="form-group">
                     <label for="event-name" class="col-sm-4">Event name:</label>
                     <div class="col-sm-8" id="text-box">
-                      {{ form.name }}
+                      <input name="name" type="text" required>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="starttime" class="col-sm-4">Start time:</label>
                     <div class="col-sm-8" id="text-box">
-                      {{ form.starttime }}
+                      <!--{{ form.starttime }}-->
+                      <input id="datetimepicker_start_time" name="starttime" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="endtime" class="col-sm-4">End time:</label>
                     <div class="col-sm-8" id="text-box">
-                      {{ form.endtime }}
+                      <input id="datetimepicker_end_time" name="endtime" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="location" class="col-sm-4">Location:</label>
                     <div class="col-sm-8" id="text-box">
-                      {{ form.location }}
+                      <input name="location" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="description" class="col-sm-4">Description:</label>
                     <div class="col-sm-8" id="text-box">
-                      {{ form.description }}
+                      <input name="description" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
@@ -146,8 +167,6 @@
                     <div class="col-sm-8" id="text-box">
                       <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                       <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
-                      <input id="friendids" name="friendids" type="hidden">
-                      {{ form.invited_friends }}
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
