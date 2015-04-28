@@ -56,6 +56,8 @@ def get_event_form(request):
             endtime = dateutil.parser.parse(endtime)
 
             if starttime < endtime:
+                new_event = form.save()
+
                 new_event.starttime = starttime
                 new_event.endtime = endtime
 
@@ -63,8 +65,8 @@ def get_event_form(request):
                     friends = Person.objects.filter(name=friend_name)
                     #print "found friend"
                     new_event.members.add(request.user.person)
-                    if friends.exists():
-                        new_event.members.add(friends[0])
+                    if friends.exists() and friends[0] not in new_event.members.all():
+                        invite_event(new_event, friends[0])
                         #friends[0].event_set.add(new_event)
                         #print "added friend to event"
                 new_event.save()
@@ -275,8 +277,14 @@ def logout_view(request):
 def join_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
      event.members.add(request.user.person)
+     event.pendingMembers.remove(request.user.person)
      event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
+
+def invite_event(event, person):
+     if person not in event.members.all():
+        event.pendingMembers.add(person)
+        event.save()
 
 #leave event
 @login_required()
