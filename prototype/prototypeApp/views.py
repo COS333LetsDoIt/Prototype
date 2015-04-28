@@ -19,6 +19,7 @@ import json
 class EventForm(ModelForm):
     class Meta:
         model = Event
+        starttime = forms.DateField(required=True, input_formats='%Y-%m-%d')
         fields = ['name','starttime','endtime', 'location', 'description']
 
 
@@ -34,13 +35,15 @@ def get_event_form(request):
         # create a form instance and populate it with data from the request:
         form = EventForm(request.POST)
         # check whether it's valid:
-        print request.POST
+        # print request.POST
+        print form.is_valid()
+        print form.errors
         if form.is_valid():
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
             new_event = form.save()
-            #print "hi"
+            print "hi"
             #print request.POST.get("friends", '').split(', ')
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
