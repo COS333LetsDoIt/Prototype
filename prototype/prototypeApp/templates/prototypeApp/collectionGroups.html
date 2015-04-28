@@ -10,9 +10,10 @@
       <img src="http://placehold.it/800x300" alt="">
       <div class="caption">
           <h3>
-            {{group.name}}
+            {{object}}
           </h3>
-          {% for person in group.person_set.all %}
+          {% for person in object.person_set.all %}
+          Friends in this group:
             {{ person}}
           {% endfor %}
           <p>

@@ -106,7 +106,7 @@
             </div>
             <div class="LDI-dialog-box">
               <div class="modal-body">
-                <form  class="form-horizontal" action="/prototypeApp/groups" method="POST" >
+                <form  class="form-horizontal" action="/prototypeApp/group" method="POST" >
                   {% csrf_token %}
 
                   <div class="form-group">
@@ -136,5 +136,5 @@
         </div>
       </div>
     </div>
-  {% include "prototypeApp/collectionGroups.html" with objects=group_lis numCol=3 %}
+  {% include "prototypeApp/collectionGroups.html" with objects=group_list numCol=3 %}
 {% endblock %}
