@@ -49,7 +49,7 @@ def get_event_form(request):
             # ...
             # redirect to a new URL:
             new_event = form.save()
-            print "hi"
+            print ("hi")
             #print request.POST.get("friends", '').split(', ')
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
