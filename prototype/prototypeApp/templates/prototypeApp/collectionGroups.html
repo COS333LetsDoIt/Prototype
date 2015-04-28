@@ -10,13 +10,11 @@
       <img src="http://placehold.it/800x300" alt="">
       <div class="caption">
           <h3>
-            {{object.name}}
+            {{object}}
           </h3>
-          <p>
-            {{object.name}}
-          </p>
-          {% for people in object.people %}
-            show people
+          {% for person in object.person_set.all %}
+          Friends in this group:
+            {{ person}}
           {% endfor %}
           <p>
             <a class="btn" href="#">Edit</a>
