@@ -51,6 +51,17 @@ def get_event_form(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
+            # new_event = form.save()
+            # #print "hi"
+            # #print request.POST.get("friends", '').split(', ')
+            # for friend_name in request.POST.get("friends", '').split(', '):
+            #     friends = Person.objects.filter(name=friend_name)
+            #     #print "found friend"
+            #     new_event.pendingMembers.add(request.user.person)
+            #     if friends.exists():
+            #         new_event.pendingMembers.add(friends[0])
+            #         #friends[0].event_set.add(new_event)
+            #         #print "added friend to event"
 
             starttime = dateutil.parser.parse(starttime)
             endtime = dateutil.parser.parse(endtime)
@@ -70,6 +81,7 @@ def get_event_form(request):
                         #friends[0].event_set.add(new_event)
                         #print "added friend to event"
                 new_event.save()
+
     # if a GET (or any other method) we'll create a blank form
     
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
