@@ -38,13 +38,13 @@ class Event(models.Model):
     endtime = models.DateTimeField('end time', default=datetime.datetime.now())
     location = models.CharField(max_length=100, default="")
     description = models.CharField(max_length=100, default="")
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
     events = models.ManyToManyField(Event, blank=True)
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Person(models.Model):

@@ -305,4 +305,23 @@ def leave_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
      event.members.remove(request.user.person)
      event.save()
-     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
+     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)))
+
+
+@login_required()
+def aGroup(request, group_id):
+    group = get_object_or_404(Group, pk=group_id)
+    if request.user.person in group.person_set.all():
+        user_in_group = True
+    else:
+        user_in_group = False
+    # print event.person_set.all()
+    context = {"group": group, "user_in_group": user_in_group}
+    return render(request, 'prototypeApp/aGroup.html', context)
+
+@login_required()
+def leave_group(request, group_id):
+     group = get_object_or_404(Group, pk=group_id)
+     group.person_set.remove(request.user.person)
+     group.save()
+     return HttpResponseRedirect(reverse('prototypeApp:aGroup', args=(group_id,)))
