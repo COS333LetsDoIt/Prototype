@@ -34,20 +34,6 @@
       console.log(tokens); 
     });
 
-    // var engine = new Bloodhound({
-    //   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
-    //   datumTokenizer: function(d) {
-    //     return Bloodhound.tokenizers.whitespace(d.value);
-    //   },
-    //   queryTokenizer: Bloodhound.tokenizers.whitespace
-    // });
-
-    // engine.initialize();
-
-    // $('#tokenfield-typeahead').tokenfield({
-    //   typeahead: [null, { source: engine.ttAdapter() }]
-    // });
-
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
       //console.log({{friends_list|safe}});
@@ -107,11 +93,10 @@
 {% block content %}
 <div class="inner cover">
   <h1 class="cover-heading">Let's Do It!</h1>
-  <p class="lead">To see what your friends are doing, click I'M FREE.</p>
   <p class="lead">To propose an event to your friends, click CREATE EVENTS</p>
   <p class="lead">
     <!--<a href="#" class="btn btn-lg btn-danger">I'M FREE</a>-->
-    <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE EVENTS</button>
+    <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE EVENT</button>
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="LDI-event-form">
         <div class="modal-dialog">
