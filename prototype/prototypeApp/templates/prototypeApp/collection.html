@@ -14,19 +14,21 @@
   {% if objects %}
     <div class="row text-center">
       {% for object in objects %}
-        {% block display %}
-        <div class="col-md-2 col-sm-2 hero-feature">
-          <div class="thumbnail">
-            <img src="http://placehold.it/800x500" alt="">
-            <div class="caption"> 
-                <h3>{{object}}</h3>
-                <p>Creator of the event?</p>
-                <p>Time of joining this event?</p>
-                <p>Display personal comments regarding this event?</p>
+        <div class = "itembox">
+          {% block display %}
+          <div class="col-md-2 col-sm-2 hero-feature">
+            <div class="thumbnail">
+              <img src="http://placehold.it/800x500" alt="">
+              <div class="caption"> 
+                  <h3>{{object}}</h3>
+                  <p>Creator of the event?</p>
+                  <p>Time of joining this event?</p>
+                  <p>Display personal comments regarding this event?</p>
+              </div>
             </div>
           </div>
+          {% endblock display %}
         </div>
-        {% endblock display %}
         {% if forloop.counter|divisibleby:numCol %}
           </div>
           <div class="row text-center">    

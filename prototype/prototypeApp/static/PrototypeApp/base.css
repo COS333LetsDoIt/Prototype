@@ -9,14 +9,14 @@ body {
 }
 
 .jumbotron {
-  background-color: darkgray;
+  background-color: rgba(50,50,50,0.7);
   padding: 10px 10px 10px 10px;
 }
 
 .collection {
-  background-color: darkgray;
+  background-color: rgba(50,50,50,0.7);
   padding: 10px;
-  color: black;
+  color: white;
 }
 .hero-spacer {
     margin-top: 50px;
@@ -63,10 +63,12 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: lightgray;
+  background-image: url("sunset.jpg");
+  opacity: 1;
+  background-color: #cccccc;
 }
 body {
-  color: black;
+  color: white;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
@@ -161,6 +163,11 @@ body {
 .mastfoot {
   color: #999; /* IE8 proofing */
   color: rgba(255,255,255,.5);
+}
+
+.itembox {
+  color: black;
+  background-color: green;
 }
 
 

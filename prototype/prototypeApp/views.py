@@ -61,7 +61,11 @@ def get_event_form(request):
                 if friends.exists():
                     new_event.pendingMembers.add(friends[0])
                     #friends[0].event_set.add(new_event)
+<<<<<<< HEAD
             #         #print "added friend to event"
+=======
+                    #print "added friend to event"
+>>>>>>> 3da87a4db78494121fd564a1cd2d7666114515c1
 
             # starttime = dateutil.parser.parse(starttime)
             # endtime = dateutil.parser.parse(endtime)
