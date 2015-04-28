@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, views, authenticate, login
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
+import dateutil.parser
 
 import json
 
@@ -20,8 +21,7 @@ import json
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        starttime = forms.DateField(required=True, input_formats='%Y-%m-%d')
-        fields = ['name','starttime','endtime', 'location', 'description']
+        fields = ['name', 'location', 'description']
 
 class GroupForm(ModelForm):
     class Meta:
@@ -44,21 +44,30 @@ def get_event_form(request):
         print (form.is_valid())
         print (form.errors)
         print (request.POST)
-        if form.is_valid():
+        starttime = request.POST.get("starttime", None)
+        endtime = request.POST.get("endtime", None)
+            
+        if form.is_valid() and starttime and endtime:
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            new_event = form.save()
-            print ("hi")
-            #print request.POST.get("friends", '').split(', ')
-            for friend_name in request.POST.get("friends", '').split(', '):
-                friends = Person.objects.filter(name=friend_name)
-                #print "found friend"
-                new_event.members.add(request.user.person)
-                if friends.exists():
-                    new_event.members.add(friends[0])
-                    #friends[0].event_set.add(new_event)
-                    #print "added friend to event"
+
+            starttime = dateutil.parser.parse(starttime)
+            endtime = dateutil.parser.parse(endtime)
+
+            if starttime < endtime:
+                new_event.starttime = starttime
+                new_event.endtime = endtime
+
+                for friend_name in request.POST.get("friends", '').split(', '):
+                    friends = Person.objects.filter(name=friend_name)
+                    #print "found friend"
+                    new_event.members.add(request.user.person)
+                    if friends.exists():
+                        new_event.members.add(friends[0])
+                        #friends[0].event_set.add(new_event)
+                        #print "added friend to event"
+                new_event.save()
     # if a GET (or any other method) we'll create a blank form
     
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})

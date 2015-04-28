@@ -30,8 +30,8 @@ from django.contrib.auth.models import User
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
-    starttime = models.DateTimeField('start time')
-    endtime = models.DateTimeField('end time')
+    starttime = models.DateTimeField('start time', default=datetime.datetime.now())
+    endtime = models.DateTimeField('end time', default=datetime.datetime.now())
     location = models.CharField(max_length=100, default="")
     description = models.CharField(max_length=100, default="")
     def __unicode__(self):

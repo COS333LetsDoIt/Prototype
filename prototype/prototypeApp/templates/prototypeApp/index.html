@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css
 ">
 
-  <link rel="stylesheet" type="text/css" href="{% static "prototypeApp/jquery.datetimepicker.css" %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'prototypeApp/jquery.datetimepicker.css' %}">
   
 
   <!-- The extra stuff for the event-form -->
@@ -24,8 +24,6 @@
   <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
-  
-  <script src="{% static "jquery.datetimepicker.js" %}"></script>
 
   <script type="text/javascript">
     var d = new Date();
@@ -169,8 +167,6 @@
                     <div class="col-sm-8" id="text-box">
                       <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                       <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
-                      <input id="friendids" name="friendids" type="hidden">
-                      {{ form.invited_friends }}
                     </div>
                   </div>
                   <!--<BR>&nbsp;<BR> -->
