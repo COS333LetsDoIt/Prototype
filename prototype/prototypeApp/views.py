@@ -63,6 +63,7 @@ def get_event_form(request):
                     #friends[0].event_set.add(new_event)
                     #print "added friend to event"
 
+
             # starttime = dateutil.parser.parse(starttime)
             # endtime = dateutil.parser.parse(endtime)
 

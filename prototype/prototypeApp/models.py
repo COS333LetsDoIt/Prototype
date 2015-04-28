@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 from django.shortcuts import render
 from django import forms
 from django.db import models
@@ -52,7 +56,7 @@ class Person(models.Model):
     events = models.ManyToManyField(Event, blank=True, related_name="members")
     invitedEvents = models.ManyToManyField(Event, blank=True, related_name="pendingMembers")
     groups = models.ManyToManyField(Group, blank=True)
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
