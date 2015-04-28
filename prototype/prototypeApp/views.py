@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_protect
@@ -38,7 +39,7 @@ def get_event_form(request):
         # create a form instance and populate it with data from the request:
         form = EventForm(request.POST)
         # check whether it's valid:
-        print request.POST
+        print (request.POST)
         if form.is_valid():
             # process the data in form.cleaned_data as required
             # ...
@@ -66,7 +67,7 @@ def get_group_form(request):
         # create a form instance and populate it with data from the request:
         form = GroupForm(request.POST)
         # check whether it's valid:
-        print request.POST
+        #print (request.POST)
         if form.is_valid():
             # process the data in form.cleaned_data as required
             # ...
@@ -90,10 +91,23 @@ def get_group_form(request):
 # Create your views here.
 @login_required()
 def index(request):
-    event_list = Event.objects.order_by('starttime')
+    event_list = request.user.person.events.all()
+    invited_event_list = request.user.person.invitedEvents.all()
+
+    # works out events of friends of friends
+    friend_set = request.user.person.friends.all()
+    friend_event_list = set()
+    for friend in friend_set:
+        friend_events = friend.events.all();
+        for event in friend_events:
+            if event not in event_list and event not in invited_event_list:
+                friend_event_list.add(event)
+
+    print (friend_event_list)
+
     event_form = get_event_form(request)
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-    context = {"event_list": event_list, 'form': event_form, "friends_list": friends_list}
+    context = {"event_list": event_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
 # Create your views here.
