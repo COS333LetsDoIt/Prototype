@@ -21,6 +21,10 @@ class EventForm(ModelForm):
         model = Event
         fields = ['name','starttime','endtime', 'location', 'description']
 
+class GroupForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name']
 
 #starttime
 #endtime
@@ -55,6 +59,34 @@ def get_event_form(request):
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
     return form
 
+# taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
+def get_group_form(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = GroupForm(request.POST)
+        # check whether it's valid:
+        print request.POST
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            new_group = form.save()
+            #print "hi"
+            #print request.POST.get("friends", '').split(', ')
+            for friend_name in request.POST.get("friends", '').split(', '):
+                friends = Person.objects.filter(name=friend_name)
+                #print "found friend"
+                new_group.person_set.add(request.user.person)
+                if friends.exists():
+                    new_group.person_set.add(friends[0])
+                    #friends[0].event_set.add(new_event)
+                    #print "added friend to event"
+    # if a GET (or any other method) we'll create a blank form
+    
+    form = GroupForm()
+    return form
+
 # Create your views here.
 @login_required()
 def index(request):
@@ -67,8 +99,10 @@ def index(request):
 # Create your views here.
 @login_required()
 def group(request):
-    group_list = Group.objects.order_by('name')
-    context = {"group_list": group_list}
+    group_list = request.user.person.groups.all()
+    group_form = get_group_form(request)
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+    context = {"group_list": group_list, 'form': group_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/group.html', context)
 
 # Create your views here.
