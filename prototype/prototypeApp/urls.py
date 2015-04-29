@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^add_friend/(?P<friend_id>\d+)/$', views.add_friend, name='add_friend'),
     url(r'^remove_friend/(?P<friend_id>\d+)/$', views.remove_friend, name='remove_friend'),
 
+    url(r'^sdk$', views.sdk, name='sdk'),
+
     #url('^', include('django.contrib.auth.urls')),
     #(r'^accounts/login/$', 'django.contrib.auth.views.login')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
