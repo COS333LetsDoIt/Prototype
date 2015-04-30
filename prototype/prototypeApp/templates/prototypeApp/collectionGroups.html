@@ -12,10 +12,14 @@
           <h3>
             {{object}}
           </h3>
-          {% for person in object.person_set.all %}
-          Friends in this group:
-            {{ person}}
-          {% endfor %}
+          {% if object.person_set.all %}
+            Friends in this group:
+            {% for person in object.person_set.all %}
+            {{ person }}
+            {% endfor %}
+          {% else %}
+            No friends are in group.
+          {% endif %}
           <p>
             <a class="btn" href="{% url 'prototypeApp:aGroup' object.id %}"> Details / Leave</a>
           </p>

@@ -324,4 +324,9 @@ def leave_group(request, group_id):
      group = get_object_or_404(Group, pk=group_id)
      group.person_set.remove(request.user.person)
      group.save()
-     return HttpResponseRedirect(reverse('prototypeApp:aGroup', args=(group_id,)))
+
+     if len(group.person_set.all()) == 0:
+        group.delete()
+        return HttpResponseRedirect(reverse('prototypeApp:group'))
+     else:
+        return HttpResponseRedirect(reverse('prototypeApp:group'))
