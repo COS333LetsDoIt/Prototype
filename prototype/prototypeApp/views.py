@@ -13,7 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, views, authenticate, login
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
-#import dateutil.parser
+# pip install python-dateutil
+import dateutil.parser
 
 import json
 
@@ -51,37 +52,49 @@ def get_event_form(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            new_event = form.save()
+            # new_event = form.save()
             #print "hi"
             #print request.POST.get("friends", '').split(', ')
-            for friend_name in request.POST.get("friends", '').split(', '):
-                friends = Person.objects.filter(name=friend_name)
-                #print "found friend"
-                new_event.members.add(request.user.person)
-                if friends.exists():
-                    new_event.pendingMembers.add(friends[0])
-                    #friends[0].event_set.add(new_event)
-                    #print "added friend to event"
+            # for friend_name in request.POST.get("friends", '').split(', '):
+            #     friends = Person.objects.filter(name=friend_name)
+            #     #print "found friend"
+            #     new_event.members.add(request.user.person)
+            #     if friends.exists():
+            #         new_event.pendingMembers.add(friends[0])
+            #         #friends[0].event_set.add(new_event)
+            #         #print "added friend to event"
 
 
-            # starttime = dateutil.parser.parse(starttime)
-            # endtime = dateutil.parser.parse(endtime)
+            starttime = dateutil.parser.parse(starttime)
+            endtime = dateutil.parser.parse(endtime)
 
-            # if starttime < endtime:
-            #     new_event = form.save()
+            if starttime < endtime:
+                new_event = form.save()
 
-            #     new_event.starttime = starttime
-            #     new_event.endtime = endtime
+                new_event.starttime = starttime
+                new_event.endtime = endtime
 
-            #     for friend_name in request.POST.get("friends", '').split(', '):
-            #         friends = Person.objects.filter(name=friend_name)
-            #         #print "found friend"
-            #         new_event.members.add(request.user.person)
-            #         if friends.exists() and friends[0] not in new_event.members.all():
-            #             invite_event(new_event, friends[0])
-            #             #friends[0].event_set.add(new_event)
-            #             #print "added friend to event"
-            #     new_event.save()
+                # add friends to events
+                for friend_name in request.POST.get("friends", '').split(', '):
+                    friends = Person.objects.filter(name=friend_name)
+                    #print "found friend"
+                    new_event.members.add(request.user.person)
+                    if friends.exists() and friends[0] not in new_event.members.all():
+                        invite_event(new_event, friends[0])
+                        #friends[0].event_set.add(new_event)
+                        #print "added friend to event"
+
+
+
+                # add groups to events
+                for group_name in request.POST.get("groups", '').split(','):
+                    group = Group.objects.filter(name=group_name)[0] # what if there is multiple groups with same name?
+                    
+                    for person in group.person_set.all():
+                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                            invite_event(new_event, person)
+
+                new_event.save()
 
     # if a GET (or any other method) we'll create a blank form
     
@@ -101,16 +114,15 @@ def get_group_form(request):
             # ...
             # redirect to a new URL:
             new_group = form.save()
-            #print "hi"
-            #print request.POST.get("friends", '').split(', ')
+
+            # add friends to groups
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
                 #print "found friend"
                 new_group.person_set.add(request.user.person)
                 if friends.exists():
                     new_group.person_set.add(friends[0])
-                    #friends[0].event_set.add(new_event)
-                    #print "added friend to event"
+
     # if a GET (or any other method) we'll create a blank form
     
     form = GroupForm()
@@ -135,7 +147,8 @@ def index(request):
 
     event_form = get_event_form(request)
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-    context = {"event_list": event_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
+    groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+    context = {"event_list": event_list, 'groups_list': groups_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
 # Create your views here.
@@ -143,6 +156,9 @@ def index(request):
 def group(request):
     group_list = request.user.person.groups.all()
     group_form = get_group_form(request)
+
+    source = []
+
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     context = {"group_list": group_list, 'form': group_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/group.html', context)
@@ -307,7 +323,6 @@ def leave_event(request, event_id):
      event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)))
 
-
 @login_required()
 def aGroup(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
@@ -330,3 +345,9 @@ def leave_group(request, group_id):
         return HttpResponseRedirect(reverse('prototypeApp:group'))
      else:
         return HttpResponseRedirect(reverse('prototypeApp:group'))
+
+     return HttpResponseRedirect(reverse('prototypeApp:aGroup', args=(group_id,)))
+
+# def sdk(request):
+#     context = {}
+#     return render(request, 'prototypeApp/sdk.html', context)
