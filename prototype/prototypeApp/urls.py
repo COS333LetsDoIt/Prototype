@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^add_friend/(?P<friend_id>\d+)/$', views.add_friend, name='add_friend'),
     url(r'^remove_friend/(?P<friend_id>\d+)/$', views.remove_friend, name='remove_friend'),
 
+    url(r'^profile$', views.profile, name='profile'),
+
     #url(r'^sdk$', views.sdk, name='sdk'),
 
     #url('^', include('django.contrib.auth.urls')),

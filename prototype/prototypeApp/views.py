@@ -185,6 +185,10 @@ def people(request):
     }
     return render(request, 'prototypeApp/people.html', context)
 
+def profile(request):
+    user = request.user;
+    context = {"user": user}
+    return render(request, 'prototypeApp/profile.html', context)
 
 def signup(request):
     event_list = Event.objects.order_by('starttime')
