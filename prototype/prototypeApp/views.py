@@ -88,11 +88,13 @@ def get_event_form(request):
 
                 # add groups to events
                 for group_name in request.POST.get("groups", '').split(','):
-                    group = Group.objects.filter(name=group_name)[0] # what if there is multiple groups with same name?
+                    groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
                     
-                    for person in group.person_set.all():
-                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-                            invite_event(new_event, person)
+                    if groups.exists():
+                        group = groups[0]
+                        for person in group.person_set.all():
+                            if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                                invite_event(new_event, person)
 
                 new_event.save()
 
@@ -173,7 +175,10 @@ def people(request):
             #print "found friend"
             if friends.exists():
                 add_friend(request, friends[0].id)
-    people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+
+    people = Person.objects.exclude(id=request.user.person.id)
+    # people.delete(request.user.person)
+    people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in people])
     friends_list = request.user.person.friends.all()
     pending_friends_list = request.user.person.pendingFriends.all()
     invited_friends_list = request.user.person.invitedFriends.all()
