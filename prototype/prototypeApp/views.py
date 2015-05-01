@@ -136,7 +136,9 @@ def index(request):
 
     event_form = get_event_form(request)
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-    context = {"event_list": event_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
+    groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+    token_source_list = 
+    context = {"event_list": event_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list, "groups_list": groups_list}
     return render(request, 'prototypeApp/index.html', context)
 
 # Create your views here.

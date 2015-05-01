@@ -41,7 +41,8 @@
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
-        source: {{friends_list|safe}},
+        source_friends : {{friends_list|safe}}, 
+        source_groups  : {{groups_list|safe}},
         delay: 100
       },
       showAutocompleteOnFocus: true
@@ -65,11 +66,16 @@
       });
     });
 
-    // Prevents non-existing tokens (doesn't work with bloodhound_tokens)
+    // Prevents non-existing tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      var available_tokens = {{friends_list|safe}};
+      var available_friend_tokens = {{friends_list|safe}};
+      var available_group_tokens = {{groups_list|safe}};
       var exists = true;
-      $.each(available_tokens, function(index, token) {
+      $.each(available_friend_tokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              exists = false;
+      });
+      $.each(available_group_tokens, function(index, token) {
           if (token.value === event.attrs.value)
               exists = false;
       });
