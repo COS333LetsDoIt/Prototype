@@ -38,6 +38,7 @@
     });
   </script>
   <script type="text/javascript">
+
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
@@ -84,6 +85,53 @@
       //console.log("Attrs:")
       //console.log(event.attrs)
     })
+
+//----------------------------------------------------------------------------------
+
+    //Tokenizers for inviting groups when creating events
+    $('#tokenfield_groups').tokenfield({
+      autocomplete: {
+        source: {{groups_list|safe}},
+        delay: 100
+      },
+      showAutocompleteOnFocus: true
+    })
+
+    $('#tokenfield_groups').tokenfield().on('tokenfield:createdtoken', function(e) {
+      var tokens = $(this).tokenfield('getTokens');
+      $('#groupids').val( JSON.stringify(tokens));
+      console.log(tokens); 
+    });
+
+    // Prevents duplicate tokens
+    $('#tokenfield_groups').on('tokenfield:createtoken', function (event) {
+      //console.log({{friends_list|safe}});
+      var existingTokens = $(this).tokenfield('getTokens');
+      //console.log(existingTokens);
+
+      $.each(existingTokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              event.preventDefault();
+      });
+    });
+
+    // Prevents non-existing tokens (doesn't work with bloodhound_tokens)
+    $('#tokenfield_groups').on('tokenfield:createtoken', function (event) {
+      var available_tokens = {{groups_list|safe}};
+      var exists = true;
+      $.each(available_tokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              exists = false;
+      });
+      if(exists === true)
+          event.preventDefault();
+      //console.log("Attrs:")
+      //console.log(event.attrs)
+    })
+
+
+//------------------------------------------------------------------------------------
+
 
     // Disables the submission of form upon pressing "Enter"
     $(document).ready(function() {
@@ -174,6 +222,16 @@
                       <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
                     </div>
                   </div>
+
+                  <div class="form-group">
+                    <label for="friends" class="col-sm-4">Groups</label>
+                    <div class="col-sm-8" id="text-box">
+                      <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
+                      <input type="text" name="groups" class="form-control" id="tokenfield_groups" placeholder="Type in the names of your groups"/>
+                    </div>
+                  </div>
+
+
                   <!--<BR>&nbsp;<BR> -->
                   <div class="LDI-submit-button">
                     <input class="btn btn-sm btn-success" id="submit" type="submit" value="Create ">
