@@ -262,8 +262,8 @@ def register(request):
             state = "That user is already taken"
         elif User.objects.filter(email=email).exists():
             state = "That email is already registered"
-        elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
-                state = "That email address is not valid"
+        # elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
+        #         state = "That email address is not valid"
         else:       
             user = None
             user = User.objects.create_user(username, email, password)
