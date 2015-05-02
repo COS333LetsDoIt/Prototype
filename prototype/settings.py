@@ -13,7 +13,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 STATIC_URL = '/static/'
-
+LOGIN_URL = 'login/'
+# In future iterations, make different redirect/error pages.
+LOGIN_REDIRECT_URL = 'login/'
+LOGIN_ERROR_URL    = 'login/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -25,6 +28,15 @@ SECRET_KEY = 'lchjyz-rt38ukt67qe%v4%*f4p1s%rqavtc3z&z50-xavlnnq%'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+
+# run pip install django-social-auth if necessary
+FACEBOOK_APP_ID='357630157777770'
+FACEBOOK_API_SECRET='a4868abb9b426a24d3c0923ebd6a99b2'
+AUTHENTICATION_BACKENDS = (
+    #'social_auth.backends.facebook.FacebookBackend',
+    #'social_auth.backends.OpenIDBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 ALLOWED_HOSTS = []
 
@@ -39,7 +51,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prototypeApp',
-    'datetimewidget'
+    #'social_auth',
+    #'datetimewidget'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,6 +77,7 @@ WSGI_APPLICATION = 'prototype.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
@@ -84,5 +98,3 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
-STATIC_URL = '/static/'

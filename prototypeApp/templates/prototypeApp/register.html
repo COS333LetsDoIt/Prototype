@@ -8,20 +8,20 @@
 
 {% block title %} Register For Let's Do It! {% endblock %}
 {% block content %}
-  <form class="form-signin" action="{% url 'prototypeApp:register' %}" method="post">
+  <form class="form-signin colorscheme" action="{% url 'prototypeApp:register' %}" method="post" color="white">
     {% csrf_token %}
     
     <h2 class="colorscheme">Sign up now!</h2>
     <h5 class="form-signin-heading colorscheme"> {{state}} </h5>
     
-    <label for="email" class="sr-only">Email</label>
+    <label for="email" class="sr-only colorscheme">Email</label>
     <input type="email" name="email" class="form-control" value="{{email}}" placeholder="abc@letsdoit.com" required autofocus>
     
 
-    <label for="username" class="sr-only">User name</label>
+    <label for="username" class="sr-only colorscheme">User name</label>
     <input type="username" name="username" class="form-control" value="{{username}}" placeholder="User name" required autofocus>
     
-    <label for="password" value="{{password}}"class="sr-only">Password</label>
+    <label for="password" value="{{password}}"class="sr-only colorscheme">Password</label>
     <input type="password" name="password" class="form-control" placeholder="Password" required>
     
     <div class="checkbox">
