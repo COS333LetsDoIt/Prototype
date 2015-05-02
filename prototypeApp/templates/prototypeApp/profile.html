@@ -8,45 +8,6 @@
   <link href = "{% static "prototypeApp/profile.css" %}" rel = "stylesheet">
 {% endblock %}
 
-<!-- {% block customjs %}
-<script>
-$(document).ready(function() {
-    var panels = $('.user-infos');
-    var panelsButton = $('.dropdown-user');
-    panels.hide();
-
-    //Click dropdown
-    panelsButton.click(function() {
-        //get data-for attribute
-        var dataFor = $(this).attr('data-for');
-        var idFor = $(dataFor);
-
-        //current button
-        var currentButton = $(this);
-        idFor.slideToggle(400, function() {
-            //Completed slidetoggle
-            if(idFor.is(':visible'))
-            {
-                currentButton.html('<i class="glyphicon glyphicon-chevron-up text-muted"></i>');
-            }
-            else
-            {
-                currentButton.html('<i class="glyphicon glyphicon-chevron-down text-muted"></i>');
-            }
-        })
-    });
-
-
-    $('[data-toggle="tooltip"]').tooltip();
-
-    $('button').click(function(e) {
-        e.preventDefault();
-        alert("This is a demo.\n :-)");
-    });
-});
-</script>
-{% endblock %} -->
-
 {% block header %}
 <li>
   <a href="/prototypeApp/">Home</a>
@@ -62,10 +23,6 @@ $(document).ready(function() {
 {% block content %}
 <div class="container">
   <div class="row">
-  <!-- <div class="col-md-5  toppad  pull-right col-md-offset-3 ">
-       <A href="edit.html" >Edit Profile</A>
-   <br>
-  </div> -->
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
       <div class="panel panel-info">
         <div class="panel-heading">
@@ -74,19 +31,6 @@ $(document).ready(function() {
         <div class="panel-body">
           <div class="row">
             <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle"> </div>
-            
-            <!--<div class="col-xs-10 col-sm-10 hidden-md hidden-lg"> <br>
-              <dl>
-                <dt>DEPARTMENT:</dt>
-                <dd>Administrator</dd>
-                <dt>HIRE DATE</dt>
-                <dd>11/12/2013</dd>
-                <dt>DATE OF BIRTH</dt>
-                   <dd>11/12/2013</dd>
-                <dt>GENDER</dt>
-                <dd>Male</dd>
-              </dl>
-            </div>-->
             <div class=" col-md-9 col-lg-9 "> 
               <table class="table table-user-information">
                 <tbody>
@@ -97,17 +41,14 @@ $(document).ready(function() {
                   <tr>
                   <tr>
                     <td>Email:</td>
-                    <!-- <td><a href="mailto:info@support.com">info@support.com</a></td> -->
                     <td>{{user.email}}</td>
                   </tr>
-                       
                   </tr>
-                 
                 </tbody>
               </table>
               
               <a href="#" class="btn btn-primary">Upload profile picture?</a>
-              <a href="#" class="btn btn-primary">Change password</a>
+              <a href="/prototypeApp/changePassword" class="btn btn-primary">Change Password</a>
             </div>
           </div>
         </div>
@@ -123,8 +64,5 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-
-
-  <hr>
 {% endblock %}
 

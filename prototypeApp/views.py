@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 # pip install python-dateutil
 import dateutil.parser
-
+import re
 import json
 
 
@@ -88,11 +88,13 @@ def get_event_form(request):
 
                 # add groups to events
                 for group_name in request.POST.get("groups", '').split(','):
-                    group = Group.objects.filter(name=group_name)[0] # what if there is multiple groups with same name?
+                    groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
                     
-                    for person in group.person_set.all():
-                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-                            invite_event(new_event, person)
+                    if groups.exists():
+                        group = groups[0]
+                        for person in group.person_set.all():
+                            if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                                invite_event(new_event, person)
 
                 new_event.save()
 
@@ -173,7 +175,10 @@ def people(request):
             #print "found friend"
             if friends.exists():
                 add_friend(request, friends[0].id)
-    people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in Person.objects.order_by('name')])
+
+    people = Person.objects.exclude(id=request.user.person.id)
+    # people.delete(request.user.person)
+    people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in people])
     friends_list = request.user.person.friends.all()
     pending_friends_list = request.user.person.pendingFriends.all()
     invited_friends_list = request.user.person.invitedFriends.all()
@@ -240,8 +245,7 @@ def login_view(request):
             state = "The username or password you entered is incorrect."
     #print "Page outputted"
     context = {'state':state, 'username': username, 'next': next}
-    return render(request, 'prototypeApp/login.html', context)    
-
+    return render(request, 'prototypeApp/login.html', context)
 
 # new user registration
 def register(request):
@@ -263,6 +267,8 @@ def register(request):
             state = "That user is already taken"
         elif User.objects.filter(email=email).exists():
             state = "That email is already registered"
+        # elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
+        #         state = "That email address is not valid"
         else:       
             user = None
             user = User.objects.create_user(username, email, password)
