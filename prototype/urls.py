@@ -12,7 +12,8 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     #url(r'', include('social_auth.urls')),
-    url(r'^/', include('prototypeApp.urls', namespace='prototypeApp')),
+    url(r'^prototypeApp/', include('prototypeApp.urls', namespace='prototypeApp')),
+    url(r'^', include('prototypeApp.urls', namespace='prototypeApp')),
     # url(r'^index$', views.index, name='index'),
     # url(r'^$', views.index, name='index'),
 
