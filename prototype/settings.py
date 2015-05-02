@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-STATIC_URL = 'static/'
+STATIC_URL = '/prototypeApp/static/'
 LOGIN_URL = 'login/'
 # In future iterations, make different redirect/error pages.
 LOGIN_REDIRECT_URL = 'login/'
