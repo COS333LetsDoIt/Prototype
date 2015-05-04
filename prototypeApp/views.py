@@ -177,7 +177,10 @@ def people(request):
                 add_friend(request, friends[0].id)
 
     people = Person.objects.exclude(id=request.user.person.id)
-    # people.delete(request.user.person)
+    people = people.exclude(id__in=request.user.person.friends.all())
+    people = people.exclude(id__in=request.user.person.invitedFriends.all())
+    people = people.exclude(id__in=request.user.person.pendingFriends.all())
+
     people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in people])
     friends_list = request.user.person.friends.all()
     pending_friends_list = request.user.person.pendingFriends.all()
