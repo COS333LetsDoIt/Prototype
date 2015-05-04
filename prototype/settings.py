@@ -83,22 +83,15 @@ ROOT_URLCONF = 'prototype.urls'
 WSGI_APPLICATION = 'prototype.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-# # Parse database configuration from $DATABASE_URL
-# DATABASES['default'] =  dj_database_url.confcig()
 
-# # Enable Connection Pooling
-# DATABASES['default']['ENGINE'] = 'django_postgrespool'
-
-DATABASES = {
-    'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         #'ENGINE': 'django.db.backends.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -116,3 +109,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
+
+# Database
+# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+
+# Parse database configuration from $DATABASE_URL
+DATABASES['default'] =  dj_database_url.confcig()
+
+# Enable Connection Pooling
+DATABASES['default']['ENGINE'] = 'django_postgrespool'
