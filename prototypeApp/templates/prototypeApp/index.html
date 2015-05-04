@@ -51,7 +51,7 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
+      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
@@ -99,7 +99,7 @@
     $('#tokenfield_groups').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#groupids').val( JSON.stringify(tokens));
-      console.log(tokens); 
+      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
