@@ -83,8 +83,6 @@ ROOT_URLCONF = 'prototype.urls'
 WSGI_APPLICATION = 'prototype.wsgi.application'
 
 
-
-
 # DATABASES = {
 #     'default': {
 #         #'ENGINE': 'django.db.backends.sqlite3',
