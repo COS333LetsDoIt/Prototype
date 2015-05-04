@@ -42,8 +42,7 @@
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
-        source_friends : {{friends_list|safe}}, 
-        source_groups  : {{groups_list|safe}},
+        source : {{friends_list|safe}}, 
         delay: 100
       },
       showAutocompleteOnFocus: true
@@ -52,7 +51,7 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
+      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
@@ -100,7 +99,7 @@
     $('#tokenfield_groups').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#groupids').val( JSON.stringify(tokens));
-      console.log(tokens); 
+      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
