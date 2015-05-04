@@ -5,6 +5,7 @@
 
 {% block custominclude %}
   <link href = "{% static "prototypeApp/event.css" %}" rel = "stylesheet">
+  <link href = "{% static "prototypeApp/base.css" %}" rel = "stylesheet">  
 {% endblock %}
 
 {% block header %}
@@ -27,8 +28,9 @@
       <p>Location: {{event.location|default:"TBD"}}</p>
       <p>Description: {{event.description|default:"TBD"}}</p> -->
 
+      <p>
       {% if user_in_group %}
-      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_group' group.id %}">Leave Group</a></p>
+      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_group' group.id %}" onclick="return confirm('Are you sure you want to leave this group?')" >Leave Group</a></p>
       {% endif %}
 
       </p>
