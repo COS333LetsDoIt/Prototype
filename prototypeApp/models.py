@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django import forms
 from django.db import models
 from django.forms import ModelForm
+from django.contrib.contenttypes.management import update_all_contenttypes
+
 
 #from datetimewidget.widgets import DateTimeWidget
 import datetime
@@ -30,7 +32,7 @@ from django.contrib.auth.models import User
 #    name = forms.CharField(label='Event name', max_length=100)
  #   starttime = forms.DateTimeField(initial=datetime.datetime.now(), label='Date and Time')
  #   endtime = forms.DateTimeField(initial=datetime.datetime.now(), label='Date and Time')
-
+# update_all_contenttypes() 
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
