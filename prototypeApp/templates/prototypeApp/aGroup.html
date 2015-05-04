@@ -1,0 +1,39 @@
+{% extends "prototypeApp/base.html" %}
+{% load staticfiles %}
+
+{% block title %} {{event}} {% endblock %}
+
+{% block custominclude %}
+  <link href = "{% static "prototypeApp/event.css" %}" rel = "stylesheet">
+{% endblock %}
+
+{% block header %}
+<li>
+  <a href="/prototypeApp/">Home</a>
+</li>
+<li>
+  <a href="/prototypeApp/group">Groups</a>
+</li>
+<li>
+  <a href="/prototypeApp/people">Friends</a>
+</li>
+{% endblock %}   
+
+{% block content %}
+  <!-- Jumbotron Header -->
+  <div class="jumbotron hero-spacer">
+      <h1>{{group}}</h1>
+<!--       <p>{{event.starttime}} -- {{event.endtime}}</p>
+      <p>Location: {{event.location|default:"TBD"}}</p>
+      <p>Description: {{event.description|default:"TBD"}}</p> -->
+
+      {% if user_in_group %}
+      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_group' group.id %}">Leave Group</a></p>
+      {% endif %}
+
+      </p>
+  </div>
+
+  <hr>
+  {% include "prototypeApp/collectionAGroup.html" with objects=group.person_set.all numCol=6 %}
+{% endblock %}

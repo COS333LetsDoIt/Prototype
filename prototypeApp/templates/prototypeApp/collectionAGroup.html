@@ -1,0 +1,20 @@
+<!-- Need objects and numCol in context -->
+{% extends "prototypeApp/collection.html" %}
+
+{% block collection-title %}
+  <h3>Friends in this group</h3>
+{% endblock collection-title %}
+{% block display %}
+<div class="col-md-2 col-sm-2 hero-feature">
+  <div class="thumbnail">
+     <img src={{object.profilePicture}} alt="">
+      <div class="caption">
+        <h3>{{object}}</h3>
+        <!--<p>No Additional Information</p>-->
+    </div>
+  </div>
+</div>
+{% endblock display %}
+{% block otherwise %}
+  <p> No friends are currently in this group. </p>
+{% endblock otherwise %}
