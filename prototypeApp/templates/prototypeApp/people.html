@@ -92,15 +92,7 @@
 {% endblock %}
 
 {% block header %}
-  <li>
-    <a href="/prototypeApp/">Home</a>
-  </li>
-  <li>
-    <a href="/prototypeApp/group">Groups</a></li>
-  </li>
-  <li class="active">
-    <a href="/prototypeApp/people">Friends</a>
-  </li>
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="friends"%}
 {% endblock %}
 
 {% block content %}
@@ -108,7 +100,23 @@
     <h1 class="cover-heading">Let's Do It!</h1>
   </div>
 
+<!-- <<<<<<< HEAD
   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#exampleModal">Add Friends!</button>
+======= -->
+  {% if pending_friend_count != 0 %}
+    {% include "prototypeApp/collectionPendingFriends.html" with objects=pending_friends_list numCol=6%}
+  {% endif %}
+
+  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=6%}
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">See which friends haven't responded yet.</button>
+  <div id="demo" class="collapse">
+    {% include "prototypeApp/collectionInvitedFriends.html" with objects=invited_friends_list numCol=6%}
+  </div>
+  <p class="lead">
+  <a href="#" ><p></p>
+  </a>
+  <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">Would you like to add friends?</button>
+
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="LDI-event-form">
       <div class="modal-dialog">

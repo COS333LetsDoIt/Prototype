@@ -78,15 +78,7 @@
 {% endblock %}
 
 {% block header %}
-  <li>
-    <a href="/prototypeApp/">Home</a>
-  </li>
-  <li class="active">
-    <a href="/prototypeApp/group">Groups</a></li>
-  </li>
-  <li>
-    <a href="/prototypeApp/people">Friends</a>
-  </li>
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="groups"%}
 {% endblock %}
 
 {% block content %}
@@ -95,7 +87,7 @@
   </div>
 
   <!-- Page Features -->
-  <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">CREATE GROUP</button>
+  <button type="button" class="btn btn-lg btn-info" data-toggle="modal" data-target="#exampleModal">CREATE GROUP</button>
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="LDI-event-form">
         <div class="modal-dialog">
@@ -137,6 +129,7 @@
       </div>
     </div>
   </div>
+  <p>
 <!-- </div> -->
   {% include "prototypeApp/collectionGroups.html" with objects=group_list numCol=3 %}
 {% endblock %}

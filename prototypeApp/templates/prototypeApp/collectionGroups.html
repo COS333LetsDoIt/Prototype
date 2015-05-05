@@ -13,7 +13,6 @@
             {{object}}
           </h3>
           {% if object.person_set.all %}
-            Friends in this group:
             {% for person in object.person_set.all %}
             {{ person }}
             {% endfor %}
