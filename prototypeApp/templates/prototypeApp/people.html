@@ -149,18 +149,5 @@
       </div>
     </div>
   </div>
-  <BR>&nbsp;<BR>
 
-
-  {% include "prototypeApp/collectionPendingFriends.html" with objects=pending_friends_list numCol=6%}
-  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=6%}
-  <button type="button" class="btn btn-sm btn-info" data-toggle="collapse" data-target="#demo">See Which Friends Haven't Responded Yet.</button>
-  <div id="demo" class="collapse">
-    {% include "prototypeApp/collectionInvitedFriends.html" with objects=invited_friends_list numCol=6%}
-  </div>
-  <p class="lead">
-  <a href="#" ><p></p>
-  </a>
-
-  <!-- /.row -->
 {% endblock %}
