@@ -1,26 +1,32 @@
 {% extends "prototypeApp/base.html" %}
 {% load staticfiles %}
 
+{% block title %} {{event}} {% endblock %}
+
 {% block custominclude %}
   <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
   <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
 
-
   <!-- The extra stuff for the event-form -->
   {{ form.media }}
 {% endblock %}
+
 {% block customjs %}
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
   <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
   <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+  <script type="text/javascript">
+
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
       autocomplete: {
-        source: {{people_list|safe}},
+        source : {{friends_list|safe}}, 
         delay: 100
       },
       showAutocompleteOnFocus: true
@@ -29,22 +35,8 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
+      // console.log(tokens); 
     });
-
-    // var engine = new Bloodhound({
-    //   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
-    //   datumTokenizer: function(d) {
-    //     return Bloodhound.tokenizers.whitespace(d.value);
-    //   },
-    //   queryTokenizer: Bloodhound.tokenizers.whitespace
-    // });
-
-    // engine.initialize();
-
-    // $('#tokenfield-typeahead').tokenfield({
-    //   typeahead: [null, { source: engine.ttAdapter() }]
-    // });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
@@ -58,11 +50,11 @@
       });
     });
 
-    // Prevents non-existing tokens (doesn't work with bloodhound_tokens)
+    // Prevents non-existing tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      var available_tokens = {{people_list|safe}};
+      var available_friend_tokens = {{friends_list|safe}};
       var exists = true;
-      $.each(available_tokens, function(index, token) {
+      $.each(available_friend_tokens, function(index, token) {
           if (token.value === event.attrs.value)
               exists = false;
       });
@@ -71,6 +63,9 @@
       //console.log("Attrs:")
       //console.log(event.attrs)
     })
+
+//------------------------------------------------------------------------------------
+
 
     // Disables the submission of form upon pressing "Enter"
     $(document).ready(function() {
@@ -92,38 +87,28 @@
 {% endblock %}
 
 {% block header %}
-{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="friends"%}
-{% endblock %}
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location=""%}
+{% endblock %}   
 
 {% block content %}
-  <div class="inner cover">
-    <h1 class="cover-heading">Let's Do It!</h1>
-  </div>
+  <!-- Jumbotron Header -->
+  <div class="jumbotron hero-spacer">
+      <h1>{{group}}</h1>
 
-  {% if pending_friend_count != 0 %}
-    {% include "prototypeApp/collectionPendingFriends.html" with objects=pending_friends_list numCol=6%}
-  {% endif %}
+      <p><p>
 
-  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=6%}
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">See which friends haven't responded yet.</button>
-  <div id="demo" class="collapse">
-    {% include "prototypeApp/collectionInvitedFriends.html" with objects=invited_friends_list numCol=6%}
-  </div>
-  <p class="lead">
-  <a href="#" ><p></p>
-  </a>
-  <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#exampleModal">Would you like to add friends?</button>
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Add friends to group</button>
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="LDI-event-form">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header" id="dialog-box-head">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="exampleModalLabel">Add Friends</h4>
+            <h4 class="modal-title" id="exampleModalLabel">Add friends to group</h4>
           </div>
           <div class="LDI-dialog-box">
             <div class="modal-body">
-              <form  class="form-horizontal" action="/prototypeApp/people" method="POST" >
+              <form  class="form-horizontal" action="{% url 'prototypeApp:aGroup' group.id %}" method="POST" >
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="friends" class="col-sm-4">Friends</label>
@@ -131,7 +116,7 @@
                     <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                     <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
                     <input id="friendids" name="friendids" type="hidden">
-                    {{ form.invited_friends }}
+                    <!-- {{ form.invited_friends }} -->
                   </div>
                 </div>
                 <!--<BR>&nbsp;<BR> -->
@@ -145,5 +130,13 @@
       </div>
     </div>
   </div>
-  <!-- /.row -->
+
+
+        {% if user_in_group %}
+      <p><a class="btn btn-danger" href = "{% url 'prototypeApp:leave_group' group.id %}" onclick="return confirm('Are you sure you want to leave this group?')" >Leave Group</a></p>
+      {% endif %}
+
+
+  <hr>
+  {% include "prototypeApp/collectionAGroup.html" with objects=group.person_set.all numCol=6 %}
 {% endblock %}

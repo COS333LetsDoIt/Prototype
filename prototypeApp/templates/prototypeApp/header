@@ -1,0 +1,15 @@
+{% block header %}
+  <li class="active">
+    <a href="/prototypeApp/">Home
+    {% if pending_event_count != 0 %}
+    <b> (+{{pending_event_count}}) </b>
+    {% endif %}
+    </a>
+  </li>
+  <li>
+    <a href="/prototypeApp/group">Groups</a></li>
+  </li>
+  <li>
+    <a href="/prototypeApp/people">Friends</a>
+  </li>
+{% endblock %}
