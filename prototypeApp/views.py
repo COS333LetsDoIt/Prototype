@@ -19,6 +19,10 @@ import re
 import json
 
 
+################################################################################
+# Forms 
+################################################################################
+
 class EventForm(ModelForm):
     class Meta:
         model = Event
@@ -28,11 +32,6 @@ class GroupForm(ModelForm):
     class Meta:
         model = Group
         fields = ['name']
-
-#starttime
-#endtime
-#friends
-#groups
 
 # taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
 def get_event_form(request):
@@ -130,7 +129,10 @@ def get_group_form(request):
     form = GroupForm()
     return form
 
-# Create your views here.
+################################################################################
+# Index page
+################################################################################
+
 @login_required()
 def index(request):
     event_list = request.user.person.events.all()
@@ -153,7 +155,48 @@ def index(request):
     context = {"event_list": event_list, 'groups_list': groups_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/index.html', context)
 
-# Create your views here.
+################################################################################
+# Events
+################################################################################
+
+@login_required()
+def event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    if request.user.person in event.members.all():
+        user_in_event = True
+    else:
+        user_in_event = False
+    # print event.person_set.all()
+    context = {"event": event, "user_in_event": user_in_event}
+    return render(request, 'prototypeApp/event.html', context)
+
+# join event
+@login_required()
+def join_event(request, event_id):
+     event = get_object_or_404(Event, pk=event_id)
+     event.members.add(request.user.person)
+     event.pendingMembers.remove(request.user.person)
+     event.save()
+     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
+
+def invite_event(event, person):
+     if person not in event.members.all():
+        event.pendingMembers.add(person)
+        event.save()
+
+@login_required()
+def leave_event(request, event_id):
+     event = get_object_or_404(Event, pk=event_id)
+     event.members.remove(request.user.person)
+     event.save()
+     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)))
+
+
+
+################################################################################
+# Groups
+################################################################################
+
 @login_required()
 def group(request):
     group_list = request.user.person.groups.all()
@@ -164,6 +207,45 @@ def group(request):
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     context = {"group_list": group_list, 'form': group_form, "friends_list": friends_list}
     return render(request, 'prototypeApp/group.html', context)
+
+@login_required()
+def aGroup(request, group_id):
+    group = get_object_or_404(Group, pk=group_id)
+
+    if request.method == 'POST':
+        for friend_name in request.POST.get("friends", '').split(', '):
+            friends = Person.objects.filter(name=friend_name)
+            #print "found friend"
+            if friends.exists():
+                add_friend(request, friends[0].id)
+
+    if request.user.person in group.person_set.all():
+        user_in_group = True
+    else:
+        user_in_group = False
+    # print event.person_set.all()
+    context = {"group": group, "user_in_group": user_in_group}
+    return render(request, 'prototypeApp/aGroup.html', context)
+
+@login_required()
+def leave_group(request, group_id):
+     group = get_object_or_404(Group, pk=group_id)
+     group.person_set.remove(request.user.person)
+     group.save()
+
+     if len(group.person_set.all()) == 0:
+        group.delete()
+        return HttpResponseRedirect(reverse('prototypeApp:group'))
+     else:
+        return HttpResponseRedirect(reverse('prototypeApp:group'))
+
+     return HttpResponseRedirect(reverse('prototypeApp:aGroup', args=(group_id,)))
+
+
+
+################################################################################
+# Friends
+################################################################################
 
 # Create your views here.
 @login_required()
@@ -193,26 +275,26 @@ def people(request):
     }
     return render(request, 'prototypeApp/people.html', context)
 
-def profile(request):
-    user = request.user;
-    context = {"user": user}
-    return render(request, 'prototypeApp/profile.html', context)
-
-def signup(request):
-    event_list = Event.objects.order_by('starttime')
-    context = {"event_list": event_list}
-    return render(request, 'prototypeApp/index.html', context)
-
-@login_required()
-def event(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    if request.user.person in event.members.all():
-        user_in_event = True
+def add_friend(request, friend_id):
+    friend = get_object_or_404(Person, pk=friend_id)
+    if request.user.person in friend.invitedFriends.all():
+        request.user.person.friends.add(friend)
+        request.user.person.pendingFriends.remove(friend)
     else:
-        user_in_event = False
-    # print event.person_set.all()
-    context = {"event": event, "user_in_event": user_in_event}
-    return render(request, 'prototypeApp/event.html', context)
+        request.user.person.invitedFriends.add(friend)
+    return HttpResponseRedirect(reverse('prototypeApp:people'));
+
+def remove_friend(request, friend_id):
+    friend = get_object_or_404(Person, pk=friend_id)
+    request.user.person.friends.remove(friend)
+    return HttpResponseRedirect(reverse('prototypeApp:people'));
+
+
+
+
+################################################################################
+# User oprations (Sign-in / Register / Change user profile)
+################################################################################
 
 # signin page
 def login_view(request):
@@ -249,6 +331,13 @@ def login_view(request):
     #print "Page outputted"
     context = {'state':state, 'username': username, 'next': next}
     return render(request, 'prototypeApp/login.html', context)
+
+
+def profile(request):
+    user = request.user;
+    context = {"user": user}
+    return render(request, 'prototypeApp/profile.html', context)
+
 
 # new user registration
 def register(request):
@@ -294,72 +383,21 @@ def register(request):
     context = {'state':state, 'email': email, 'username': username}
     return render(request, 'prototypeApp/register.html', context)    
 
-def add_friend(request, friend_id):
-    friend = get_object_or_404(Person, pk=friend_id)
-    if request.user.person in friend.invitedFriends.all():
-        request.user.person.friends.add(friend)
-        request.user.person.pendingFriends.remove(friend)
-    else:
-        request.user.person.invitedFriends.add(friend)
-    return HttpResponseRedirect(reverse('prototypeApp:people'));
-
-def remove_friend(request, friend_id):
-    friend = get_object_or_404(Person, pk=friend_id)
-    request.user.person.friends.remove(friend)
-    return HttpResponseRedirect(reverse('prototypeApp:people'));
-
 # after logging out, return to login
 def logout_view(request):
     logout(request)
     #print "User logged off"
     return render(request, 'prototypeApp/login.html', {})
 
-# join event
-@login_required()
-def join_event(request, event_id):
-     event = get_object_or_404(Event, pk=event_id)
-     event.members.add(request.user.person)
-     event.pendingMembers.remove(request.user.person)
-     event.save()
-     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
 
-def invite_event(event, person):
-     if person not in event.members.all():
-        event.pendingMembers.add(person)
-        event.save()
+# What what is this??
+# def signup(request):
+#     event_list = Event.objects.order_by('starttime')
+#     context = {"event_list": event_list}
+#     return render(request, 'prototypeApp/index.html', context)
 
-#leave event
-@login_required()
-def leave_event(request, event_id):
-     event = get_object_or_404(Event, pk=event_id)
-     event.members.remove(request.user.person)
-     event.save()
-     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)))
 
-@login_required()
-def aGroup(request, group_id):
-    group = get_object_or_404(Group, pk=group_id)
-    if request.user.person in group.person_set.all():
-        user_in_group = True
-    else:
-        user_in_group = False
-    # print event.person_set.all()
-    context = {"group": group, "user_in_group": user_in_group}
-    return render(request, 'prototypeApp/aGroup.html', context)
 
-@login_required()
-def leave_group(request, group_id):
-     group = get_object_or_404(Group, pk=group_id)
-     group.person_set.remove(request.user.person)
-     group.save()
-
-     if len(group.person_set.all()) == 0:
-        group.delete()
-        return HttpResponseRedirect(reverse('prototypeApp:group'))
-     else:
-        return HttpResponseRedirect(reverse('prototypeApp:group'))
-
-     return HttpResponseRedirect(reverse('prototypeApp:aGroup', args=(group_id,)))
 
 # def sdk(request):
 #     context = {}
