@@ -179,6 +179,13 @@ def join_event(request, event_id):
      event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
 
+@login_required()
+def decline_event(request, event_id):
+     event = get_object_or_404(Event, pk=event_id)
+     event.pendingMembers.remove(request.user.person)
+     event.save()
+     return HttpResponseRedirect(reverse('prototypeApp:index'));
+
 def invite_event(event, person):
      if person not in event.members.all():
         event.pendingMembers.add(person)
@@ -289,6 +296,13 @@ def add_friend(request, friend_id):
         request.user.person.pendingFriends.remove(friend)
     else:
         request.user.person.invitedFriends.add(friend)
+    return HttpResponseRedirect(reverse('prototypeApp:people'));
+
+def decline_friend(request, friend_id):
+    friend = get_object_or_404(Person, pk=friend_id)
+    if request.user.person in friend.invitedFriends.all():
+        request.user.person.pendingFriends.remove(friend)
+        
     return HttpResponseRedirect(reverse('prototypeApp:people'));
 
 def remove_friend(request, friend_id):
