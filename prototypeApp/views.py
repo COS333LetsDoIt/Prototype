@@ -434,7 +434,7 @@ def register(request):
 
                 login(request, user)
                 #print "User logged in"
-                return HttpResponseRedirect(reverse('prototypeApp:index'))
+                return HttpResponseRedirect(reverse('prototypeApp:people'))
             else:
                 state = "Something is wrong with your input. Try again."
         
