@@ -4,8 +4,86 @@
 {% block title %} {{event}} {% endblock %}
 
 {% block custominclude %}
-  <link href = "{% static "prototypeApp/event.css" %}" rel = "stylesheet">
-  <link href = "{% static "prototypeApp/base.css" %}" rel = "stylesheet">  
+  <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.min.css">
+  <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+
+  <!-- The extra stuff for the event-form -->
+  {{ form.media }}
+{% endblock %}
+
+{% block customjs %}
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+  <script src="{% static "prototypeApp/twitter-typeahead.js" %}"></script>
+  <script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+  <script type="text/javascript">
+
+    // Tokenizers for inviting friends when creating events
+    $('#tokenfield').tokenfield({
+      autocomplete: {
+        source : {{friends_list|safe}}, 
+        delay: 100
+      },
+      showAutocompleteOnFocus: true
+    })
+
+    $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
+      var tokens = $(this).tokenfield('getTokens');
+      $('#friendids').val( JSON.stringify(tokens));
+      // console.log(tokens); 
+    });
+
+    // Prevents duplicate tokens
+    $('#tokenfield').on('tokenfield:createtoken', function (event) {
+      //console.log({{friends_list|safe}});
+      var existingTokens = $(this).tokenfield('getTokens');
+      //console.log(existingTokens);
+
+      $.each(existingTokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              event.preventDefault();
+      });
+    });
+
+    // Prevents non-existing tokens
+    $('#tokenfield').on('tokenfield:createtoken', function (event) {
+      var available_friend_tokens = {{friends_list|safe}};
+      var exists = true;
+      $.each(available_friend_tokens, function(index, token) {
+          if (token.value === event.attrs.value)
+              exists = false;
+      });
+      if(exists === true)
+          event.preventDefault();
+      //console.log("Attrs:")
+      //console.log(event.attrs)
+    })
+
+//------------------------------------------------------------------------------------
+
+
+    // Disables the submission of form upon pressing "Enter"
+    $(document).ready(function() {
+      $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+      });
+    });
+
+  </script>
+  <style type="text/css">
+  .ui-front {
+      z-index: 1000;
+  }
+
+  </style>
 {% endblock %}
 
 {% block header %}
@@ -24,17 +102,48 @@
   <!-- Jumbotron Header -->
   <div class="jumbotron hero-spacer">
       <h1>{{group}}</h1>
-<!--       <p>{{event.starttime}} -- {{event.endtime}}</p>
-      <p>Location: {{event.location|default:"TBD"}}</p>
-      <p>Description: {{event.description|default:"TBD"}}</p> -->
 
-      <p>
-      {% if user_in_group %}
-      <p><a class="btn btn-primary btn-large" href = "{% url 'prototypeApp:leave_group' group.id %}" onclick="return confirm('Are you sure you want to leave this group?')" >Leave Group</a></p>
+      <p><p>
+
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Add friends to group</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="LDI-event-form">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" id="dialog-box-head">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">Add friends to group</h4>
+          </div>
+          <div class="LDI-dialog-box">
+            <div class="modal-body">
+              <form  class="form-horizontal" action="{% url 'prototypeApp:aGroup' group.id %}" method="POST" >
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="friends" class="col-sm-4">Friends</label>
+                  <div class="col-sm-8" id="text-box">
+                    <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
+                    <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
+                    <input id="friendids" name="friendids" type="hidden">
+                    <!-- {{ form.invited_friends }} -->
+                  </div>
+                </div>
+                <!--<BR>&nbsp;<BR> -->
+                <div class="LDI-submit-button">
+                  <input class="btn btn-sm btn-success" id="submit" type="submit" value="Add">
+                </div>
+              </form>
+            </div> 
+          </div>           
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+        {% if user_in_group %}
+      <p><a class="btn btn-danger" href = "{% url 'prototypeApp:leave_group' group.id %}" onclick="return confirm('Are you sure you want to leave this group?')" >Leave Group</a></p>
       {% endif %}
 
-      </p>
-  </div>
 
   <hr>
   {% include "prototypeApp/collectionAGroup.html" with objects=group.person_set.all numCol=6 %}

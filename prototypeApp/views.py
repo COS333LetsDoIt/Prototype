@@ -212,19 +212,26 @@ def group(request):
 def aGroup(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
 
+    # add friend to existing group
     if request.method == 'POST':
         for friend_name in request.POST.get("friends", '').split(', '):
             friends = Person.objects.filter(name=friend_name)
             #print "found friend"
             if friends.exists():
-                add_friend(request, friends[0].id)
+                group.person_set.add(friends[0])
 
     if request.user.person in group.person_set.all():
         user_in_group = True
     else:
         user_in_group = False
     # print event.person_set.all()
-    context = {"group": group, "user_in_group": user_in_group}
+
+    # get list of friends who are not in group yet
+    friends = request.user.person.friends.all()
+    friends = friends.exclude(id__in=group.person_set.all())
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in friends])
+
+    context = {"group": group, "user_in_group": user_in_group, "friends_list": friends_list}
     return render(request, 'prototypeApp/aGroup.html', context)
 
 @login_required()
