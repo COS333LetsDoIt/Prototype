@@ -1,0 +1,32 @@
+  {% if location == "index" %}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+    <a href="/prototypeApp/">Home
+      {% if event_count != 0 %}
+      <b><font color="yellow"> (+{{event_count}}) </font></b>
+        {% endif %}
+    </a>
+  </li>
+
+ {% if location == "groups" %}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+    <a href="/prototypeApp/group">Groups</a></li>
+  </li>
+  <li>
+
+  {% if location == "friends" %}
+    <li class="active">
+  {% else %}
+    <li>
+  {% endif %}
+    <a href="/prototypeApp/people">Friends
+      {% if friend_count != 0 %}
+    <b><font color="yellow"> (+{{friend_count}}) </font></b>
+    {% endif %}
+    </a>
+  </li>

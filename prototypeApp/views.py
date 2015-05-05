@@ -147,12 +147,24 @@ def index(request):
             if event not in event_list and event not in invited_event_list:
                 friend_event_list.add(event)
 
-    print (friend_event_list)
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
 
     event_form = get_event_form(request)
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
-    context = {"event_list": event_list, 'groups_list': groups_list, 'invited_event_list': invited_event_list, 'friend_event_list': friend_event_list, 'form': event_form, "friends_list": friends_list}
+    
+    context = {"event_list": event_list, 
+    'groups_list': groups_list, 
+    'invited_event_list': invited_event_list, 
+    'friend_event_list': friend_event_list, 
+    'form': event_form, 
+    'friends_list': friends_list,
+    'pending_event_count': pending_event_count,
+    'pending_friend_count': pending_friend_count}
+
     return render(request, 'prototypeApp/index.html', context)
 
 ################################################################################
@@ -166,8 +178,14 @@ def event(request, event_id):
         user_in_event = True
     else:
         user_in_event = False
+
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
     # print event.person_set.all()
-    context = {"event": event, "user_in_event": user_in_event}
+    context = {"event": event, "user_in_event": user_in_event, 'pending_event_count': pending_event_count,
+    'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/event.html', context)
 
 # join event
@@ -209,15 +227,27 @@ def group(request):
     group_list = request.user.person.groups.all()
     group_form = get_group_form(request)
 
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
     source = []
 
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-    context = {"group_list": group_list, 'form': group_form, "friends_list": friends_list}
+    context = {"group_list": group_list,
+    'form': group_form,
+    "friends_list": friends_list,
+    'pending_event_count': pending_event_count,
+    'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/group.html', context)
 
 @login_required()
 def aGroup(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
+
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
 
     # add friend to existing group
     if request.method == 'POST':
@@ -238,7 +268,8 @@ def aGroup(request, group_id):
     friends = friends.exclude(id__in=group.person_set.all())
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in friends])
 
-    context = {"group": group, "user_in_group": user_in_group, "friends_list": friends_list}
+    context = {"group": group, "user_in_group": user_in_group, "friends_list": friends_list,'pending_event_count': pending_event_count,
+    'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/aGroup.html', context)
 
 @login_required()
@@ -277,6 +308,10 @@ def people(request):
     people = people.exclude(id__in=request.user.person.invitedFriends.all())
     people = people.exclude(id__in=request.user.person.pendingFriends.all())
 
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
     people_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in people])
     friends_list = request.user.person.friends.all()
     pending_friends_list = request.user.person.pendingFriends.all()
@@ -285,7 +320,9 @@ def people(request):
         "friends_list": friends_list, 
         "people_list": people_list, 
         "pending_friends_list": pending_friends_list,
-        "invited_friends_list": invited_friends_list
+        "invited_friends_list": invited_friends_list,
+        "pending_friend_count": pending_friend_count,
+        "pending_event_count": pending_event_count
     }
     return render(request, 'prototypeApp/people.html', context)
 

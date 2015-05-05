@@ -152,16 +152,11 @@
 {% endblock %}
 
 {% block header %}
-  <li class="active">
-    <a href="/prototypeApp/">Home</a>
-  </li>
-  <li>
-    <a href="/prototypeApp/group">Groups</a></li>
-  </li>
-  <li>
-    <a href="/prototypeApp/people">Friends</a>
-  </li>
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="index" %}
 {% endblock %}
+
+
+
 {% block content %}
 <div class="inner cover">
   <h1 class="cover-heading">Let's Do It!</h1>
@@ -244,8 +239,13 @@
     </div>
   </p>
 </div>
+
+{% if pending_event_count != 0 %}
+{% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=invited_event_list event_type="Pending invitations" message="Details/Join"%}
+{% endif %}
+
 {% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=event_list event_type="Your Events" message="Details/Leave"%}
-{% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=invited_event_list event_type="Pending Invitations" message="Details/Join"%}
+
 {% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=friend_event_list event_type="Friend's Events" message="Details/Join"%}
 {% endblock %}
 
