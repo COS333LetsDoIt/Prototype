@@ -5,7 +5,7 @@
   <h2> {{ event_type }} </h2>
 {% endblock collection-title %}
 {% block display %}
-<div class="col-md-2 col-sm-2">
+<div class="col-md-2 col-sm-2" href="{% url 'prototypeApp:event' object.id %}">
   <div class="thumbnail">
     <h3>
       {{object.name}}
@@ -14,7 +14,7 @@
       {{object.starttime}}-{{object.endtime}}
     </p>              
     <p>
-      <a class="btn" href="{% url 'prototypeApp:event' object.id %}"> {{ message }}</a>              
+      <a class="btn btn-primary" href="{% url 'prototypeApp:event' object.id %}"> {{ message }}</a>              
     </p>
   </div>
 </div>
