@@ -8,6 +8,8 @@ from django.db import models
 from django.forms import ModelForm
 #from datetimewidget.widgets import DateTimeWidget
 import datetime
+from datetime import timedelta
+import pytz
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, views, authenticate, login
@@ -177,6 +179,9 @@ def get_group_form(request):
 
 @login_required()
 def index(request):
+    # Gets rid of old events globally
+    full_event_cleanup()
+
     event_list = request.user.person.events.all()
     invited_event_list = request.user.person.invitedEvents.all()
 
@@ -489,6 +494,21 @@ def logout_view(request):
     logout(request)
     #print "User logged off"
     return render(request, 'prototypeApp/login.html', {})
+
+def full_event_cleanup():
+    cutoff = datetime.datetime.now()
+    delta = timedelta(days=2)
+    cutoff = cutoff - delta
+    cutoff = pytz.utc.localize(cutoff)
+
+    for event in Event.objects.all():
+        current = event.endtime
+        #current = pytz.utc.localize(current)
+        # current.replace(tzinfo=None)
+        # cutoff.replace(tzinfo=None)
+
+        if (current <= cutoff):
+            event.delete()
 
 
 # What what is this??
