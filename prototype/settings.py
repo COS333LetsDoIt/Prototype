@@ -23,6 +23,20 @@ STATIC_URL = '/prototypeApp/static/'
 #     os.path.join(BASE_DIR, 'static'),
 # )
 
+#####################################################################
+# Location for uploaded photos
+#######################################################################
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = 'prototypeApp/media/'
+
+#########################################################################
+
+
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 LOGIN_URL = 'login/'
@@ -63,6 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prototypeApp',
+    'imagekit'
     #'social_auth',
     #'datetimewidget'
 )
