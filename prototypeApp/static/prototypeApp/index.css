@@ -174,3 +174,7 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 
 .ui-autocomplete { position: absolute; cursor: default;z-index:10030 !important;}  
+
+.inline-button {
+  display:inline-block;
+}
