@@ -5,12 +5,12 @@
 <h2>Friends</h2>
 {% endblock collection-title %}
 {% block display %}
-<div class="col-md-2 col-sm-2 hero-feature">
+<div class="col-md-3 col-sm-3 hero-feature">
   <div class="thumbnail">
      <img src="media/{{ object.profilePicture.imagefile }}" alt="">
       <div class="caption">
         <h3>{{object}}</h3>
-        <p><a class="btn btn-danger btn-responsive" href="{% url 'prototypeApp:remove_friend' object.id %}" onclick="return confirm('Are you sure you want to unfriend {{object}}?')"> Remove Friend </a></p>
+        <p><a class="btn btn-danger btn-responsive" href="{% url 'prototypeApp:remove_friend' object.id %}" onclick="return confirm('Are you sure you want to unfriend {{object}}?')"> Unfriend </a></p>
         <!--<p>No Additional Information</p>-->
     </div>
   </div>

@@ -241,12 +241,13 @@
 </div>
 
 {% if pending_event_count != 0 %}
-{% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=invited_event_list event_type="Pending invitations" message="Details / Join"%}
+
+{% include "prototypeApp/collectionEventTypes.html" with numCol=3 objects=invited_event_list event_type="Pending invitations" message="Details/Join"%}
 {% endif %}
 
-{% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=event_list event_type="Your Events" message="Details / Leave"%}
+{% include "prototypeApp/collectionEventTypes.html" with numCol=3 objects=event_list event_type="Your Events" message="Details/Leave"%}
 
-{% include "prototypeApp/collectionEventTypes.html" with numCol=6 objects=friend_event_list event_type="Friend's Events" message="Details / Join"%}
+{% include "prototypeApp/collectionEventTypes.html" with numCol=3 objects=friend_event_list event_type="Friend's Events" message="Details/Join"%}
 {% endblock %}
 
 

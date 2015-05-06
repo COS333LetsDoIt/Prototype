@@ -20,10 +20,10 @@
       <p>Description: {{event.description|default:"TBD"}}</p>
 
       {% if user_in_event %}
-      <p><a class="btn btn-danger btn-large" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
+      <p><a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
       {% else %}
-      <p><a class="btn btn-success btn-large" href = "{% url 'prototypeApp:join_event' event.id %}">Join</a>
-      <a class="btn btn-danger btn-large" href = "{% url 'prototypeApp:decline_event' event.id %}">Decline</a>
+      <p><a class="btn btn-success btn-large btn-responsive" href = "{% url 'prototypeApp:join_event' event.id %}">Join</a>
+      <a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:decline_event' event.id %}">Decline</a>
       </p>
       {% endif %}
 
@@ -31,7 +31,7 @@
   </div>
 
   <hr>
-  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.members.all numCol=6 header="People in this event"%}
-  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.pendingMembers.all numCol=6 header="People invited to this event"%}
+  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.members.all numCol=4 header="People in this event"%}
+  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.pendingMembers.all numCol=4 header="People invited to this event"%}
 {% endblock %}
 

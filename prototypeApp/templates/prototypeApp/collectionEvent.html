@@ -5,7 +5,7 @@
   <h2>Events</h2>
 {% endblock collection-title %}
 {% block display %}
-<div class="col-md-2 col-sm-2">
+<div class="col-md-4 col-sm-4">
   <div class="thumbnail itembox">
     <h3>
       {{object.name}}
@@ -14,7 +14,7 @@
       {{object.starttime}}-{{object.endtime}}
     </p>              
     <p>
-      <a class="btn" href="{% url 'prototypeApp:event' object.id %}">Details/Join</a>              
+      <a class="btn btn-responsive" href="{% url 'prototypeApp:event' object.id %}">Details/Join</a>              
     </p>
   </div>
 </div>
