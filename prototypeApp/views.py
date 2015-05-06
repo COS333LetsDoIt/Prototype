@@ -2,7 +2,7 @@ from __future__ import print_function
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_protect
-from prototypeApp.models import Person, Group, Event
+from prototypeApp.models import Person, Group, Event, Image
 from django import forms
 from django.db import models
 from django.forms import ModelForm
@@ -18,6 +18,15 @@ import dateutil.parser
 import re
 import json
 
+## imports for photo manipulation ##
+# from PIL import Image as Img
+# from io import StringIO
+# from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from imagekit.forms import ProcessedImageField
+from imagekit.processors import ResizeToFill
+import PIL
+
 
 ################################################################################
 # Forms 
@@ -32,6 +41,39 @@ class GroupForm(ModelForm):
     class Meta:
         model = Group
         fields = ['name']
+
+# class Thumbnail(ImageSpec):
+#     processors = [ResizeToFill(100,100)]
+#     format = 'JPEG'
+#     options = {'quality':60}
+
+class ImageForm(forms.Form):
+    imagefile = forms.ImageField(
+        label='Select a file',
+    )
+    # imagefile = ProcessedImageField(spec_id='prototypeApp:image:imagefile',
+    #     processors=[ResizeToFill(100,100)],
+    #     format='JPEG',
+    #     options={'quality':60})
+
+# class ImageForm(ModelForm):
+#     class Meta:
+#         model = Image
+
+def get_image_form(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            newImage = Image(imagefile = request.FILES['imagefile'])
+            newImage.save()
+            request.user.person.profilePicture = newImage
+            request.user.person.save()
+            # source_file = request.FILES['imagefile']
+            # image_generator = Thumbnail(source=source_file)
+            
+
+    form = ImageForm()
+    return form
 
 # taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
 def get_event_form(request):
@@ -390,10 +432,11 @@ def login_view(request):
     context = {'state':state, 'username': username, 'next': next}
     return render(request, 'prototypeApp/login.html', context)
 
-
+@login_required()
 def profile(request):
     user = request.user;
-    context = {"user": user}
+    image_form = get_image_form(request)
+    context = {"user": user, "form": image_form}
     return render(request, 'prototypeApp/profile.html', context)
 
 

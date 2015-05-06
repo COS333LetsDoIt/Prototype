@@ -24,7 +24,21 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, STATIC_URL),
 )
 
-# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+#####################################################################
+# Location for uploaded photos
+#######################################################################
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = 'prototypeApp/media/'
+
+#########################################################################
+
+
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 LOGIN_URL = 'login/'
 # In future iterations, make different redirect/error pages.
@@ -64,6 +78,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prototypeApp',
+    'imagekit'
     #'social_auth',
     #'datetimewidget'
 )
