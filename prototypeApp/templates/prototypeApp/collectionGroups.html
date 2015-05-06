@@ -14,13 +14,13 @@
           </h3>
           {% if object.person_set.all %}
             {% for person in object.person_set.all %}
-            {{ person }}
+            {{ person }},
             {% endfor %}
           {% else %}
             No friends are in group.
           {% endif %}
           <p> <p>
-            <a class="btn btn-primary" href="{% url 'prototypeApp:aGroup' object.id %}"> Details / Leave</a>
+            <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:aGroup' object.id %}"> Details / Leave</a>
           </p>
       </div>
   </div>
