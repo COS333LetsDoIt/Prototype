@@ -1,6 +1,5 @@
 {% extends "prototypeApp/base.html" %}
 {% load staticfiles %}
-
 {% block custominclude %}
   <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
@@ -136,13 +135,13 @@
 
 
   {% if pending_friend_count != 0 %}
-    {% include "prototypeApp/collectionPendingFriends.html" with objects=pending_friends_list numCol=6%}
+    {% include "prototypeApp/collectionPendingFriends.html" with objects=pending_friends_list numCol=4%}
   {% endif %}
 
-  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=6%}
+  {% include "prototypeApp/collectionFriends.html" with objects=friends_list numCol=4%}
   <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo">See which friends haven't responded yet.</button>
   <div id="demo" class="collapse">
-    {% include "prototypeApp/collectionInvitedFriends.html" with objects=invited_friends_list numCol=6%}
+    {% include "prototypeApp/collectionInvitedFriends.html" with objects=invited_friends_list numCol=4%}
   </div>
   <p class="lead">
   <a href="#" ><p></p>
