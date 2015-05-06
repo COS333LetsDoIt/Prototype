@@ -15,10 +15,10 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 print(BASE_DIR)
-STATIC_URL = 'prototypeApp/static/'
+# STATIC_URL = 'prototypeApp/static/'
 # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, STATIC_URL),

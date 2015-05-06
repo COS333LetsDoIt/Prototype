@@ -19,13 +19,13 @@ import re
 import json
 
 ## imports for photo manipulation ##
-# from PIL import Image as Img
-# from io import StringIO
-# from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image as Img
+from io import StringIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from imagekit.forms import ProcessedImageField
-from imagekit.processors import ResizeToFill
-import PIL
+# from imagekit.forms import ProcessedImageField
+# from imagekit.processors import ResizeToFill
+# import PIL
 
 
 ################################################################################

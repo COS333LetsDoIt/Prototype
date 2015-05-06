@@ -19,14 +19,16 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 
 
-## imports for photo manipulation ##
-# from PIL import Image as Img
-# from io import StringIO
-# from django.core.files.uploadedfile import InMemoryUploadedFile
-from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFill
+# imports for photo manipulation ##
+from PIL import Image as Img
+import StringIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from django_resized import ResizedImageField
+
+# from imagekit.models import ProcessedImageField
+# from imagekit.processors import ResizeToFill
+
+# from django_resized import ResizedImageField
 # Create your models here.
 
 #class Event(models.Model):
@@ -43,23 +45,23 @@ from django_resized import ResizedImageField
 
 
 class Image(models.Model):
-    imagefile = ResizedImageField(max_width=100, max_height=100, upload_to='images')
-    # imagefile = models.ImageField(upload_to='images', )
+    # imagefile = ResizedImageField(max_width=100, max_height=100, upload_to='images')
+    imagefile = models.ImageField(upload_to='images', )
     # imageFile = ProcessedImageField(upload_to='images',
     #     processors=[ResizeToFill(100,100)],
     #     format='JPEG',
     #     options={'quality':60})
 
-    ## formats photo before saving
-    # def save(self, *args, **kwargs):
-    #     if self.imagefile:
-    #         image = Img.open(StringIO(self.imagefile.read()))
-    #         image.thumbnail((200,200), Img.ANTIALIAS)
-    #         output = StringIO()
-    #         image.save(output, format='JPEG', quality=75)
-    #         output.seek(0)
-    #         self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
-    #     super(Mymodel, self).save(*args, **kwargs)
+    # formats photo before saving
+    def save(self, *args, **kwargs):
+        if self.imagefile:
+            image = Img.open(StringIO.StringIO(self.imagefile.read()))
+            image.thumbnail((100,100), Img.ANTIALIAS)
+            output = StringIO.StringIO()
+            image.save(output, format='JPEG', quality=75)
+            output.seek(0)
+            self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
+        super(Image, self).save(*args, **kwargs)
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
