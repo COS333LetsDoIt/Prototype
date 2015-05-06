@@ -41,9 +41,9 @@ def get_event_form(request):
         form = EventForm(request.POST)
         # check whether it's valid:
         # print request.POST
-        print (form.is_valid())
-        print (form.errors)
-        print (request.POST)
+        #print (form.is_valid())
+        #print (form.errors)
+        #print (request.POST)
         starttime = request.POST.get("starttime", None)
         endtime = request.POST.get("endtime", None)
             

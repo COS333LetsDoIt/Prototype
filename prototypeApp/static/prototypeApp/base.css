@@ -63,7 +63,7 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-image: "http://www.hdwallpapers.in/walls/thailand_beach_sunset-wide.jpg";
+  background-image: url("http://www.hdwallpapers.in/walls/thailand_beach_sunset-wide.jpg");
   opacity: 1;
   background-color: #cccccc;
 }
