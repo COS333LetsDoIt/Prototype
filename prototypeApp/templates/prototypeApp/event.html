@@ -31,6 +31,7 @@
   </div>
 
   <hr>
-  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.members.all numCol=6 %}
+  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.members.all numCol=6 header="People in this event"%}
+  {% include "prototypeApp/collectionFriendsInEvent.html" with objects=event.pendingMembers.all numCol=6 header="People invited to this event"%}
 {% endblock %}
 
