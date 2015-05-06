@@ -30,7 +30,7 @@
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle"> </div>
+            <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="media/{{ user.person.profilePicture.imagefile }}" class="img-circle"> </div>
             <div class=" col-md-9 col-lg-9 "> 
               <table class="table table-user-information">
                 <tbody>
@@ -46,9 +46,35 @@
                   </tr>
                 </tbody>
               </table>
-              
-              <a href="#" class="btn btn-primary">Upload profile picture?</a>
-              <a href="/prototypeApp/password_change" class="btn btn-primary">Change Password</a>
+              <!-- <a href="#" class="btn btn-primary">Upload profile picture?</a> -->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Upload Profile Picture</button>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="LDI-event-form">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header" id="dialog-box-head">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="exampleModalLabel">Upload Profile Picture</h4>
+                        </div>
+                        <div class="LDI-dialog-box">
+                          <div class="modal-body">
+                            <form class="form-horizontal" action="{% url "prototypeApp:profile" %} " method="post" enctype="multipart/form-data">
+                              {% csrf_token %}
+                              <p>{{ form.non_field_errors }}</p>
+                              <p>{{ form.imagefile.label_tag }} {{ form.imagefile.help_text }}</p>
+                              <p>
+                              {{ form.imagefile.errors }}
+                              {{ form.imagefile }}
+                              </p>
+                              <p><input type="submit" value="Upload" /></p>
+                          </form>
+                          </div> 
+                        </div>           
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <a href="/prototypeApp/changePassword" class="btn btn-primary">Change Password</a>
             </div>
           </div>
         </div>
@@ -59,7 +85,6 @@
                         <a data-original-title="Remove this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
                     </span>
                 </div> -->
-        
       </div>
     </div>
   </div>
