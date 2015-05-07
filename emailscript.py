@@ -26,7 +26,7 @@ import dateutil.parser
 import re
 import json
 
-import prototypeApp.views
+import prototypeApp.views as views
 
 ## imports for photo manipulation ##
 from PIL import Image as Img
@@ -51,7 +51,6 @@ def main():
 		event_list = Event.objects.all()
 		
 		for event in event_list:
-			print(event.name)
 			if (inSendInterval(event) and (not event.reminded)):
 				# Send emails to confirmed participants in the event
 				person_list = event.members.all()
@@ -61,22 +60,22 @@ def main():
 						"\nDescription: " + event.description    + 
 						"\nLocation: "    + event.location       + 
 						"\nTime: "        + str(event.starttime) + " to " + str(event.endtime), 
-					recepient_list, fail_silently=True)
+					'letsdoit.noresponse@gmail.com', recepient_list, fail_silently=True)
 
 				# suggest event to high priority invitees
 				person_list = event.pendingMembers.all()
 				recepient_list = []
-				for (person in person_list):
+				for person in person_list:
 					dictionary = views.calculateScore(person.user, event)
 					if dictionary['score'] > priority_cutoff:
 						recepient_list.append(person.user.email)
 
 				subj = "Lot's of Friends going to: " + event.name + " in 30 minutes!"
-				msg  = "Lot's of Friends going to: " + event.name + " in 30 minutes!" +
+				msg  = ("Lot's of Friends going to: " + event.name + " in 30 minutes!" +
 					   "\nDescription: " + event.description      + 
 					   "\nLocation: "    + event.location         + 
-					   "\nTime: "        + str(event.starttime)   + " to " + str(event.endtime)
-				send_mail(subj, msg, recepient_list, fail_silently=True)
+					   "\nTime: "        + str(event.starttime)   + " to " + str(event.endtime))
+				send_mail(subj, msg, 'letsdoit.noresponse@gmail.com', recepient_list, fail_silently=True)
 
 
 				event.reminded = True
@@ -85,7 +84,7 @@ def main():
 		time.sleep(delay)
 
 def inSendInterval(event):
-	low = 10*60
+	low = 30*60
 	high = 40*60
 	offset = 6*60*60 # since timezones are screwy
 	now = datetime.datetime.now()
