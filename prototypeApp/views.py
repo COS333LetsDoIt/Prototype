@@ -196,44 +196,95 @@ def calculateScore(user, event):
     if event.endtime < cutoff:
         return -1.0
 
-    people_in_event = 0.0;
-    friends_in_event = 0.0;
+    people_in_event = 0;
+    friends_in_event = 0;
+    friends_invited = 0;
+    score = 0.0;
+
 
     for person in event.members.all():
         people_in_event += 1.0;
         if person in user.person.friends.all():
-            friends_in_event += 1.0
+            score += 1.0
+            friends_in_event += 1
     
     for person in event.pendingMembers.all():
         people_in_event += 1.0;
         if person in user.person.friends.all():
-            friends_in_event += 0.5
+            score += 0.5
+            friends_invited += 1
 
-    return friends_in_event
+
+    return {'score': score, 'friends_in_event': friends_in_event, 'friends_invited': friends_invited}
 
 # Each EventScore object contains a event and its corresponding score
-class EventScore:
+class EventStats:
     def __init__(self, user, event):
-        self.event = event;
-        self.score = calculateScore(user, event)
+        self.event              = event;
+        eventScore              = calculateScore(user, event)
+        self.score              = eventScore['score']
+        self.friends_in_event   = eventScore['friends_in_event']
+        self.friends_invited    = eventScore['friends_invited']
+        self.formattedTime      = getFormattedTime(event)
 
     def __str__(self):
         return self.event.name + ":" + str(self.score)
 
+def getFormattedTime(event):
+    now = datetime.datetime.now()
+    now = pytz.utc.localize(now)
+    now += timedelta(hours=5) # how to convert timezone?
+
+    diffStart = event.starttime - now
+    diffEnd   = event.endtime - now
+
+    print (now)
+    print(diffStart.total_seconds())
+
+    if diffEnd.total_seconds() < 0:
+        return "Event over"
+
+    elif diffStart.total_seconds() < 0:
+        return "Happening now"
+
+    elif diffStart.total_seconds() < 3600: # less than one hour
+        minutes = int(diffStart.total_seconds() / 60)
+        if minutes == 1:
+            return "In " + str(minutes) + " minute"
+        else:
+            return "In " + str(minutes) + " minutes"
+
+    elif diffStart.days < 1:
+        hours = int(diffStart.total_seconds() / 3600)
+        if hours == 1:
+            return "In " + str(hours) + " hour"
+        else:
+            return "In " + str(hours) + " hours"
+
+    else: 
+        days = int(diffStart.days)
+        if days == 1:
+            return "In " + str(days) + " day"
+        else:
+            return "In " + str(days) + " days"
+
 # sorts list of events based on the relevance
 def sortEventsByRelevance(user, event_list):
-    eventScores = []
+    allEventStats = []
     for event in event_list:
-        eventScores.append(EventScore(user, event))
+        allEventStats.append(EventStats(user, event))
 
-    eventScores = sorted(eventScores, key=lambda eventscore:eventscore.score, reverse=True)
-     
-    events = []
-    for eventScore in eventScores:
-        events.append(eventScore.event)
-        # print (eventScore.event.name + ":" + str(eventScore.score))
+    allEventStats = sorted(allEventStats, key=lambda eventstats:eventstats.score, reverse=True)
+    # print (eventScores)
+    return allEventStats    
+    # events = []
+    # for eventScore in eventScores:
+    #     events.append(eventScore.event)
+    #     # print (eventScore.event.name + ":" + str(eventScore.score))
 
-    return events
+    # return events
+
+
 
 def sortEventsByTime(user, event_list):
     futureEvents = []
@@ -243,12 +294,12 @@ def sortEventsByTime(user, event_list):
 
     for event in event_list:
         if event.endtime < cutoff:
-            pastEvents.append(event)
+            pastEvents.append(EventStats(user,event))
         else:
-            futureEvents.append(event)
+            futureEvents.append(EventStats(user,event))
 
-    pastEvents = sorted(pastEvents, key=lambda event:event.starttime, reverse=True)
-    futureEvents = sorted(futureEvents, key=lambda event:event.starttime, reverse=False)
+    pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
+    futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
     futureEvents.extend(pastEvents)
 
     return futureEvents
@@ -261,7 +312,6 @@ def indexByTime(request):
 @login_required()
 def index(request, sortByRelevance=True):
 
-    # sortByRelevance = False
 
     # Gets rid of old events globally
     full_event_cleanup()
@@ -272,6 +322,7 @@ def index(request, sortByRelevance=True):
     else:
         event_list = sortEventsByTime(request.user, request.user.person.events.all())
         invited_event_list = sortEventsByTime(request.user, request.user.person.invitedEvents.all())
+
 
     # works out events of friends of friends
     friend_set = request.user.person.friends.all()
