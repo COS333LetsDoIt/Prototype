@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from prototypeApp import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
@@ -29,17 +30,17 @@ urlpatterns = patterns('',
 
     url(r'^profile$', views.profile, name='profile'),
 
-    url('', include('django.contrib.auth.urls'))
+    # url('', include('django.contrib.auth.urls'))
+    # url(r'password_change/$', 'django.contrib.auth.views.password_change', name='changePassword'),
+    #override the default urls
+    url(r'^password_change/$', auth_views.password_change, {'post_change_redirect': '/prototypeApp/password_change_done'}),
+    url(r'^password_change_done/$', auth_views.password_change_done, name='password_change_done'),
+    # url(r'^password_change_done/$', auth_views.password_change_done, {'template_name': 'password_change_done.html'}),
+    # url(r'^password_reset/$', auth_views.password_reset, name='password_reset_done'),
+    # url(r'^password_reset_done/$', auth_views.password_reset_done, name='password_reset_done'),
+    # url(r'^password_reset_complete/$', auth_views.password_reset_complete, name='password_reset_complete'),
+    # url(r'^password_reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.password_reset_confirm, name='password_reset_confirm'),
 
-    # The above line includes the following lines of authenticating url patterns:
-    # ^login/$ [name='login']
-    # ^logout/$ [name='logout']
-    # ^password_change/$ [name='password_change']
-    # ^password_change/done/$ [name='password_change_done']
-    # ^password_reset/$ [name='password_reset']
-    # ^password_reset/done/$ [name='password_reset_done']
-    # ^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$ [name='password_reset_confirm']
-    # ^reset/done/$ [name='password_reset_complete']
 
     #url(r'^sdk$', views.sdk, name='sdk'),
 
