@@ -29,8 +29,17 @@
       <p>
       {{object.formattedTime}}
       <p>
-      {{object.friends_in_event}} Friends attending 
+      {% if object.friends_in_event == 1 %}
+      {{object.friends_in_event}} friend attending 
+      {% else %}
+      {{object.friends_in_event}} friends attending 
+      {% endif %}
+      |
+      {% if object.friends_invited == 1 %}
+      {{object.friends_invited}} friend invited 
+      {% else %}
       {{object.friends_invited}} friends invited
+      {% endif %}
     </p>              
     <p>
       <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> {{ message }}</a>              
