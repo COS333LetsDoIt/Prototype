@@ -1,7 +1,7 @@
 {% extends "prototypeApp/base.html" %}
 {% load staticfiles %}
 
-{% block title %} {{user.person.name}} {% endblock %}
+{% block title %} {{user.person.name}}'s profile {% endblock %}
 
 {% block custominclude %}
   <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
@@ -72,7 +72,7 @@
                     </div>
                   </div>
                 </div>
-              <a href="/prototypeApp/changePassword" class="btn btn-primary">Change Password</a>
+              <a href="/prototypeApp/password_change" class="btn btn-primary">Change Password</a>
             </div>
           </div>
         </div>
