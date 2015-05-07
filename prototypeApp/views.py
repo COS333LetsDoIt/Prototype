@@ -630,6 +630,12 @@ def login_view(request):
 def profile(request):
     user = request.user;
 
+    if request.method == "POST":
+        user.person.receiveReminders = request.POST.has_key('receive_reminders')
+        user.person.save()
+
+
+    receive_reminders = user.person.receiveReminders
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
@@ -640,8 +646,13 @@ def profile(request):
     else:
         image_form = ImageForm()
 
-
-    context = {"user": user, "form": image_form, "pending_event_count": pending_event_count, "pending_friend_count": pending_friend_count}
+    context = {
+        "user": user, 
+        "form": image_form, 
+        "pending_event_count": pending_event_count, 
+        "pending_friend_count": pending_friend_count,
+        "receive_reminders": receive_reminders
+    }
     return render(request, 'prototypeApp/profile.html', context)
 
 

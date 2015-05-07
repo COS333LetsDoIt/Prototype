@@ -21,6 +21,7 @@
           <h3 class="panel-title">My Profile</h3>
         </div>
         <div class="panel-body">
+        <form action="{% url 'prototypeApp:profile' %}" method="post"> 
           <div class="row">
             <div class="col-md-3 col-lg-3 " align="center"> 
               {% if user.person.profilePicture.imagefile %}
@@ -40,6 +41,14 @@
                   <tr>
                     <td>Email:</td>
                     <td>{{user.email}}</td>
+                  </tr>
+                  </tr>
+                  <tr>
+                  <tr>
+                    <td>Receive Reminders:</td>
+                    <td>
+                      <input type="checkbox" name='receive_reminders' value="receive_reminders" onChange="this.form.submit()" {% if receive_reminders %}checked{% endif %}>
+                    </td>
                   </tr>
                   </tr>
                 </tbody>
@@ -75,6 +84,7 @@
               <a href="/prototypeApp/password_change" class="btn btn-primary">Change Password</a>
             </div>
           </div>
+        </form>
         </div>
              <!-- <div class="panel-footer">
                     <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
