@@ -130,37 +130,38 @@ def create_event_from_form(request):
 
         else: # starttime > endtime, should not allow the user to create such event
             return None
+    return None
 
-    starttime = request.POST.get("starttime", None)
-    endtime = request.POST.get("endtime", None)
+    # starttime = request.POST.get("starttime", None)
+    # endtime = request.POST.get("endtime", None)
         
-    if form.is_valid() and starttime and endtime:
-        starttime = dateutil.parser.parse(starttime)
-        endtime = dateutil.parser.parse(endtime)
+    # if form.is_valid() and starttime and endtime:
+    #     starttime = dateutil.parser.parse(starttime)
+    #     endtime = dateutil.parser.parse(endtime)
 
-        if starttime < endtime:
-            new_event = form.save()
+    #     if starttime < endtime:
+    #         new_event = form.save()
 
-            new_event.starttime = starttime
-            new_event.endtime = endtime
+    #         new_event.starttime = starttime
+    #         new_event.endtime = endtime
 
-            # add friends to events
-            for friend_name in request.POST.get("friends", '').split(', '):
-                friends = Person.objects.filter(name=friend_name)
-                #print "found friend"
-                new_event.members.add(request.user.person)
-                if friends.exists() and friends[0] not in new_event.members.all():
-                    invite_event(new_event, friends[0])
+    #         # add friends to events
+    #         for friend_name in request.POST.get("friends", '').split(', '):
+    #             friends = Person.objects.filter(name=friend_name)
+    #             #print "found friend"
+    #             new_event.members.add(request.user.person)
+    #             if friends.exists() and friends[0] not in new_event.members.all():
+    #                 invite_event(new_event, friends[0])
 
-            # add groups to events
-            for group_name in request.POST.get("groups", '').split(','):
-                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+    #         # add groups to events
+    #         for group_name in request.POST.get("groups", '').split(','):
+    #             groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
                 
-                if groups.exists():
-                    group = groups[0]
-                    for person in group.person_set.all():
-                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-                            invite_event(new_event, person)
+    #             if groups.exists():
+    #                 group = groups[0]
+    #                 for person in group.person_set.all():
+    #                     if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+    #                         invite_event(new_event, person)
 
 def create_group_from_form(request):
     # create a form instance and populate it with data from the request:
@@ -187,6 +188,14 @@ def create_group_from_form(request):
 
 # Calculates the relevance score for an event to a user
 def calculateScore(user, event):
+    
+    # negative relevance for events that have already ended
+    cutoff = datetime.datetime.now()
+    cutoff = pytz.utc.localize(cutoff)
+
+    if event.endtime < cutoff:
+        return -1.0
+
     people_in_event = 0.0;
     friends_in_event = 0.0;
 
@@ -212,29 +221,57 @@ class EventScore:
         return self.event.name + ":" + str(self.score)
 
 # sorts list of events based on the relevance
-def sortEvents(user, event_list):
+def sortEventsByRelevance(user, event_list):
     eventScores = []
     for event in event_list:
         eventScores.append(EventScore(user, event))
 
     eventScores = sorted(eventScores, key=lambda eventscore:eventscore.score, reverse=True)
-    
+     
     events = []
     for eventScore in eventScores:
         events.append(eventScore.event)
+        # print (eventScore.event.name + ":" + str(eventScore.score))
 
     return events
 
+def sortEventsByTime(user, event_list):
+    futureEvents = []
+    pastEvents = []
+    cutoff = datetime.datetime.now()
+    cutoff = pytz.utc.localize(cutoff)
+
+    for event in event_list:
+        if event.endtime < cutoff:
+            pastEvents.append(event)
+        else:
+            futureEvents.append(event)
+
+    pastEvents = sorted(pastEvents, key=lambda event:event.starttime, reverse=True)
+    futureEvents = sorted(futureEvents, key=lambda event:event.starttime, reverse=False)
+    futureEvents.extend(pastEvents)
+
+    return futureEvents
 
 @login_required()
-def index(request):
+def indexByTime(request):
+    return index(request, False)
+
+
+@login_required()
+def index(request, sortByRelevance=True):
+
+    # sortByRelevance = False
 
     # Gets rid of old events globally
     full_event_cleanup()
 
-    event_list = sortEvents(request.user, request.user.person.events.all())
-    invited_event_list = sortEvents(request.user, request.user.person.invitedEvents.all())
-
+    if sortByRelevance: 
+        event_list = sortEventsByRelevance(request.user, request.user.person.events.all())
+        invited_event_list = sortEventsByRelevance(request.user, request.user.person.invitedEvents.all())
+    else:
+        event_list = sortEventsByTime(request.user, request.user.person.events.all())
+        invited_event_list = sortEventsByTime(request.user, request.user.person.invitedEvents.all())
 
     # works out events of friends of friends
     friend_set = request.user.person.friends.all()
@@ -245,14 +282,15 @@ def index(request):
             if event not in event_list and event not in invited_event_list:
                 friend_event_list.add(event)
 
-    friend_event_list = sortEvents(request.user, friend_event_list)
+    if sortByRelevance:
+        friend_event_list = sortEventsByRelevance(request.user, friend_event_list)
+    else:
+        friend_event_list = sortEventsByTime(request.user, friend_event_list)
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-# <<<<<<< HEAD
-    # event_form = get_event_form(request)
     state = ""
     if request.method == 'POST':
         success_msg = create_event_from_form(request)
@@ -267,6 +305,7 @@ def index(request):
     else:
         event_form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
 
+
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
     
@@ -278,32 +317,12 @@ def index(request):
     'friends_list': friends_list,
     'pending_event_count': pending_event_count,
     'pending_friend_count': pending_friend_count,
-    'state': state}
-# =======
-#     event_form = get_event_form(request)
-#     if event_form is None:
-#         # starttime > endtime
-#         state = "Event start time is later than the end time!"
-#         friends_list = None
-#         groups_list = None
-#     else:
-#         state = None
-#         friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-#         groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
-        
-#     context = {"event_list": event_list, 
-#     'groups_list': groups_list, 
-#     'invited_event_list': invited_event_list, 
-#     'friend_event_list': friend_event_list, 
-#     'form': event_form, 
-#     'friends_list': friends_list,
-#     'pending_event_count': pending_event_count,
-#     'pending_friend_count': pending_friend_count,
-#     'state': state}
-# >>>>>>> 07eea1bebbe064f581a6c543c3ee1db337ad1fab
+    'state': state,
+    'sortByRelevance': sortByRelevance}
 
     return render(request, 'prototypeApp/index.html', context)
 
+    
 ################################################################################
 # Events
 ################################################################################
@@ -313,6 +332,7 @@ def index(request):
 def event(request, event_id):
 
     event = get_object_or_404(Event, pk=event_id)
+
     event_list = request.user.person.events.all()
     invited_event_list = request.user.person.invitedEvents.all()
 
@@ -325,8 +345,8 @@ def event(request, event_id):
     friend_event_list = set()
     for friend in friend_set:
         friend_events = friend.events.all();
-        for event in friend_events:
-            if event not in event_list and event not in invited_event_list:
+        for currEvent in friend_events:
+            if currEvent not in event_list and currEvent not in invited_event_list:
                 friend_event_list.add(event)
     
 
@@ -387,7 +407,7 @@ def group(request):
     else:
         group_form = GroupForm()
 
-    group_form = get_group_form(request)
+    # group_form = get_group_form(request)
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
@@ -509,7 +529,6 @@ def remove_friend(request, friend_id):
     friend = get_object_or_404(Person, pk=friend_id)
     request.user.person.friends.remove(friend)
     return HttpResponseRedirect(reverse('prototypeApp:people'));
-
 
 
 
