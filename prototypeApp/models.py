@@ -45,12 +45,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class Image(models.Model):
-    # imagefile = ResizedImageField(max_width=100, max_height=100, upload_to='images')
+
     imagefile = models.ImageField(upload_to='images', )
-    # imageFile = ProcessedImageField(upload_to='images',
-    #     processors=[ResizeToFill(100,100)],
-    #     format='JPEG',
-    #     options={'quality':60})
 
     # formats photo before saving
     def save(self, *args, **kwargs):
@@ -62,6 +58,7 @@ class Image(models.Model):
             output.seek(0)
             self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
         super(Image, self).save(*args, **kwargs)
+        
 
 class Event(models.Model):
     name = models.CharField(max_length=100)

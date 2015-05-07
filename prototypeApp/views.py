@@ -8,6 +8,8 @@ from django.db import models
 from django.forms import ModelForm
 #from datetimewidget.widgets import DateTimeWidget
 import datetime
+from datetime import timedelta
+import pytz
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, views, authenticate, login
@@ -178,10 +180,56 @@ def get_group_form(request):
 # Index page
 ################################################################################
 
+# Calculates the relevance score for an event to a user
+def calculateScore(user, event):
+    people_in_event = 0.0;
+    friends_in_event = 0.0;
+
+    for person in event.members.all():
+        people_in_event += 1.0;
+        if person in user.person.friends.all():
+            friends_in_event += 1.0
+    
+    for person in event.pendingMembers.all():
+        people_in_event += 1.0;
+        if person in user.person.friends.all():
+            friends_in_event += 0.5
+
+    return friends_in_event
+
+# Each EventScore object contains a event and its corresponding score
+class EventScore:
+    def __init__(self, user, event):
+        self.event = event;
+        self.score = calculateScore(user, event)
+
+    def __str__(self):
+        return self.event.name + ":" + str(self.score)
+
+# sorts list of events based on the relevance
+def sortEvents(user, event_list):
+    eventScores = []
+    for event in event_list:
+        eventScores.append(EventScore(user, event))
+
+    eventScores = sorted(eventScores, key=lambda eventscore:eventscore.score, reverse=True)
+    
+    events = []
+    for eventScore in eventScores:
+        events.append(eventScore.event)
+
+    return events
+
+
 @login_required()
 def index(request):
-    event_list = request.user.person.events.all()
-    invited_event_list = request.user.person.invitedEvents.all()
+
+    # Gets rid of old events globally
+    full_event_cleanup()
+
+    event_list = sortEvents(request.user, request.user.person.events.all())
+    invited_event_list = sortEvents(request.user, request.user.person.invitedEvents.all())
+
 
     # works out events of friends of friends
     friend_set = request.user.person.friends.all()
@@ -191,6 +239,8 @@ def index(request):
         for event in friend_events:
             if event not in event_list and event not in invited_event_list:
                 friend_event_list.add(event)
+
+    friend_event_list = sortEvents(request.user, friend_event_list)
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
@@ -233,17 +283,36 @@ def index(request):
 # Events
 ################################################################################
 
+
 @login_required()
 def event(request, event_id):
+
     event = get_object_or_404(Event, pk=event_id)
-    if request.user.person in event.members.all():
-        user_in_event = True
-    else:
-        user_in_event = False
+    event_list = request.user.person.events.all()
+    invited_event_list = request.user.person.invitedEvents.all()
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
+
+    # works out events of friends of friends
+    friend_set = request.user.person.friends.all()
+    friend_event_list = set()
+    for friend in friend_set:
+        friend_events = friend.events.all();
+        for event in friend_events:
+            if event not in event_list and event not in invited_event_list:
+                friend_event_list.add(event)
+    
+
+    if request.user.person in event.members.all():
+        user_in_event = True
+    elif request.user.person in event.pendingMembers.all() or event in friend_event_list:
+        user_in_event = False
+    else:
+        context = {"item": "event", 'pending_event_count': pending_event_count, 'pending_friend_count': pending_friend_count}
+        return render(request, 'prototypeApp/forbidden.html', context)
+
 
     # print event.person_set.all()
     context = {"event": event, "user_in_event": user_in_event, 'pending_event_count': pending_event_count,
@@ -322,7 +391,8 @@ def aGroup(request, group_id):
     if request.user.person in group.person_set.all():
         user_in_group = True
     else:
-        user_in_group = False
+        context = {"item": "group", 'pending_event_count': pending_event_count, 'pending_friend_count': pending_friend_count}
+        return render(request, 'prototypeApp/forbidden.html', context)
     # print event.person_set.all()
 
     # get list of friends who are not in group yet
@@ -455,8 +525,13 @@ def login_view(request):
 @login_required()
 def profile(request):
     user = request.user;
+
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
     image_form = get_image_form(request)
-    context = {"user": user, "form": image_form}
+    context = {"user": user, "form": image_form, "pending_event_count": pending_event_count, "pending_friend_count": pending_friend_count}
     return render(request, 'prototypeApp/profile.html', context)
 
 
@@ -509,6 +584,21 @@ def logout_view(request):
     logout(request)
     #print "User logged off"
     return render(request, 'prototypeApp/login.html', {})
+
+def full_event_cleanup():
+    cutoff = datetime.datetime.now()
+    delta = timedelta(days=2)
+    cutoff = cutoff - delta
+    cutoff = pytz.utc.localize(cutoff)
+
+    for event in Event.objects.all():
+        current = event.endtime
+        #current = pytz.utc.localize(current)
+        # current.replace(tzinfo=None)
+        # cutoff.replace(tzinfo=None)
+
+        if (current <= cutoff):
+            event.delete()
 
 
 # What what is this??
