@@ -662,9 +662,9 @@ def register(request):
         #print "email: " + email
         
         if User.objects.filter(username=username).exists():
-            state = "That user is already taken"
+            state = "That name is already taken. Please add a middlename or epithet."
         elif User.objects.filter(email=email).exists():
-            state = "That email is already registered"
+            state = "That email is already registered."
         # elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
         #         state = "That email address is not valid"
         else:       
