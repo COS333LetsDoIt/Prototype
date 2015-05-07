@@ -72,15 +72,7 @@ def inSendInterval(event):
 	now = datetime.datetime.now()
 	now = pytz.utc.localize(now)
 	difference = event.starttime - now
-	print("Now: ") 
-	print(now)
-	print("Start: ")
-	print(event.starttime)
-	print("Difference in hours: ")
-	print((0.0+difference.seconds - offset)/60/60)
 	succeed = difference.days == 0 and ((difference.seconds - offset > low) and (difference.seconds - offset < high))
-	print("Succeeded?: ")
-	print(succeed)
 	return succeed
 
 main()
