@@ -26,6 +26,8 @@ import dateutil.parser
 import re
 import json
 
+import prototypeApp.views as views
+
 ## imports for photo manipulation ##
 from PIL import Image as Img
 from io import StringIO
@@ -39,7 +41,8 @@ import django
 django.setup()
 
 interval_minutes = 5
-delay = 60*interval_minutes #60 seconds
+delay            = 60*interval_minutes # delay in seconds
+priority_cutoff  = 4
 
 
 def main():
@@ -48,9 +51,8 @@ def main():
 		event_list = Event.objects.all()
 		
 		for event in event_list:
-			print(event.name)
 			if (inSendInterval(event) and (not event.reminded)):
-				print("sending emails!")
+				# Send emails to confirmed participants in the event
 				person_list = event.members.all()
 				recepient_list = [person.user.email for person in person_list]
 				send_mail(event.name + " is in 30 minutes!", 
@@ -58,16 +60,32 @@ def main():
 						"\nDescription: " + event.description    + 
 						"\nLocation: "    + event.location       + 
 						"\nTime: "        + str(event.starttime) + " to " + str(event.endtime), 
-					"no_response@letsdoit.com",
-					recepient_list, fail_silently=True)
+					'letsdoit.noresponse@gmail.com', recepient_list, fail_silently=True)
+
+				# suggest event to high priority invitees
+				person_list = event.pendingMembers.all()
+				recepient_list = []
+				for person in person_list:
+					dictionary = views.calculateScore(person.user, event)
+					if dictionary['score'] > priority_cutoff:
+						recepient_list.append(person.user.email)
+
+				subj = "Lot's of Friends going to: " + event.name + " in 30 minutes!"
+				msg  = ("Lot's of Friends going to: " + event.name + " in 30 minutes!" +
+					   "\nDescription: " + event.description      + 
+					   "\nLocation: "    + event.location         + 
+					   "\nTime: "        + str(event.starttime)   + " to " + str(event.endtime))
+				send_mail(subj, msg, 'letsdoit.noresponse@gmail.com', recepient_list, fail_silently=True)
+
+
 				event.reminded = True
 				event.save()
 
 		time.sleep(delay)
 
 def inSendInterval(event):
-	low = 10*60
-	high = 400*60
+	low = 30*60
+	high = 40*60
 	offset = 6*60*60 # since timezones are screwy
 	now = datetime.datetime.now()
 	now = pytz.utc.localize(now)
