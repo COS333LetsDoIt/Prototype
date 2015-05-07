@@ -194,8 +194,7 @@ def calculateScore(user, event):
     cutoff = datetime.datetime.now()
     cutoff = pytz.utc.localize(cutoff)
 
-    if event.endtime < cutoff:
-        return -1.0
+
 
     people_in_event = 0;
     friends_in_event = 0;
@@ -214,6 +213,9 @@ def calculateScore(user, event):
         if person in user.person.friends.all():
             score += 0.5
             friends_invited += 1
+
+    if event.endtime < cutoff:
+        score = -1.0
 
 
     return {'score': score, 'friends_in_event': friends_in_event, 'friends_invited': friends_invited}
