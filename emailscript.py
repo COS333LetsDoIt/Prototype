@@ -54,10 +54,10 @@ def main():
 				person_list = event.members.all()
 				recepient_list = [person.user.email for person in person_list]
 				send_mail(event.name + " is in 30 minutes!", 
-					event.name + " is in 30 minutes!\nDescription: " +  
-						event.description + 
-						"\nLocation: " + event.location + 
-						"\nTime: " + str(event.starttime) + " to " + str(event.endtime), 
+					event.name + " is in 30 minutes!"            +
+						"\nDescription: " + event.description    + 
+						"\nLocation: "    + event.location       + 
+						"\nTime: "        + str(event.starttime) + " to " + str(event.endtime), 
 					"no_response@letsdoit.com",
 					recepient_list, fail_silently=True)
 				event.reminded = True
@@ -72,15 +72,7 @@ def inSendInterval(event):
 	now = datetime.datetime.now()
 	now = pytz.utc.localize(now)
 	difference = event.starttime - now
-	print("Now: ") 
-	print(now)
-	print("Start: ")
-	print(event.starttime)
-	print("Difference in hours: ")
-	print((0.0+difference.seconds - offset)/60/60)
 	succeed = difference.days == 0 and ((difference.seconds - offset > low) and (difference.seconds - offset < high))
-	print("Succeeded?: ")
-	print(succeed)
 	return succeed
 
 main()
