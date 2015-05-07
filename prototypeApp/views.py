@@ -95,6 +95,46 @@ def create_event_from_form(request):
     endtime = request.POST.get("endtime", None)
         
     if form.is_valid() and starttime and endtime:
+
+        starttime = dateutil.parser.parse(starttime)
+        endtime = dateutil.parser.parse(endtime)
+
+        if starttime < endtime:
+            new_event = form.save()
+
+            new_event.starttime = starttime
+            new_event.endtime = endtime
+
+            # add friends to events
+            for friend_name in request.POST.get("friends", '').split(', '):
+                friends = Person.objects.filter(name=friend_name)
+                #print "found friend"
+                new_event.members.add(request.user.person)
+                if friends.exists() and friends[0] not in new_event.members.all():
+                    invite_event(new_event, friends[0])
+                    #friends[0].event_set.add(new_event)
+                    #print "added friend to event"
+
+            # add groups to events
+            for group_name in request.POST.get("groups", '').split(','):
+                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+                
+                if groups.exists():
+                    group = groups[0]
+                    for person in group.person_set.all():
+                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                            invite_event(new_event, person)
+
+            new_event.save()
+            return "Success"
+
+        else: # starttime > endtime, should not allow the user to create such event
+            return None
+
+    starttime = request.POST.get("starttime", None)
+    endtime = request.POST.get("endtime", None)
+        
+    if form.is_valid() and starttime and endtime:
         starttime = dateutil.parser.parse(starttime)
         endtime = dateutil.parser.parse(endtime)
 
@@ -211,27 +251,58 @@ def index(request):
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-
+# <<<<<<< HEAD
     # event_form = get_event_form(request)
+    state = ""
     if request.method == 'POST':
-        create_event_from_form(request)
-        return HttpResponseRedirect('')
+        success_msg = create_event_from_form(request)
+        event_form = EventForm(request.POST)
+        if success_msg == None:
+            # starttime > endtime
+            state = "Event start time is later than the end time!"
+            friends_list = None
+            groups_list = None
+        else:
+            return HttpResponseRedirect('')
     else:
         event_form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
 
-        friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-        groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+    groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+    
+    context = {"event_list": event_list, 
+    'groups_list': groups_list, 
+    'invited_event_list': invited_event_list, 
+    'friend_event_list': friend_event_list, 
+    'form': event_form, 
+    'friends_list': friends_list,
+    'pending_event_count': pending_event_count,
+    'pending_friend_count': pending_friend_count,
+    'state': state}
+# =======
+#     event_form = get_event_form(request)
+#     if event_form is None:
+#         # starttime > endtime
+#         state = "Event start time is later than the end time!"
+#         friends_list = None
+#         groups_list = None
+#     else:
+#         state = None
+#         friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+#         groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
         
-        context = {"event_list": event_list, 
-        'groups_list': groups_list, 
-        'invited_event_list': invited_event_list, 
-        'friend_event_list': friend_event_list, 
-        'form': event_form, 
-        'friends_list': friends_list,
-        'pending_event_count': pending_event_count,
-        'pending_friend_count': pending_friend_count}
+#     context = {"event_list": event_list, 
+#     'groups_list': groups_list, 
+#     'invited_event_list': invited_event_list, 
+#     'friend_event_list': friend_event_list, 
+#     'form': event_form, 
+#     'friends_list': friends_list,
+#     'pending_event_count': pending_event_count,
+#     'pending_friend_count': pending_friend_count,
+#     'state': state}
+# >>>>>>> 07eea1bebbe064f581a6c543c3ee1db337ad1fab
 
-        return render(request, 'prototypeApp/index.html', context)
+    return render(request, 'prototypeApp/index.html', context)
 
 ################################################################################
 # Events
