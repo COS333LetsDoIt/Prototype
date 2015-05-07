@@ -210,3 +210,6 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   position: fixed;
 }
 
+.nice-thumbnail {
+  background: white;
+}
