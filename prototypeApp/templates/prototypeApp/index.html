@@ -161,6 +161,21 @@
 <div class="inner cover">
   <h1 class="cover-heading">Let's Do It!</h1>
   <p class="lead">To propose an event to your friends, click CREATE EVENTS</p>
+  {% if state %}
+  <div class="bs-example">
+    <div class="alert alert-danger alert-error">
+      <a href="#" class="close" data-dismiss="alert">&times;</a>
+      <strong>Error!</strong> {{state}}
+    </div>
+  </div>
+  {% else %}
+  <div class="bs-example">
+    <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Success!</strong> Your event has been created successfully.
+    </div>
+  </div>
+  {% endif %}
   <p class="lead">
     <!--<a href="#" class="btn btn-lg btn-danger">I'M FREE</a>-->
     <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#exampleModal">CREATE EVENT</button>
@@ -212,7 +227,6 @@
                   <div class="form-group">
                     <label for="friends" class="col-sm-4">Friends</label>
                     <div class="col-sm-8" id="text-box">
-                      <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                       <input type="text" name="friends" class="form-control" id="tokenfield" placeholder="Type in the names of your friends"/>
                     </div>
                   </div>
@@ -220,15 +234,12 @@
                   <div class="form-group">
                     <label for="friends" class="col-sm-4">Groups</label>
                     <div class="col-sm-8" id="text-box">
-                      <!-- <input type="text" class="form-control" id="tokenfield-typeahead" value="red,blue" placeholder="Type in the names of your friends"/> -->
                       <input type="text" name="groups" class="form-control" id="tokenfield_groups" placeholder="Type in the names of your groups"/>
                     </div>
                   </div>
-
-
                   <!--<BR>&nbsp;<BR> -->
                   <div class="LDI-submit-button">
-                    <input class="btn btn-sm btn-success" id="submit" type="submit" value="Create ">
+                    <input class="btn btn-sm btn-success" id="submit" type="submit" value="Create">
                   </div>
                 </form>
               </div> 

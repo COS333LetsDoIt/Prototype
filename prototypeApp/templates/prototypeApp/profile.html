@@ -9,16 +9,8 @@
 {% endblock %}
 
 {% block header %}
-<li>
-  <a href="/prototypeApp/">Home</a>
-</li>
-<li>
-  <a href="/prototypeApp/group">Groups</a>
-</li>
-<li>
-  <a href="/prototypeApp/people">Friends</a>
-</li>
-{% endblock %}   
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="" %}
+{% endblock %}
 
 {% block content %}
 <div class="container">

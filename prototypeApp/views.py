@@ -139,6 +139,9 @@ def get_event_form(request):
 
                 new_event.save()
 
+            else: # starttime > endtime, should not allow the user to create such event
+                return None
+
     # if a GET (or any other method) we'll create a blank form
     
     form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
@@ -195,17 +198,34 @@ def index(request):
 
 
     event_form = get_event_form(request)
-    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-    groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
-    
-    context = {"event_list": event_list, 
-    'groups_list': groups_list, 
-    'invited_event_list': invited_event_list, 
-    'friend_event_list': friend_event_list, 
-    'form': event_form, 
-    'friends_list': friends_list,
-    'pending_event_count': pending_event_count,
-    'pending_friend_count': pending_friend_count}
+    if event_form is None:
+        # starttime > endtime
+        state = "Event start time is later than the end time!"
+        friends_list = None
+        groups_list = None
+        context = {"event_list": event_list, 
+        'groups_list': groups_list, 
+        'invited_event_list': invited_event_list, 
+        'friend_event_list': friend_event_list, 
+        'form': event_form, 
+        'friends_list': friends_list,
+        'pending_event_count': pending_event_count,
+        'pending_friend_count': pending_friend_count,
+        "state": state}
+    else:
+        state = None
+        friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+        groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+        
+        context = {"event_list": event_list, 
+        'groups_list': groups_list, 
+        'invited_event_list': invited_event_list, 
+        'friend_event_list': friend_event_list, 
+        'form': event_form, 
+        'friends_list': friends_list,
+        'pending_event_count': pending_event_count,
+        'pending_friend_count': pending_friend_count,
+        'state': state}
 
     return render(request, 'prototypeApp/index.html', context)
 
