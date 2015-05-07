@@ -175,10 +175,51 @@ def get_group_form(request):
 # Index page
 ################################################################################
 
+# Calculates the relevance score for an event to a user
+def calculateScore(user, event):
+    people_in_event = 0.0;
+    friends_in_event = 0.0;
+
+    for person in event.members.all():
+        people_in_event += 1.0;
+        if person in user.person.friends.all():
+            friends_in_event += 1.0
+    
+    for person in event.pendingMembers.all():
+        people_in_event += 1.0;
+        if person in user.person.friends.all():
+            friends_in_event += 0.5
+
+    return friends_in_event
+
+# Each EventScore object contains a event and its corresponding score
+class EventScore:
+    def __init__(self, user, event):
+        self.event = event;
+        self.score = calculateScore(user, event)
+
+    def __str__(self):
+        return self.event.name + ":" + str(self.score)
+
+# sorts list of events based on the relevance
+def sortEvents(user, event_list):
+    eventScores = []
+    for event in event_list:
+        eventScores.append(EventScore(user, event))
+
+    eventScores = sorted(eventScores, key=lambda eventscore:eventscore.score, reverse=True)
+    
+    events = []
+    for eventScore in eventScores:
+        events.append(eventScore.event)
+
+    return events
+
+
 @login_required()
 def index(request):
-    event_list = request.user.person.events.all()
-    invited_event_list = request.user.person.invitedEvents.all()
+    event_list = sortEvents(request.user, request.user.person.events.all())
+    invited_event_list = sortEvents(request.user, request.user.person.invitedEvents.all())
 
     # works out events of friends of friends
     friend_set = request.user.person.friends.all()
@@ -188,6 +229,8 @@ def index(request):
         for event in friend_events:
             if event not in event_list and event not in invited_event_list:
                 friend_event_list.add(event)
+
+    friend_event_list = sortEvents(request.user, friend_event_list)
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
@@ -212,6 +255,7 @@ def index(request):
 ################################################################################
 # Events
 ################################################################################
+
 
 @login_required()
 def event(request, event_id):
