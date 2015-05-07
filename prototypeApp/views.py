@@ -130,37 +130,38 @@ def create_event_from_form(request):
 
         else: # starttime > endtime, should not allow the user to create such event
             return None
+    return None
 
-    starttime = request.POST.get("starttime", None)
-    endtime = request.POST.get("endtime", None)
+    # starttime = request.POST.get("starttime", None)
+    # endtime = request.POST.get("endtime", None)
         
-    if form.is_valid() and starttime and endtime:
-        starttime = dateutil.parser.parse(starttime)
-        endtime = dateutil.parser.parse(endtime)
+    # if form.is_valid() and starttime and endtime:
+    #     starttime = dateutil.parser.parse(starttime)
+    #     endtime = dateutil.parser.parse(endtime)
 
-        if starttime < endtime:
-            new_event = form.save()
+    #     if starttime < endtime:
+    #         new_event = form.save()
 
-            new_event.starttime = starttime
-            new_event.endtime = endtime
+    #         new_event.starttime = starttime
+    #         new_event.endtime = endtime
 
-            # add friends to events
-            for friend_name in request.POST.get("friends", '').split(', '):
-                friends = Person.objects.filter(name=friend_name)
-                #print "found friend"
-                new_event.members.add(request.user.person)
-                if friends.exists() and friends[0] not in new_event.members.all():
-                    invite_event(new_event, friends[0])
+    #         # add friends to events
+    #         for friend_name in request.POST.get("friends", '').split(', '):
+    #             friends = Person.objects.filter(name=friend_name)
+    #             #print "found friend"
+    #             new_event.members.add(request.user.person)
+    #             if friends.exists() and friends[0] not in new_event.members.all():
+    #                 invite_event(new_event, friends[0])
 
-            # add groups to events
-            for group_name in request.POST.get("groups", '').split(','):
-                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+    #         # add groups to events
+    #         for group_name in request.POST.get("groups", '').split(','):
+    #             groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
                 
-                if groups.exists():
-                    group = groups[0]
-                    for person in group.person_set.all():
-                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-                            invite_event(new_event, person)
+    #             if groups.exists():
+    #                 group = groups[0]
+    #                 for person in group.person_set.all():
+    #                     if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+    #                         invite_event(new_event, person)
 
 def create_group_from_form(request):
     # create a form instance and populate it with data from the request:
@@ -387,7 +388,7 @@ def group(request):
     else:
         group_form = GroupForm()
 
-    group_form = get_group_form(request)
+    # group_form = get_group_form(request)
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
