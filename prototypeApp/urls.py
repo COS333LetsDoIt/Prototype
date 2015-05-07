@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^remove_friend/(?P<friend_id>\d+)/$', views.remove_friend, name='remove_friend'),
 
     url(r'^profile$', views.profile, name='profile'),
+
     url('', include('django.contrib.auth.urls'))
 
     # The above line includes the following lines of authenticating url patterns:

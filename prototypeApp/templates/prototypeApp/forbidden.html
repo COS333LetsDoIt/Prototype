@@ -1,0 +1,22 @@
+{% extends "prototypeApp/base.html" %}
+{% load staticfiles %}
+
+{% block title %} {{event}} {% endblock %}
+
+{% block custominclude %}
+  <link href = "{% static "prototypeApp/event.css" %}" rel = "stylesheet">
+{% endblock %}
+
+{% block header %}
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="" %}
+{% endblock %}   
+
+{% block content %}
+  <!-- Jumbotron Header -->
+  <div class="jumbotron hero-spacer">
+      <h1> Oops </h1>
+      <p> You don't have permission to view this page. </p>
+      </p>
+  </div>
+  <hr>
+{% endblock %}

@@ -215,15 +215,33 @@ def index(request):
 
 @login_required()
 def event(request, event_id):
+
     event = get_object_or_404(Event, pk=event_id)
-    if request.user.person in event.members.all():
-        user_in_event = True
-    else:
-        user_in_event = False
+    event_list = request.user.person.events.all()
+    invited_event_list = request.user.person.invitedEvents.all()
 
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
+
+    # works out events of friends of friends
+    friend_set = request.user.person.friends.all()
+    friend_event_list = set()
+    for friend in friend_set:
+        friend_events = friend.events.all();
+        for event in friend_events:
+            if event not in event_list and event not in invited_event_list:
+                friend_event_list.add(event)
+    
+
+    if request.user.person in event.members.all():
+        user_in_event = True
+    elif request.user.person in event.pendingMembers.all() or event in friend_event_list:
+        user_in_event = False
+    else:
+        context = {"item": "event", 'pending_event_count': pending_event_count, 'pending_friend_count': pending_friend_count}
+        return render(request, 'prototypeApp/forbidden.html', context)
+
 
     # print event.person_set.all()
     context = {"event": event, "user_in_event": user_in_event, 'pending_event_count': pending_event_count,
@@ -302,7 +320,8 @@ def aGroup(request, group_id):
     if request.user.person in group.person_set.all():
         user_in_group = True
     else:
-        user_in_group = False
+        context = {"item": "group", 'pending_event_count': pending_event_count, 'pending_friend_count': pending_friend_count}
+        return render(request, 'prototypeApp/forbidden.html', context)
     # print event.person_set.all()
 
     # get list of friends who are not in group yet
@@ -435,8 +454,13 @@ def login_view(request):
 @login_required()
 def profile(request):
     user = request.user;
+
+    # counts number of pending events and friend invites
+    pending_event_count = len(request.user.person.invitedEvents.all())
+    pending_friend_count = len(request.user.person.pendingFriends.all())
+
     image_form = get_image_form(request)
-    context = {"user": user, "form": image_form}
+    context = {"user": user, "form": image_form, "pending_event_count": pending_event_count, "pending_friend_count": pending_friend_count}
     return render(request, 'prototypeApp/profile.html', context)
 
 
