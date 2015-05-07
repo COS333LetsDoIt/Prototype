@@ -49,7 +49,7 @@ class Image(models.Model):
     imagefile = models.ImageField(upload_to='images', )
 
     # formats photo before saving
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
         if self.imagefile:
             image = Img.open(StringIO.StringIO(self.imagefile.read()))
             image.thumbnail((100,100), Img.ANTIALIAS)

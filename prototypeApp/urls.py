@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^index$', views.index, name='index'),
+    url(r'^index/byTime/$', views.indexByTime, name='indexByTime'),
     
     url(r'^people$', views.people, name='people'),
     
