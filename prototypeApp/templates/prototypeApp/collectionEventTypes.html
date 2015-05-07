@@ -25,12 +25,24 @@
     </h3>
     <p>
       
-      {{object.event.starttime}}-{{object.event.endtime}}
-      <p>
+
       {{object.formattedTime}}
       <p>
-      {{object.friends_in_event}} Friends attending 
-      {{object.friends_invited}} friends invited
+      {% if object.friends_in_event == 1 %}
+      <b><font color="green">{{object.friends_in_event}} </b></font>friend attending
+      {% elif object.friends_in_event == 0 %}
+      <b><font color="red">{{object.friends_in_event}} </b></font>friend attending
+      {% else %}
+      <b><font color="green">{{object.friends_in_event}} </b></font>friends attending
+      {% endif %}
+      |
+      {% if object.friends_invited == 1 %}
+      <b><font color="green">{{object.friends_invited}} </b></font>friend invited
+      {% elif object.friends_invited == 0 %}
+      <b><font color="red">{{object.friends_invited}} </b></font>friend invited
+      {% else %}
+      <b><font color="green">{{object.friends_invited}} </b></font>friends invited
+      {% endif %}
     </p>              
     <p>
       <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> {{ message }}</a>              
