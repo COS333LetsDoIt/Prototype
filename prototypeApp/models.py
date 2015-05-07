@@ -66,6 +66,7 @@ class Event(models.Model):
     endtime = models.DateTimeField('end time', default=datetime.datetime.now())
     location = models.CharField(max_length=100, default="")
     description = models.CharField(max_length=100, default="")
+    reminded = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 

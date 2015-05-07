@@ -3,18 +3,37 @@
 <!-- Need objects and numCol in context -->
 {% block collection-title %}
   <h2> {{ event_type }} </h2>
+
+    {% if sortByRelevance %}
+    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:indexByTime' %}">Sort by time</a>
+    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:index' %}" disabled="disabled">Sorted by relevance</a>
+    
+    {% else %}
+    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:indexByTime'%}" disabled="disabled"> Sorted by time </a>
+    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:index' %}">Sort by relevance</a>    
+    {% endif %}
+    
+    
+  
 {% endblock collection-title %}
 {% block display %}
-<div class="col-md-4 col-sm-4" href="{% url 'prototypeApp:event' object.id %}">
+<p>
+<div class="col-md-4 col-sm-4" href="{% url 'prototypeApp:event' object.event.id %}">
   <div class="thumbnail">
     <h3>
-      {{object.name}}
+      {{object.event.name}}
     </h3>
     <p>
-      {{object.starttime}}-{{object.endtime}}
+      
+      {{object.event.starttime}}-{{object.event.endtime}}
+      <p>
+      {{object.formattedTime}}
+      <p>
+      {{object.friends_in_event}} Friends attending 
+      {{object.friends_invited}} friends invited
     </p>              
     <p>
-      <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.id %}"> {{ message }}</a>              
+      <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> {{ message }}</a>              
     </p>
   </div>
 </div>

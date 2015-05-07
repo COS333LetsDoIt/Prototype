@@ -71,14 +71,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prototypeApp',
-    'imagekit'
+    'imagekit',
+    'django.contrib.admin',
     #'social_auth',
     #'datetimewidget'
 )
@@ -119,6 +119,15 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# email settings
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'letsdoit.noresponse@gmail.com'
+EMAIL_HOST_PASSWORD = 'flyingdragon'
+DEFAULT_FROM_EMAIL = 'letsdoit.noresponse@gmail.com'
+DEFAULT_TO_EMAIL = 'letsdoit.noresponse@gmail.com'
 
 
 # Static files (CSS, JavaScript, Images)
