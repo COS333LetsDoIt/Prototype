@@ -9,15 +9,7 @@
 {% endblock %}
 
 {% block header %}
-<li>
-  <a href="/prototypeApp/">Home</a>
-</li>
-<li>
-  <a href="/prototypeApp/group">Groups</a>
-</li>
-<li>
-  <a href="/prototypeApp/people">Friends</a>
-</li>
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="" %}
 {% endblock %}   
 
 {% block content %}
@@ -32,9 +24,9 @@
           <div class="row">
             <div class="col-md-3 col-lg-3 " align="center"> 
               {% if user.person.profilePicture.imagefile %}
-              <img alt="User Pic" src="media/{{ user.person.profilePicture.imagefile }}" class="img-circle"> 
+              <img alt="User Pic" src="media/{{ user.person.profilePicture.imagefile }}" class="img-rounded"> 
               {% else %}
-              <img alt="User Pic" src="media/images/smiley.png" class="img-circle">
+              <img alt="User Pic" src="media/images/smiley.png" class="img-rounded">
               {% endif %}
             </div>
             <div class=" col-md-9 col-lg-9 "> 
