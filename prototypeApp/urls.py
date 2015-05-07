@@ -7,6 +7,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^index$', views.index, name='index'),
+    url(r'^index/byTime/$', views.indexByTime, name='indexByTime'),
     
     url(r'^people$', views.people, name='people'),
     
@@ -33,13 +34,16 @@ urlpatterns = patterns('',
     # url('', include('django.contrib.auth.urls'))
     # url(r'password_change/$', 'django.contrib.auth.views.password_change', name='changePassword'),
     #override the default urls
-    url(r'^password_change/$', auth_views.password_change, {'post_change_redirect': '/prototypeApp/password_change_done'}),
-    url(r'^password_change_done/$', auth_views.password_change_done, name='password_change_done'),
+    url(r'^password_change/$', auth_views.password_change, {'post_change_redirect' : '/prototypeApp/password_change/done/', 'template_name': 'registration/password_change_form_1.html'}, name="password_change"), 
+    (r'^password_change/done/$', auth_views.password_change_done),
+    # url(r'^password_change/$', auth_views.password_change, {'post_change_redirect': '/prototypeApp/password_change_done'}, name='/prototypeApp/changePassword'),
+    # url(r'^password_change_done/$', auth_views.password_change_done, name='password_change_done'),
+
     # url(r'^password_change_done/$', auth_views.password_change_done, {'template_name': 'password_change_done.html'}),
-    # url(r'^password_reset/$', auth_views.password_reset, name='password_reset_done'),
-    # url(r'^password_reset_done/$', auth_views.password_reset_done, name='password_reset_done'),
-    # url(r'^password_reset_complete/$', auth_views.password_reset_complete, name='password_reset_complete'),
-    # url(r'^password_reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.password_reset_confirm, name='password_reset_confirm'),
+    url(r'^password_reset/$', auth_views.password_reset, {'post_reset_redirect': '/prototypeApp/password_reset_done'}, name='password_reset_done'),
+    url(r'^password_reset_done/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^password_reset_complete/$', auth_views.password_reset_complete, name='password_reset_complete'),
+    url(r'^password_reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.password_reset_confirm, name='password_reset_confirm'),
 
 
     #url(r'^sdk$', views.sdk, name='sdk'),

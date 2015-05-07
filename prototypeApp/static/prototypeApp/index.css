@@ -200,3 +200,13 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 .bs-example {
   margin: 20px;
 }
+
+.btn-right {
+  float:right;
+}
+
+.center-header {
+  float:none;
+  position: fixed;
+}
+
