@@ -1,0 +1,15 @@
+server {
+  listen 80;
+  server_name http://ec2-52-6-54-4.compute-1.amazonaws.com/;
+  location / {
+    proxy_pass http://127.0.0.1:8001;
+  }
+
+  location /static/ {
+    alias /home/ec2-user/prototype/staticfiles/;
+  }
+  location /media/ {
+    alias /home/ec2-user/prototype/media/;
+  }
+
+}

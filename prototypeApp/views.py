@@ -609,6 +609,8 @@ def login_view(request):
                 #print "Redirecting to next"
                 #print "next: " + next
                 #print request
+                if request.POST.has_key('remember_me'):   
+                    request.session.set_expiry(1209600) # 2 weeks
                 if next == "":
                     return HttpResponseRedirect(reverse('prototypeApp:index'))
                 else:
