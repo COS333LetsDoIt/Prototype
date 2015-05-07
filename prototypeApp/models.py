@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 
 # imports for photo manipulation ##
 from PIL import Image as Img
-import StringIO
+# import StringIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
@@ -49,15 +49,15 @@ class Image(models.Model):
     imagefile = models.ImageField(upload_to='images', )
 
     # formats photo before saving
-    def save(self, *args, **kwargs):
-        if self.imagefile:
-            image = Img.open(StringIO.StringIO(self.imagefile.read()))
-            image.thumbnail((100,100), Img.ANTIALIAS)
-            output = StringIO.StringIO()
-            image.save(output, format='JPEG', quality=75)
-            output.seek(0)
-            self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
-        super(Image, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    # if self.imagefile:
+    #     image = Img.open(StringIO.StringIO(self.imagefile.read()))
+    #     image.thumbnail((100,100), Img.ANTIALIAS)
+    #     output = StringIO.StringIO()
+    #     image.save(output, format='JPEG', quality=75)
+    #     output.seek(0)
+    #     self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
+    # super(Image, self).save(*args, **kwargs)
         
 
 class Event(models.Model):
