@@ -50,14 +50,14 @@ class Image(models.Model):
 
     # formats photo before saving
     def save(self, *args, **kwargs):
-    if self.imagefile:
-        image = Img.open(StringIO.StringIO(self.imagefile.read()))
-        image.thumbnail((100,100), Img.ANTIALIAS)
-        output = StringIO.StringIO()
-        image.save(output, format='JPEG', quality=75)
-        output.seek(0)
-        self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
-    super(Image, self).save(*args, **kwargs)
+        if self.imagefile:
+            image = Img.open(StringIO.StringIO(self.imagefile.read()))
+            image.thumbnail((100,100), Img.ANTIALIAS)
+            output = StringIO.StringIO()
+            image.save(output, format='JPEG', quality=75)
+            output.seek(0)
+            self.imagefile= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.imagefile.name, 'image/jpeg', output.len, None)
+        super(Image, self).save(*args, **kwargs)
         
 
 class Event(models.Model):
