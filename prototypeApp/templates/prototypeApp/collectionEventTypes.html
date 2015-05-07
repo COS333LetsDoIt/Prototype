@@ -25,20 +25,23 @@
     </h3>
     <p>
       
-      {{object.event.starttime}}-{{object.event.endtime}}
-      <p>
+
       {{object.formattedTime}}
       <p>
       {% if object.friends_in_event == 1 %}
-      {{object.friends_in_event}} friend attending 
+      <b><font color="green">{{object.friends_in_event}} </b></font>friend attending
+      {% elif object.friends_in_event == 0 %}
+      <b><font color="red">{{object.friends_in_event}} </b></font>friend attending
       {% else %}
-      {{object.friends_in_event}} friends attending 
+      <b><font color="green">{{object.friends_in_event}} </b></font>friends attending
       {% endif %}
       |
       {% if object.friends_invited == 1 %}
-      {{object.friends_invited}} friend invited 
+      <b><font color="green">{{object.friends_invited}} </b></font>friend invited
+      {% elif object.friends_invited == 0 %}
+      <b><font color="red">{{object.friends_invited}} </b></font>friend invited
       {% else %}
-      {{object.friends_invited}} friends invited
+      <b><font color="green">{{object.friends_invited}} </b></font>friends invited
       {% endif %}
     </p>              
     <p>

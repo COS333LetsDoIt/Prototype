@@ -191,16 +191,18 @@ def create_group_from_form(request):
 def calculateScore(user, event):
     
     # negative relevance for events that have already ended
-    cutoff = datetime.datetime.now()
-    cutoff = pytz.utc.localize(cutoff)
+    now = datetime.datetime.now()
+    now = pytz.utc.localize(now)
+    now += timedelta(hours=5) # how to convert timezone?
 
 
+    diffStart = event.starttime - now
+    diffEnd   = event.endtime - now
 
     people_in_event = 0;
     friends_in_event = 0;
     friends_invited = 0;
     score = 0.0;
-
 
     for person in event.members.all():
         people_in_event += 1.0;
@@ -214,9 +216,8 @@ def calculateScore(user, event):
             score += 0.5
             friends_invited += 1
 
-    if event.endtime < cutoff:
+    if diffEnd.total_seconds() < 0:
         score = -1.0
-
 
     return {'score': score, 'friends_in_event': friends_in_event, 'friends_invited': friends_invited}
 
@@ -240,9 +241,6 @@ def getFormattedTime(event):
 
     diffStart = event.starttime - now
     diffEnd   = event.endtime - now
-
-    print (now)
-    print(diffStart.total_seconds())
 
     if diffEnd.total_seconds() < 0:
         return "Event over"
@@ -288,18 +286,19 @@ def sortEventsByRelevance(user, event_list):
     # return events
 
 
-
 def sortEventsByTime(user, event_list):
     futureEvents = []
     pastEvents = []
     cutoff = datetime.datetime.now()
-    cutoff = pytz.utc.localize(cutoff)
+    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=5)
 
     for event in event_list:
         if event.endtime < cutoff:
             pastEvents.append(EventStats(user,event))
+            print ("past:" + event.name)
         else:
             futureEvents.append(EventStats(user,event))
+            print ("future:" + event.name)
 
     pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
     futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
