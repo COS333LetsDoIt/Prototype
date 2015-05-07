@@ -54,10 +54,10 @@ def main():
 				person_list = event.members.all()
 				recepient_list = [person.user.email for person in person_list]
 				send_mail(event.name + " is in 30 minutes!", 
-					event.name + " is in 30 minutes!\nDescription: " +  
-						event.description + 
-						"\nLocation: " + event.location + 
-						"\nTime: " + str(event.starttime) + " to " + str(event.endtime), 
+					event.name + " is in 30 minutes!"            +
+						"\nDescription: " + event.description    + 
+						"\nLocation: "    + event.location       + 
+						"\nTime: "        + str(event.starttime) + " to " + str(event.endtime), 
 					"no_response@letsdoit.com",
 					recepient_list, fail_silently=True)
 				event.reminded = True
