@@ -62,119 +62,124 @@ class ImageForm(forms.Form):
 #     class Meta:
 #         model = Image
 
-def get_image_form(request):
-    if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            newImage = Image(imagefile = request.FILES['imagefile'])
-            newImage.save()
-            request.user.person.profilePicture = newImage
-            request.user.person.save()
-            # source_file = request.FILES['imagefile']
-            # image_generator = Thumbnail(source=source_file)
+def create_image_from_form(request):
+    form = ImageForm(request.POST, request.FILES)
+    if form.is_valid():
+        newImage = Image(imagefile = request.FILES['imagefile'])
+        newImage.save()
+        request.user.person.profilePicture = newImage
+        request.user.person.save()
+
+
+# def get_image_form(request):
+#     if request.method == 'POST':
+#         form = ImageForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             newImage = Image(imagefile = request.FILES['imagefile'])
+#             newImage.save()
+#             request.user.person.profilePicture = newImage
+#             request.user.person.save()
+#             # source_file = request.FILES['imagefile']
+#             # image_generator = Thumbnail(source=source_file)
             
 
     form = ImageForm()
     return form
 
 # taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
-def get_event_form(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = EventForm(request.POST)
-        # check whether it's valid:
-        # print request.POST
-        #print (form.is_valid())
-        #print (form.errors)
-        #print (request.POST)
-        starttime = request.POST.get("starttime", None)
-        endtime = request.POST.get("endtime", None)
-            
-        if form.is_valid() and starttime and endtime:
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # new_event = form.save()
-            #print "hi"
-            #print request.POST.get("friends", '').split(', ')
-            # for friend_name in request.POST.get("friends", '').split(', '):
-            #     friends = Person.objects.filter(name=friend_name)
-            #     #print "found friend"
-            #     new_event.members.add(request.user.person)
-            #     if friends.exists():
-            #         new_event.pendingMembers.add(friends[0])
-            #         #friends[0].event_set.add(new_event)
-            #         #print "added friend to event"
+def create_event_from_form(request):
+    # create a form instance and populate it with data from the request:
+    form = EventForm(request.POST)
 
+    starttime = request.POST.get("starttime", None)
+    endtime = request.POST.get("endtime", None)
+        
+    if form.is_valid() and starttime and endtime:
 
-            starttime = dateutil.parser.parse(starttime)
-            endtime = dateutil.parser.parse(endtime)
+        starttime = dateutil.parser.parse(starttime)
+        endtime = dateutil.parser.parse(endtime)
 
-            if starttime < endtime:
-                new_event = form.save()
+        if starttime < endtime:
+            new_event = form.save()
 
-                new_event.starttime = starttime
-                new_event.endtime = endtime
+            new_event.starttime = starttime
+            new_event.endtime = endtime
 
-                # add friends to events
-                for friend_name in request.POST.get("friends", '').split(', '):
-                    friends = Person.objects.filter(name=friend_name)
-                    #print "found friend"
-                    new_event.members.add(request.user.person)
-                    if friends.exists() and friends[0] not in new_event.members.all():
-                        invite_event(new_event, friends[0])
-                        #friends[0].event_set.add(new_event)
-                        #print "added friend to event"
-
-
-
-                # add groups to events
-                for group_name in request.POST.get("groups", '').split(','):
-                    groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
-                    
-                    if groups.exists():
-                        group = groups[0]
-                        for person in group.person_set.all():
-                            if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-                                invite_event(new_event, person)
-
-                new_event.save()
-
-            else: # starttime > endtime, should not allow the user to create such event
-                return None
-
-    # if a GET (or any other method) we'll create a blank form
-    
-    form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
-    return form
-
-# taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
-def get_group_form(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = GroupForm(request.POST)
-        # check whether it's valid:
-        #print (request.POST)
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            new_group = form.save()
-
-            # add friends to groups
+            # add friends to events
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
                 #print "found friend"
-                new_group.person_set.add(request.user.person)
-                if friends.exists():
-                    new_group.person_set.add(friends[0])
+                new_event.members.add(request.user.person)
+                if friends.exists() and friends[0] not in new_event.members.all():
+                    invite_event(new_event, friends[0])
+                    #friends[0].event_set.add(new_event)
+                    #print "added friend to event"
 
-    # if a GET (or any other method) we'll create a blank form
-    
-    form = GroupForm()
-    return form
+            # add groups to events
+            for group_name in request.POST.get("groups", '').split(','):
+                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+                
+                if groups.exists():
+                    group = groups[0]
+                    for person in group.person_set.all():
+                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                            invite_event(new_event, person)
+
+            new_event.save()
+            return "Success"
+
+        else: # starttime > endtime, should not allow the user to create such event
+            return None
+
+    starttime = request.POST.get("starttime", None)
+    endtime = request.POST.get("endtime", None)
+        
+    if form.is_valid() and starttime and endtime:
+        starttime = dateutil.parser.parse(starttime)
+        endtime = dateutil.parser.parse(endtime)
+
+        if starttime < endtime:
+            new_event = form.save()
+
+            new_event.starttime = starttime
+            new_event.endtime = endtime
+
+            # add friends to events
+            for friend_name in request.POST.get("friends", '').split(', '):
+                friends = Person.objects.filter(name=friend_name)
+                #print "found friend"
+                new_event.members.add(request.user.person)
+                if friends.exists() and friends[0] not in new_event.members.all():
+                    invite_event(new_event, friends[0])
+
+            # add groups to events
+            for group_name in request.POST.get("groups", '').split(','):
+                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+                
+                if groups.exists():
+                    group = groups[0]
+                    for person in group.person_set.all():
+                        if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
+                            invite_event(new_event, person)
+
+def create_group_from_form(request):
+    # create a form instance and populate it with data from the request:
+    form = GroupForm(request.POST)
+    # check whether it's valid:
+    #print (request.POST)
+    if form.is_valid():
+        # process the data in form.cleaned_data as required
+        # ...
+        # redirect to a new URL:
+        new_group = form.save()
+
+        # add friends to groups
+        for friend_name in request.POST.get("friends", '').split(', '):
+            friends = Person.objects.filter(name=friend_name)
+            #print "found friend"
+            new_group.person_set.add(request.user.person)
+            if friends.exists():
+                new_group.person_set.add(friends[0])
 
 ################################################################################
 # Index page
@@ -246,18 +251,25 @@ def index(request):
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-
-    event_form = get_event_form(request)
-    if event_form is None:
-        # starttime > endtime
-        state = "Event start time is later than the end time!"
-        friends_list = None
-        groups_list = None
+# <<<<<<< HEAD
+    # event_form = get_event_form(request)
+    state = ""
+    if request.method == 'POST':
+        success_msg = create_event_from_form(request)
+        event_form = EventForm(request.POST)
+        if success_msg == None:
+            # starttime > endtime
+            state = "Event start time is later than the end time!"
+            friends_list = None
+            groups_list = None
+        else:
+            return HttpResponseRedirect('')
     else:
-        state = None
-        friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
-        groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
-        
+        event_form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
+
+    friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+    groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+    
     context = {"event_list": event_list, 
     'groups_list': groups_list, 
     'invited_event_list': invited_event_list, 
@@ -267,6 +279,28 @@ def index(request):
     'pending_event_count': pending_event_count,
     'pending_friend_count': pending_friend_count,
     'state': state}
+# =======
+#     event_form = get_event_form(request)
+#     if event_form is None:
+#         # starttime > endtime
+#         state = "Event start time is later than the end time!"
+#         friends_list = None
+#         groups_list = None
+#     else:
+#         state = None
+#         friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+#         groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
+        
+#     context = {"event_list": event_list, 
+#     'groups_list': groups_list, 
+#     'invited_event_list': invited_event_list, 
+#     'friend_event_list': friend_event_list, 
+#     'form': event_form, 
+#     'friends_list': friends_list,
+#     'pending_event_count': pending_event_count,
+#     'pending_friend_count': pending_friend_count,
+#     'state': state}
+# >>>>>>> 07eea1bebbe064f581a6c543c3ee1db337ad1fab
 
     return render(request, 'prototypeApp/index.html', context)
 
@@ -347,6 +381,12 @@ def leave_event(request, event_id):
 @login_required()
 def group(request):
     group_list = request.user.person.groups.all()
+    if request.method == 'POST':
+        create_group_from_form(request)
+        return HttpResponseRedirect('')
+    else:
+        group_form = GroupForm()
+
     group_form = get_group_form(request)
 
     # counts number of pending events and friend invites
@@ -521,7 +561,13 @@ def profile(request):
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-    image_form = get_image_form(request)
+    if request.method == 'POST':
+        create_image_from_form(request)
+        return HttpResponseRedirect('')
+    else:
+        image_form = ImageForm()
+
+
     context = {"user": user, "form": image_form, "pending_event_count": pending_event_count, "pending_friend_count": pending_friend_count}
     return render(request, 'prototypeApp/profile.html', context)
 
