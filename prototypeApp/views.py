@@ -255,19 +255,21 @@ def getFormattedTime(event):
         else:
             return "In " + str(minutes) + " minutes"
 
-    elif diffStart.days < 1:
+    elif diffStart.total_seconds() < (3600*3): #less than 3 hours
         hours = int(diffStart.total_seconds() / 3600)
         if hours == 1:
             return "In " + str(hours) + " hour"
         else:
             return "In " + str(hours) + " hours"
 
-    else: 
-        days = int(diffStart.days)
-        if days == 1:
-            return "In " + str(days) + " day"
-        else:
-            return "In " + str(days) + " days"
+    elif event.starttime.day == now.day and event.starttime.year == now.year:
+        return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+
+    elif event.starttime.day == now.day + 1 and event.starttime.year == now.year: 
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+
+    else:
+        return event.starttime
 
 # sorts list of events based on the relevance
 def sortEventsByRelevance(user, event_list):
@@ -631,6 +633,12 @@ def login_view(request):
 def profile(request):
     user = request.user;
 
+    if request.method == "POST":
+        user.person.receiveReminders = request.POST.has_key('receive_reminders')
+        user.person.save()
+
+
+    receive_reminders = user.person.receiveReminders
     # counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
@@ -641,8 +649,13 @@ def profile(request):
     else:
         image_form = ImageForm()
 
-
-    context = {"user": user, "form": image_form, "pending_event_count": pending_event_count, "pending_friend_count": pending_friend_count}
+    context = {
+        "user": user, 
+        "form": image_form, 
+        "pending_event_count": pending_event_count, 
+        "pending_friend_count": pending_friend_count,
+        "receive_reminders": receive_reminders
+    }
     return render(request, 'prototypeApp/profile.html', context)
 
 
