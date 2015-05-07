@@ -104,6 +104,7 @@ def create_event_from_form(request):
 
             new_event.starttime = starttime
             new_event.endtime = endtime
+            new_event.reminded = False
 
             # add friends to events
             for friend_name in request.POST.get("friends", '').split(', '):
