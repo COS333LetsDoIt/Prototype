@@ -86,6 +86,7 @@ class Person(models.Model):
     events = models.ManyToManyField(Event, blank=True, related_name="members")
     invitedEvents = models.ManyToManyField(Event, blank=True, related_name="pendingMembers")
     groups = models.ManyToManyField(Group, blank=True)
-    
+    receiveReminders = models.BooleanField(default=True)
+
     def __str__(self):
         return self.name
