@@ -235,7 +235,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 
 .fixed-height {
-  height: 180px;
+  height: 210px;
   overflow: auto;
-  display: table;
+}
+
+.sink-caption {
+  position: relative;
+  bottom: 0px;
 }
