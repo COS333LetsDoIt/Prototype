@@ -48,6 +48,7 @@
                     <td>
 		       <form action="{% url 'prototypeApp:profile' %}" method="post" id="formsubmit"> 
 			 {% csrf_token %}
+			 <input type="hidden" name="receiving" value="receiving">
 			 <input type="checkbox" name='receive_reminders' value="receive_reminders" onChange="$('#formsubmit').submit()" {% if receive_reminders %}checked{% endif %}>
 		      </form>
                     </td>

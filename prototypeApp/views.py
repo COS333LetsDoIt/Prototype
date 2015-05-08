@@ -632,8 +632,7 @@ def login_view(request):
 @login_required()
 def profile(request):
     user = request.user;
-
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.has_key('receiving'):
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
         print ("receivedd a post")
