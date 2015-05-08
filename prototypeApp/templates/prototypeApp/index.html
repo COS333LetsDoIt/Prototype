@@ -38,6 +38,14 @@
     });
   </script>
   <script type="text/javascript">
+    $("#description").click(function () {
+      $(this).select();
+    });
+    $("#location").click(function () {
+      $(this).select();
+    });
+  </script>
+  <script type="text/javascript">
 
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
@@ -211,13 +219,13 @@
                   <div class="form-group">
                     <label for="location" class="col-sm-4">Location:</label>
                     <div class="col-sm-8" id="text-box">
-                      <input name="location" type="text" required>
+                      <input id="location" name="location" value="TBD" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="description" class="col-sm-4">Description:</label>
                     <div class="col-sm-8" id="text-box">
-                      <input name="description" type="text" value="<No description>" required>
+                      <input id="description" name="description" type="text" value="None" required>
                     </div>
                   </div>
                   <div class="form-group">
