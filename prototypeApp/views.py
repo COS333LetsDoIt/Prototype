@@ -445,7 +445,7 @@ def leave_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
      event.members.remove(request.user.person)
      event.save()
-     return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)))
+     return HttpResponseRedirect(reverse('prototypeApp:index'));
 
 
 
