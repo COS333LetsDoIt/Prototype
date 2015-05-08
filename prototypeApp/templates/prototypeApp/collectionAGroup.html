@@ -5,14 +5,14 @@
   <h3>People in this group</h3>
 {% endblock collection-title %}
 {% block display %}
-<div class="col-md-2 col-sm-2 hero-feature">
-  <div class="thumbnail">
+<div class="col-md-3 col-sm-3 hero-feature">
+  <div class="thumbnail itembox fixed-height">
      {% if object.profilePicture.imagefile %}
       <img alt="User Pic" src="/media/{{ object.profilePicture.imagefile }}" class="img-rounded"> 
       {% else %}
       <img alt="User Pic" src="/media/images/smiley.png" class="img-rounded">
       {% endif %}
-      <div class="caption">
+      <div class="caption sink-caption">
         <h3>{{object}}</h3>
         <!--<p>No Additional Information</p>-->
     </div>
