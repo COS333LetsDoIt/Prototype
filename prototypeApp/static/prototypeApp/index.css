@@ -210,3 +210,26 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   position: fixed;
 }
 
+.upfeathers-thumbnail {
+  background-image: url(/media/images/upfeathers.png);
+}
+
+.wood-thumbnail {
+  background-image: url(/media/images/retina_wood.png);
+}
+
+.xv-thumbnail {
+  background-image: url(/media/images/xv.png);
+}
+
+.paisley-thumbnail {
+  background-image: url(/media/images/paisley.png);
+}
+
+.symphony-thumbnail {
+  background-image: url(/media/images/symphony.png);
+}
+
+.swirl-thumbnail {
+  background-image: url(/media/images/swirl_pattern.png);
+}
