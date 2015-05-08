@@ -297,10 +297,10 @@ def sortEventsByTime(user, event_list):
     for event in event_list:
         if event.endtime < cutoff:
             pastEvents.append(EventStats(user,event))
-            print ("past:" + event.name)
+            #print ("past:" + event.name)
         else:
             futureEvents.append(EventStats(user,event))
-            print ("future:" + event.name)
+            #print ("future:" + event.name)
 
     pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
     futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
