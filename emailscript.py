@@ -53,8 +53,9 @@ def main():
 		for event in event_list:
 			if (inSendInterval(event) and (not event.reminded)):
 				# Send emails to confirmed participants in the event
+				print ("sending")
 				person_list = event.members.all()
-				recepient_list = [person.user.email for person in person_list]
+				recepient_list = [person.user.email for person in person_list if person.receiveReminders]
 				send_mail(event.name + " is in 30 minutes!", 
 					event.name + " is in 30 minutes!"            +
 						"\nDescription: " + event.description    + 
@@ -84,8 +85,9 @@ def main():
 		time.sleep(delay)
 
 def inSendInterval(event):
-	low = 30*60
-	high = 40*60
+	target = 30*60
+	low = target - delay
+	high = target + delay
 	offset = 6*60*60 # since timezones are screwy
 	now = datetime.datetime.now()
 	now = pytz.utc.localize(now)

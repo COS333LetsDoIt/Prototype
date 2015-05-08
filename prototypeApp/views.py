@@ -636,6 +636,7 @@ def profile(request):
     if request.method == "POST":
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
+        print ("receivedd a post")
 
 
     receive_reminders = user.person.receiveReminders
