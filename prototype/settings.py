@@ -54,7 +54,7 @@ SECRET_KEY = 'lchjyz-rt38ukt67qe%v4%*f4p1s%rqavtc3z&z50-xavlnnq%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 # run pip install django-social-auth if necessary
 FACEBOOK_APP_ID='357630157777770'
@@ -65,7 +65,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://lets-do-it.tk/', 'http://ec2-52-6-54-4.compute-1.amazonaws.com/', '52.6.54.4/']
 
 
 # Application definition

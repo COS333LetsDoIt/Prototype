@@ -193,7 +193,7 @@ def calculateScore(user, event):
     # negative relevance for events that have already ended
     now = datetime.datetime.now()
     now = pytz.utc.localize(now)
-    now += timedelta(hours=5) # how to convert timezone?
+    now += timedelta(hours=6) # how to convert timezone?
 
 
     diffStart = event.starttime - now
@@ -237,7 +237,7 @@ class EventStats:
 def getFormattedTime(event):
     now = datetime.datetime.now()
     now = pytz.utc.localize(now)
-    now += timedelta(hours=5) # how to convert timezone?
+    now += timedelta(hours=6) # how to convert timezone?
 
     diffStart = event.starttime - now
     diffEnd   = event.endtime - now
@@ -263,10 +263,10 @@ def getFormattedTime(event):
             return "In " + str(hours) + " hours"
 
     elif event.starttime.day == now.day and event.starttime.year == now.year:
-        return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Today at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
 
     elif event.starttime.day == now.day + 1 and event.starttime.year == now.year: 
-        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
 
     else:
         return event.starttime
@@ -292,15 +292,15 @@ def sortEventsByTime(user, event_list):
     futureEvents = []
     pastEvents = []
     cutoff = datetime.datetime.now()
-    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=5)
+    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=6)
 
     for event in event_list:
         if event.endtime < cutoff:
             pastEvents.append(EventStats(user,event))
-            print ("past:" + event.name)
+            #print ("past:" + event.name)
         else:
             futureEvents.append(EventStats(user,event))
-            print ("future:" + event.name)
+            #print ("future:" + event.name)
 
     pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
     futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
@@ -632,10 +632,10 @@ def login_view(request):
 @login_required()
 def profile(request):
     user = request.user;
-
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.has_key('receiving'):
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
+        print ("receivedd a post")
 
 
     receive_reminders = user.person.receiveReminders

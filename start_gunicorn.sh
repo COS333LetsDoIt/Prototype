@@ -13,6 +13,8 @@ cd $APPDIR
 source ~/.bashrc
 #workon $APPNAME
 
+sudo service nginx restart
+
 exec gunicorn $APPNAME.wsgi:application \
 -w $NUM_WORKERS --bind=$ADDRESS \
 --log-level=debug 
