@@ -30,22 +30,18 @@
     d.setMinutes (0);
     $('#datetimepicker_start_time').datetimepicker({
       defaultDate: d,
-      //onChangeDateTime:  function(current_time,$input){ alert(current_time);}
     });
     d.setMinutes (d.getMinutes() + 60);
     $('#datetimepicker_end_time').datetimepicker({
       defaultDate: d,
     });
-  </script>
-  <script type="text/javascript">
+
     $("#description").click(function () {
       $(this).select();
     });
     $("#location").click(function () {
       $(this).select();
     });
-  </script>
-  <script type="text/javascript">
 
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
@@ -59,15 +55,11 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
-      //console.log(existingTokens);
-
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -89,8 +81,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
 //----------------------------------------------------------------------------------
@@ -107,15 +97,11 @@
     $('#tokenfield_groups').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#groupids').val( JSON.stringify(tokens));
-      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
     $('#tokenfield_groups').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
-      //console.log(existingTokens);
-
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -132,8 +118,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
 
@@ -151,12 +135,6 @@
     });
 
   </script>
-  <style type="text/css">
-  .ui-front {
-      z-index: 1000;
-  }
-
-  </style>
 {% endblock %}
 
 {% block header %}
@@ -241,7 +219,6 @@
                       <input type="text" name="groups" class="form-control" id="tokenfield_groups" placeholder="Type in the names of your groups"/>
                     </div>
                   </div>
-                  <!--<BR>&nbsp;<BR> -->
                   <div class="LDI-submit-button">
                     <input class="btn btn-sm btn-success" id="submit" type="submit" value="Create">
                   </div>

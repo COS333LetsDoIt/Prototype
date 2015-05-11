@@ -28,29 +28,11 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
     });
-
-    // var engine = new Bloodhound({
-    //   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
-    //   datumTokenizer: function(d) {
-    //     return Bloodhound.tokenizers.whitespace(d.value);
-    //   },
-    //   queryTokenizer: Bloodhound.tokenizers.whitespace
-    // });
-
-    // engine.initialize();
-
-    // $('#tokenfield-typeahead').tokenfield({
-    //   typeahead: [null, { source: engine.ttAdapter() }]
-    // });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
-      //console.log(existingTokens);
-
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -67,8 +49,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
     // Disables the submission of form upon pressing "Enter"
@@ -80,14 +60,7 @@
         }
       });
     });
-
   </script>
-  <style type="text/css">
-  .ui-front {
-      z-index: 1000;
-  }
-
-  </style>
 {% endblock %}
 
 {% block header %}

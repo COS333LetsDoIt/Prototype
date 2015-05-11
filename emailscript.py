@@ -68,7 +68,7 @@ def main():
 				recepient_list = []
 				for person in person_list:
 					dictionary = views.calculateScore(person.user, event)
-					if dictionary['score'] > priority_cutoff:
+					if person.receiveReminders and dictionary['score'] > priority_cutoff:
 						recepient_list.append(person.user.email)
 
 				subj = "Lot's of Friends going to: " + event.name + " in 30 minutes!"

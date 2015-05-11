@@ -7,14 +7,14 @@
     {% if sortByRelevance %}
     <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:indexByTime' %}">Sort by time</a>
     <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:index' %}" disabled="disabled">Sorted by relevance</a>
-    
+
     {% else %}
     <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:indexByTime'%}" disabled="disabled"> Sorted by time </a>
-    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:index' %}">Sort by relevance</a>    
+    <a class="btn btn-primary btn-sm btn-responsive btn-right" href = "{% url 'prototypeApp:index' %}">Sort by relevance</a>
     {% endif %}
-    
-    
-  
+
+
+
 {% endblock collection-title %}
 {% block display %}
 <p>
@@ -25,7 +25,7 @@
       {{object.event.name}}
     </h3>
     <p>
-      
+
 
       {{object.formattedTime}}
       <p>
@@ -44,9 +44,13 @@
       {% else %}
       <b><font color="green">{{object.friends_invited}} </b></font>friends invited
       {% endif %}
-    </p>              
+    </p>
     <p>
-      <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> {{ message }}</a>              
+      {% if object.score >= 0 %}
+      <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> {{ message }}</a>
+      {% else %}
+      <a class="btn btn-primary btn-responsive" href="{% url 'prototypeApp:event' object.event.id %}"> Details </a>
+      {% endif %}              
     </p>
   </div>
 </div>

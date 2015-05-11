@@ -29,15 +29,11 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
     });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
-      //console.log(existingTokens);
-
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -54,8 +50,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
     // Disables the submission of form upon pressing "Enter"
@@ -69,12 +63,6 @@
     });
 
   </script>
-  <style type="text/css">
-  .ui-front {
-      z-index: 1000;
-  }
-
-  </style>
 {% endblock %}
 
 {% block header %}
@@ -131,6 +119,5 @@
     </div>
   </div>
   <p>
-<!-- </div> -->
   {% include "prototypeApp/collectionGroups.html" with objects=group_list numCol=3 %}
 {% endblock %}
