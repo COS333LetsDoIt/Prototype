@@ -16,4 +16,42 @@
 {% endblock %}   
 
 {% block content %}
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Let's Do It!</h1>
+        <p>Experience spontaneous event scheduling at its best. Propose events, invite your friends, join your friends' events, and create groups of friends. All in one app. </p>
+        {% if user.is_anonymous %}
+        <p> Register your account today to start experiencing the joy of spontaneous scheduling. </p>
+        <p><a class="btn btn-primary btn-lg" href="register" role="button">Register account &raquo;</a></p>
+        {% else %}
+        <p> Start organizing hangouts or join your friends' events now.
+        <p><a class="btn btn-primary btn-lg" href="index" role="button">See my events &raquo;</a></p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Event-centric design</h2>
+          <p>Propose events effortlessly and browse all events on one page.</p>
+          <p><a class="btn btn-default" href="index" role="button">Go to events &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Group your friends</h2>
+          <p>Create groups to invite your friends to an event in one click. </p>
+          <p><a class="btn btn-default" href="group" role="button">See my groups &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Email notification</h2>
+          <p>You can choose to receive email notifications half an hour before your event starts. </p>
+          <p><a class="btn btn-default" href="profile" role="button">Change notification settings &raquo;</a></p>
+        </div>
+      </div>
+
+      <hr>
+    </div> <!-- /container -->
+
 {% endblock %}
