@@ -1,0 +1,19 @@
+{% extends "prototypeApp/base.html" %}
+{% load staticfiles %}
+
+{% block title %} About us {% endblock %}
+
+{% block custominclude %}
+  <link href = "{% static "prototypeApp/index.css" %}" rel = "stylesheet">
+{% endblock %}
+
+{% block header %}
+{% if user.is_anonymous %}
+{% include "prototypeApp/header.html" %}
+{% else %}
+{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location="" %}
+{% endif %}
+{% endblock %}   
+
+{% block content %}
+{% endblock %}
