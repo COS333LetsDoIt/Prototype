@@ -256,17 +256,17 @@ def getFormattedTime(event):
             return "In " + str(minutes) + " minutes"
 
     elif diffStart.total_seconds() < (3600*3): #less than 3 hours
-        hours = int(diffStart.total_seconds() / 3600)
+        hours = round(diffStart.total_seconds() / 3600)
         if hours == 1:
             return "In " + str(hours) + " hour"
         else:
             return "In " + str(hours) + " hours"
 
     elif event.starttime.day == now.day and event.starttime.year == now.year:
-        return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Today at " + str( (event.starttime - timedelta(hours=5) ).time().strftime("%I:%M %p"))
 
     elif event.starttime.day == now.day + 1 and event.starttime.year == now.year: 
-        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5) ).time().strftime("%I:%M %p"))
 
     else:
         return event.starttime

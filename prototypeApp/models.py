@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 
 # imports for photo manipulation ##
 from PIL import Image as Img
-import StringIO
+# import StringIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
