@@ -1,34 +1,31 @@
+################################################################################
+# views.py
+# Contains functions that handle the interaction between the user input and the
+# database, and returns the page to be displayed to the user.
+################################################################################
+
 from __future__ import print_function
+
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_protect
-from prototypeApp.models import Person, Group, Event, Image
 from django import forms
 from django.db import models
 from django.forms import ModelForm
-#from datetimewidget.widgets import DateTimeWidget
-import datetime
-from datetime import timedelta
-import pytz
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, views, authenticate, login
 from django.contrib.auth.models import User
 from django.core.context_processors import csrf
-# pip install python-dateutil
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from prototypeApp.models import Person, Group, Event, Image
 import dateutil.parser
 import re
 import json
-
-## imports for photo manipulation ##
-from PIL import Image as Img
-from io import StringIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-
-# from imagekit.forms import ProcessedImageField
-# from imagekit.processors import ResizeToFill
-# import PIL
-
+import datetime
+from datetime import timedelta
+import pytz
 
 ################################################################################
 # Forms
@@ -44,24 +41,14 @@ class GroupForm(ModelForm):
         model = Group
         fields = ['name']
 
-# class Thumbnail(ImageSpec):
-#     processors = [ResizeToFill(100,100)]
-#     format = 'JPEG'
-#     options = {'quality':60}
-
 class ImageForm(forms.Form):
     imagefile = forms.ImageField(
         label='Select a file',
     )
-    # imagefile = ProcessedImageField(spec_id='prototypeApp:image:imagefile',
-    #     processors=[ResizeToFill(100,100)],
-    #     format='JPEG',
-    #     options={'quality':60})
 
-# class ImageForm(ModelForm):
-#     class Meta:
-#         model = Image
+##############################################################################
 
+# Function to handle profile picture uploads from an image form
 def create_image_from_form(request):
     form = ImageForm(request.POST, request.FILES)
     if form.is_valid():
@@ -69,33 +56,24 @@ def create_image_from_form(request):
         newImage.save()
         request.user.person.profilePicture = newImage
         request.user.person.save()
-
-
-# def get_image_form(request):
-#     if request.method == 'POST':
-#         form = ImageForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             newImage = Image(imagefile = request.FILES['imagefile'])
-#             newImage.save()
-#             request.user.person.profilePicture = newImage
-#             request.user.person.save()
-#             # source_file = request.FILES['imagefile']
-#             # image_generator = Thumbnail(source=source_file)
-
-
     form = ImageForm()
     return form
 
-# taken from https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
+##############################################################################
+
+# Function to create an event from an event form. Adapted from
+# https://docs.djangoproject.com/en/1.8/topics/forms/#forms-in-django
 def create_event_from_form(request):
-    # create a form instance and populate it with data from the request:
+
+    # Create a form instance and populate it with data from the request:
     form = EventForm(request.POST)
 
     starttime = request.POST.get("starttime", None)
     endtime = request.POST.get("endtime", None)
 
+    # Checks whether the form is valid, and if the starttime given is earlier
+    # than the endtime of the event
     if form.is_valid() and starttime and endtime:
-
         starttime = dateutil.parser.parse(starttime)
         endtime = dateutil.parser.parse(endtime)
 
@@ -106,19 +84,16 @@ def create_event_from_form(request):
             new_event.endtime = endtime
             new_event.reminded = False
 
-            # add friends to events
+            # Add friends to events
             for friend_name in request.POST.get("friends", '').split(', '):
                 friends = Person.objects.filter(name=friend_name)
-                #print "found friend"
                 new_event.members.add(request.user.person)
                 if friends.exists() and friends[0] not in new_event.members.all():
                     invite_event(new_event, friends[0])
-                    #friends[0].event_set.add(new_event)
-                    #print "added friend to event"
 
-            # add groups to events
+            # Add Groups to events
             for group_name in request.POST.get("groups", '').split(','):
-                groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
+                groups = Group.objects.filter(name=group_name)
 
                 if groups.exists():
                     group = groups[0]
@@ -133,76 +108,39 @@ def create_event_from_form(request):
             return None
     return None
 
-    # starttime = request.POST.get("starttime", None)
-    # endtime = request.POST.get("endtime", None)
+##############################################################################
 
-    # if form.is_valid() and starttime and endtime:
-    #     starttime = dateutil.parser.parse(starttime)
-    #     endtime = dateutil.parser.parse(endtime)
-
-    #     if starttime < endtime:
-    #         new_event = form.save()
-
-    #         new_event.starttime = starttime
-    #         new_event.endtime = endtime
-
-    #         # add friends to events
-    #         for friend_name in request.POST.get("friends", '').split(', '):
-    #             friends = Person.objects.filter(name=friend_name)
-    #             #print "found friend"
-    #             new_event.members.add(request.user.person)
-    #             if friends.exists() and friends[0] not in new_event.members.all():
-    #                 invite_event(new_event, friends[0])
-
-    #         # add groups to events
-    #         for group_name in request.POST.get("groups", '').split(','):
-    #             groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
-
-    #             if groups.exists():
-    #                 group = groups[0]
-    #                 for person in group.person_set.all():
-    #                     if person.id != request.user.person.id and person not in new_event.pendingMembers.all():
-    #                         invite_event(new_event, person)
-
+# Function to create a group from a group form.
 def create_group_from_form(request):
-    # create a form instance and populate it with data from the request:
+    # Create a form instance and populate it with data from the request:
     form = GroupForm(request.POST)
-    # check whether it's valid:
-    #print (request.POST)
+
+    # Check whether form submitted is valid:
     if form.is_valid():
-        # process the data in form.cleaned_data as required
-        # ...
-        # redirect to a new URL:
+
+        # Creates new group if the form is valid
         new_group = form.save()
 
-        # add friends to groups
+        # Add friends to groups
         for friend_name in request.POST.get("friends", '').split(', '):
             friends = Person.objects.filter(name=friend_name)
-            #print "found friend"
             new_group.person_set.add(request.user.person)
             if friends.exists():
                 new_group.person_set.add(friends[0])
 
 ################################################################################
-# Index page
+# Functions for Index page
 ################################################################################
 
-# Calculates the relevance score for an event to a user
+# Calculates the relevance score for an event to a user. The relevance score
+# is (number of friends attending to event + 0.5* number of friends invited).
+# Events that have already ended get a negative relevance score.
 def calculateScore(user, event):
-
-    # negative relevance for events that have already ended
-    now = datetime.datetime.now()
-    now = pytz.utc.localize(now)
-    now += timedelta(hours=6) # how to convert timezone?
-
-
-    diffStart = event.starttime - now
-    diffEnd   = event.endtime - now
-
-    people_in_event = 0;
-    friends_in_event = 0;
-    friends_invited = 0;
-    score = 0.0;
+    # Calculates the number of friends attending and invited to an event
+    people_in_event     = 0;
+    friends_in_event    = 0;
+    friends_invited     = 0;
+    score               = 0.0;
 
     for person in event.members.all():
         people_in_event += 1.0;
@@ -216,12 +154,26 @@ def calculateScore(user, event):
             score += 0.5
             friends_invited += 1
 
+    # Negative relevance score for events that have already ended
+    now = datetime.datetime.now()
+    now = pytz.utc.localize(now)
+    now += timedelta(hours=6)
+
+    diffStart = event.starttime - now
+    diffEnd   = event.endtime - now
+
     if diffEnd.total_seconds() < 0:
         score = -1.0
 
-    return {'score': score, 'friends_in_event': friends_in_event, 'friends_invited': friends_invited}
+    return {'score': score,
+    'friends_in_event': friends_in_event,
+    'friends_invited': friends_invited}
 
-# Each EventScore object contains a event and its corresponding score
+##############################################################################
+
+# Each EventScore object contains a event and its corresponding relevance score,
+# as well as the number of friends attending and invited to an event. This
+# facilitates sorting events based on relevance.
 class EventStats:
     def __init__(self, user, event):
         self.event              = event;
@@ -234,10 +186,46 @@ class EventStats:
     def __str__(self):
         return self.event.name + ":" + str(self.score)
 
+##############################################################################
+
+# Sorts list of events based on the relevance
+def sortEventsByRelevance(user, event_list):
+    allEventStats = []
+    for event in event_list:
+        allEventStats.append(EventStats(user, event))
+
+    allEventStats = sorted(allEventStats, key=lambda eventstats:eventstats.score, reverse=True)
+    return allEventStats
+
+##############################################################################
+
+# Sorts list of events based on the starttime
+def sortEventsByTime(user, event_list):
+    futureEvents = []
+    pastEvents = []
+    cutoff = datetime.datetime.now()
+    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=6)
+
+    for event in event_list:
+        if event.endtime < cutoff:
+            pastEvents.append(EventStats(user,event))
+        else:
+            futureEvents.append(EventStats(user,event))
+
+    pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
+    futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
+
+    futureEvents.extend(pastEvents)
+    return futureEvents
+
+##############################################################################
+
+# Helper function to format the time for each event, such as "In 15 minutes"
+# or "Tomorrow at 13:00"
 def getFormattedTime(event):
     now = datetime.datetime.now()
     now = pytz.utc.localize(now)
-    now += timedelta(hours=6) # how to convert timezone?
+    now += timedelta(hours=6)
 
     diffStart = event.starttime - now
     diffEnd   = event.endtime - now
@@ -248,78 +236,65 @@ def getFormattedTime(event):
     elif diffStart.total_seconds() < 0:
         return "Happening now"
 
-    elif diffStart.total_seconds() < 3600: # less than one hour
+    # Events less than one hour away
+    elif diffStart.total_seconds() < 3600:
         minutes = int(diffStart.total_seconds() / 60)
         if minutes == 1:
             return "In " + str(minutes) + " minute"
         else:
             return "In " + str(minutes) + " minutes"
 
-    elif diffStart.total_seconds() < (3600*3): #less than 3 hours
+    # Events less than 3 hours away
+    elif diffStart.total_seconds() < (3600*3):
         hours = round(diffStart.total_seconds() / 3600)
         if hours == 1:
             return "In " + str(hours) + " hour"
         else:
             return "In " + str(hours) + " hours"
 
+    # Events starting today
     elif event.starttime.day == now.day and event.starttime.year == now.year:
         return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
 
+    # Events starting tomorrow
     elif event.starttime.day == now.day + 1 and event.starttime.year == now.year:
         return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
 
     else:
         return event.starttime
 
-# sorts list of events based on the relevance
-def sortEventsByRelevance(user, event_list):
-    allEventStats = []
-    for event in event_list:
-        allEventStats.append(EventStats(user, event))
+##############################################################################
 
-    allEventStats = sorted(allEventStats, key=lambda eventstats:eventstats.score, reverse=True)
-    # print (eventScores)
-    return allEventStats
-    # events = []
-    # for eventScore in eventScores:
-    #     events.append(eventScore.event)
-    #     # print (eventScore.event.name + ":" + str(eventScore.score))
-
-    # return events
-
-
-def sortEventsByTime(user, event_list):
-    futureEvents = []
-    pastEvents = []
+# Deletes old events  (which have ended more than 2 days ago)
+def full_event_cleanup():
     cutoff = datetime.datetime.now()
-    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=6)
+    delta = timedelta(days=2)
+    cutoff = cutoff - delta
+    cutoff = pytz.utc.localize(cutoff)
 
-    for event in event_list:
-        if event.endtime < cutoff:
-            pastEvents.append(EventStats(user,event))
-            #print ("past:" + event.name)
-        else:
-            futureEvents.append(EventStats(user,event))
-            #print ("future:" + event.name)
+    for event in Event.objects.all():
+        current = event.endtime
 
-    pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
-    futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
-    futureEvents.extend(pastEvents)
+        if (current <= cutoff):
+            event.delete()
 
-    return futureEvents
+##############################################################################
 
+# View for index page, with events sorted by start time
 @login_required()
 def indexByTime(request):
     return index(request, False)
 
+##############################################################################
 
+# View for index page
 @login_required()
 def index(request, sortByRelevance=True):
-
 
     # Gets rid of old events globally
     full_event_cleanup()
 
+    # Sorts events
     if sortByRelevance:
         event_list = sortEventsByRelevance(request.user, request.user.person.events.all())
         invited_event_list = sortEventsByRelevance(request.user, request.user.person.invitedEvents.all())
@@ -328,7 +303,8 @@ def index(request, sortByRelevance=True):
         invited_event_list = sortEventsByTime(request.user, request.user.person.invitedEvents.all())
 
 
-    # works out events of friends of friends
+    # Works out events of friends of friends, and sorts based on either relevance or
+    # start time
     friend_set = request.user.person.friends.all()
     friend_event_list = set()
     for friend in friend_set:
@@ -342,10 +318,12 @@ def index(request, sortByRelevance=True):
     else:
         friend_event_list = sortEventsByTime(request.user, friend_event_list)
 
-    # counts number of pending events and friend invites
+    # Counts number of pending event and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
+    # Error message if the user attempts to create an event where the start time
+    # is earlier than the end time
     state = ""
     if request.method == 'POST':
         success_msg = create_event_from_form(request)
@@ -360,10 +338,11 @@ def index(request, sortByRelevance=True):
     else:
         event_form = EventForm(initial={'starttime': datetime.datetime.now(), 'endtime': datetime.datetime.now()})
 
-
+    # Generates json of user's friends and groups for the create event form
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
 
+    # Renders the webpage
     context = {"event_list": event_list,
     'groups_list': groups_list,
     'invited_event_list': invited_event_list,
@@ -379,10 +358,10 @@ def index(request, sortByRelevance=True):
 
 
 ################################################################################
-# Events
+# Functions for Event Page
 ################################################################################
 
-
+# View for the event page
 @login_required()
 def event(request, event_id):
 
@@ -419,7 +398,10 @@ def event(request, event_id):
     'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/event.html', context)
 
-# join event
+##############################################################################
+
+# Functions that allow use to join an event, decline an event, invite
+# a friend to an event and leave an event
 @login_required()
 def join_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
@@ -453,6 +435,8 @@ def leave_event(request, event_id):
 # Groups
 ################################################################################
 
+
+# View for the groups page, listing all the groups that the user belongs to
 @login_required()
 def group(request):
     group_list = request.user.person.groups.all()
@@ -462,15 +446,13 @@ def group(request):
     else:
         group_form = GroupForm()
 
-    # group_form = get_group_form(request)
-
-    # counts number of pending events and friend invites
+    # Counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-    source = []
 
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
+
     context = {"group_list": group_list,
     'form': group_form,
     "friends_list": friends_list,
@@ -478,19 +460,23 @@ def group(request):
     'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/group.html', context)
 
+##############################################################################
+
+# View for the individual group page, listing the details of a particular
+# group
 @login_required()
 def aGroup(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
 
-    # counts number of pending events and friend invites
+    # Counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
-    # add friend to existing group
+
+    # Add friend to existing group
     if request.method == 'POST':
         for friend_name in request.POST.get("friends", '').split(', '):
             friends = Person.objects.filter(name=friend_name)
-            #print "found friend"
             if friends.exists():
                 group.person_set.add(friends[0])
 
@@ -499,9 +485,9 @@ def aGroup(request, group_id):
     else:
         context = {"item": "group", 'pending_event_count': pending_event_count, 'pending_friend_count': pending_friend_count}
         return render(request, 'prototypeApp/forbidden.html', context)
-    # print event.person_set.all()
 
-    # get list of friends who are not in group yet
+
+    # Get list of friends who are not in group yet
     friends = request.user.person.friends.all()
     friends = friends.exclude(id__in=group.person_set.all())
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in friends])
@@ -510,6 +496,9 @@ def aGroup(request, group_id):
     'pending_friend_count': pending_friend_count}
     return render(request, 'prototypeApp/aGroup.html', context)
 
+##############################################################################
+
+# Function that allow user to leave a group
 @login_required()
 def leave_group(request, group_id):
      group = get_object_or_404(Group, pk=group_id)
@@ -527,26 +516,27 @@ def leave_group(request, group_id):
 
 
 ################################################################################
-# Friends
+# Functions for Friends page
 ################################################################################
 
-# Create your views here.
+# Veiw for friends page
 @login_required()
 def people(request):
-    #friends_list = Person.objects.order_by('name')
+
+    # Adds friends to user from a form
     if request.method == 'POST':
         for friend_name in request.POST.get("friends", '').split(', '):
             friends = Person.objects.filter(name=friend_name)
-            #print "found friend"
             if friends.exists():
                 add_friend(request, friends[0].id)
 
+    # Generates list of other users that a user can befriend
     people = Person.objects.exclude(id=request.user.person.id)
     people = people.exclude(id__in=request.user.person.friends.all())
     people = people.exclude(id__in=request.user.person.invitedFriends.all())
     people = people.exclude(id__in=request.user.person.pendingFriends.all())
 
-    # counts number of pending events and friend invites
+    # Counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
@@ -564,6 +554,10 @@ def people(request):
     }
     return render(request, 'prototypeApp/people.html', context)
 
+##############################################################################
+
+# Functions that allow user to add friend, remove friend and decline a friend
+# request
 def add_friend(request, friend_id):
     friend = get_object_or_404(Person, pk=friend_id)
     if request.user.person in friend.invitedFriends.all():
@@ -586,32 +580,24 @@ def remove_friend(request, friend_id):
     return HttpResponseRedirect(reverse('prototypeApp:people'));
 
 
-
 ################################################################################
 # User oprations (Sign-in / Register / Change user profile)
 ################################################################################
 
-# signin page
+# Signin page
 def login_view(request):
     state = "Please log in:"
     username = ""
     next = request.GET.get('next', "")
     if request.method == "POST":
-        #print "POST request received"
+
         username = request.POST.get('username', '')
-        #print "username: " + username
         password = request.POST.get('password', '')
-        #print "password: " + password
         user = authenticate(username=username, password=password)
-        #print "The user is: " + str(user)
         next = request.POST.get('next', next)
         if user is not None:
             if user.is_active:
-                #print "User worked"
                 login(request, user)
-                #print "Redirecting to next"
-                #print "next: " + next
-                #print request
                 if request.POST.has_key('remember_me'):
                     request.session.set_expiry(1209600) # 2 weeks
                 if next == "":
@@ -619,30 +605,33 @@ def login_view(request):
                 else:
                     return HttpResponseRedirect(next)
             else:
-                state = "Please user a nondisabled user:"
-                #print "disabled account"
-                # Return a 'disabled account' error message
+                state = "Please use a nondisabled user:"
         else:
             # Return an 'invalid login' error message.
             state = "The username or password you entered is incorrect."
-    #print "Page outputted"
     context = {'state':state, 'username': username, 'next': next}
     return render(request, 'prototypeApp/login.html', context)
 
+##############################################################################
+
+# Profile page
 @login_required()
+
 def profile(request):
     user = request.user;
+
+    # Lets user change whether they want to receive email reminders
     if request.method == "POST" and request.POST.has_key('receiving'):
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
-        #print ("receivedd a post")
-
 
     receive_reminders = user.person.receiveReminders
-    # counts number of pending events and friend invites
+
+    # Counts number of pending events and friend invites
     pending_event_count = len(request.user.person.invitedEvents.all())
     pending_friend_count = len(request.user.person.pendingFriends.all())
 
+    # Lets user change change their profile picture
     if request.method == 'POST':
         create_image_from_form(request)
         return HttpResponseRedirect('')
@@ -658,8 +647,9 @@ def profile(request):
     }
     return render(request, 'prototypeApp/profile.html', context)
 
+##############################################################################
 
-# new user registration
+# New user registration
 def register(request):
     state = ""
     username = ""
@@ -667,35 +657,27 @@ def register(request):
     password = ""
 
     if request.method == "POST":
-        #print "POST request received"
         username = request.POST.get('username', "")
-        #print "username: " + username
         password = request.POST.get('password', "")
-        #print "password: " + password
         email = request.POST.get('email', "")
-        #print "email: " + email
 
         if User.objects.filter(username=username).exists():
             state = "That name is already taken. Please add a middlename or epithet."
         elif User.objects.filter(email=email).exists():
             state = "That email is already registered."
-        # elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
-        #         state = "That email address is not valid"
         else:
             user = None
             user = User.objects.create_user(username, email, password)
-            #### Creates a new person object and links it to the user!
+
+            # Creates a new person object and links it to the user
             newPerson = Person()
             newPerson.name = username
             newPerson.user = user
             newPerson.save()
-            #print "The user is: " + str(user)
-            if user is not None:
-                #print "User created"
-                user = authenticate(username=username, password=password)
 
+            if user is not None:
+                user = authenticate(username=username, password=password)
                 login(request, user)
-                #print "User logged in"
                 return HttpResponseRedirect(reverse('prototypeApp:people'))
             else:
                 state = "Something is wrong with your input. Try again."
@@ -703,31 +685,16 @@ def register(request):
     context = {'state':state, 'email': email, 'username': username}
     return render(request, 'prototypeApp/register.html', context)
 
-# after logging out, return to login
+# After logging out, return to login
 def logout_view(request):
     logout(request)
     #print "User logged off"
     return render(request, 'prototypeApp/login.html', {})
 
-def full_event_cleanup():
-    cutoff = datetime.datetime.now()
-    delta = timedelta(days=2)
-    cutoff = cutoff - delta
-    cutoff = pytz.utc.localize(cutoff)
-
-    for event in Event.objects.all():
-        current = event.endtime
-        #current = pytz.utc.localize(current)
-        # current.replace(tzinfo=None)
-        # cutoff.replace(tzinfo=None)
-
-        if (current <= cutoff):
-            event.delete()
 
 ################################################################################
 # About page
 ################################################################################
-
 
 def about(request):
     user = request.user
@@ -744,16 +711,3 @@ def about(request):
         "pending_friend_count": pending_friend_count,
         }
     return render(request, 'prototypeApp/about.html', context)
-
-# What what is this??
-# def signup(request):
-#     event_list = Event.objects.order_by('starttime')
-#     context = {"event_list": event_list}
-#     return render(request, 'prototypeApp/index.html', context)
-
-
-
-
-# def sdk(request):
-#     context = {}
-#     return render(request, 'prototypeApp/sdk.html', context)
