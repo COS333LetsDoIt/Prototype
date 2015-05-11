@@ -1,3 +1,8 @@
+################################################################################
+# admin.py
+# Settings for the admin page
+################################################################################
+
 from django.contrib import admin
 from prototypeApp.models import Event, Person, Group
 
@@ -16,7 +21,6 @@ class EventAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin):
 	inlines = [PersonInlineForGroups]
 
-# Register your models here.
 admin.site.register(Event, EventAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Person)
