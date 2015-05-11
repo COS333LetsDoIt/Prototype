@@ -239,3 +239,47 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   overflow: auto;
   /*position: relative;*/
 }
+
+#event-thumbnail {
+  position: absolute;
+  margin: 0 auto;
+  width: 95%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(/media/images/event-view.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#group-thumbnail {
+  position: absolute;
+  margin: 0 auto;
+  width: 95%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(/media/images/group-view.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#profile-thumbnail {
+  position: absolute;
+  margin: 0 auto;
+  width: 95%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(/media/images/profile-view.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.filler {
+  height:250px;
+  width: 90%;
+}
