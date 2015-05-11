@@ -22,7 +22,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 import datetime
 from PIL import Image as Img
-# import StringIO
+import StringIO
 
 # Image model contains the image for each profile picture.
 class Image(models.Model):
