@@ -254,11 +254,11 @@ def getFormattedTime(event):
 
     # Events starting today
     elif event.starttime.day == now.day and event.starttime.year == now.year:
-        return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Today at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
 
     # Events starting tomorrow
     elif event.starttime.day == now.day + 1 and event.starttime.year == now.year:
-        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
 
     else:
         return event.starttime
