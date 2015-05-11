@@ -1,12 +1,13 @@
-"""
-Django settings for prototype project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
-"""
+################################################################################
+# settings.py
+# Django settings for the project
+#
+# For more information on this file, see
+# https://docs.djangoproject.com/en/1.7/topics/settings/
+#
+# For the full list of settings and their values, see
+# https://docs.djangoproject.com/en/1.7/ref/settings/
+################################################################################
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -14,9 +15,7 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-print(BASE_DIR)
-# STATIC_URL = 'prototypeApp/static/'
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
@@ -24,29 +23,16 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'prototypeApp/static/'),
 )
 
-#####################################################################
-# Location for uploaded photos
-#######################################################################
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
-#########################################################################
-
-
-#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 LOGIN_URL = 'login/'
-# In future iterations, make different redirect/error pages.
 LOGIN_REDIRECT_URL = 'login/'
 LOGIN_ERROR_URL    = 'login/'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'lchjyz-rt38ukt67qe%v4%*f4p1s%rqavtc3z&z50-xavlnnq%'
@@ -60,8 +46,6 @@ TEMPLATE_DEBUG = False
 FACEBOOK_APP_ID='357630157777770'
 FACEBOOK_API_SECRET='a4868abb9b426a24d3c0923ebd6a99b2'
 AUTHENTICATION_BACKENDS = (
-    #'social_auth.backends.facebook.FacebookBackend',
-    #'social_auth.backends.OpenIDBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -69,7 +53,6 @@ ALLOWED_HOSTS = ['http://lets-do-it.tk/', 'http://ec2-52-6-54-4.compute-1.amazon
 
 
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,7 +103,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-# email settings
+# Email settings
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -128,7 +111,3 @@ EMAIL_HOST_USER = 'letsdoit.noresponse@gmail.com'
 EMAIL_HOST_PASSWORD = 'flyingdragon'
 DEFAULT_FROM_EMAIL = 'letsdoit.noresponse@gmail.com'
 DEFAULT_TO_EMAIL = 'letsdoit.noresponse@gmail.com'
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/

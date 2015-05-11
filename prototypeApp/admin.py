@@ -1,7 +1,7 @@
 from django.contrib import admin
 from prototypeApp.models import Event, Person, Group
 
-class PersonInlineForEvents(admin.TabularInline): #or (admin.StackedInLine)
+class PersonInlineForEvents(admin.TabularInline):
 	model = Person.events.through
 
 class GroupInlineForEvents(admin.TabularInline):
