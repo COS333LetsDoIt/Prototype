@@ -724,6 +724,26 @@ def full_event_cleanup():
         if (current <= cutoff):
             event.delete()
 
+################################################################################
+# About page
+################################################################################
+
+
+def about(request):
+    user = request.user
+    if user.is_anonymous():
+        context = {
+        "user": user, 
+        }
+    else:
+        pending_event_count = len(request.user.person.invitedEvents.all())
+        pending_friend_count = len(request.user.person.pendingFriends.all())
+        context = {
+        "user": user,
+        "pending_event_count": pending_event_count, 
+        "pending_friend_count": pending_friend_count,
+        }
+    return render(request, 'prototypeApp/about.html', context)
 
 # What what is this??
 # def signup(request):

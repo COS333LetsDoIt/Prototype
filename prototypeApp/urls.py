@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^index$', views.index, name='index'),
     url(r'^index/byTime/$', views.indexByTime, name='indexByTime'),
+
+    url(r'^about$', views.about, name='about'),
     
     url(r'^people$', views.people, name='people'),
     
