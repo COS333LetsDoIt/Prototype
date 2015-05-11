@@ -31,7 +31,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 ################################################################################
-# Forms 
+# Forms
 ################################################################################
 
 class EventForm(ModelForm):
@@ -81,7 +81,7 @@ def create_image_from_form(request):
 #             request.user.person.save()
 #             # source_file = request.FILES['imagefile']
 #             # image_generator = Thumbnail(source=source_file)
-            
+
 
     form = ImageForm()
     return form
@@ -93,7 +93,7 @@ def create_event_from_form(request):
 
     starttime = request.POST.get("starttime", None)
     endtime = request.POST.get("endtime", None)
-        
+
     if form.is_valid() and starttime and endtime:
 
         starttime = dateutil.parser.parse(starttime)
@@ -119,7 +119,7 @@ def create_event_from_form(request):
             # add groups to events
             for group_name in request.POST.get("groups", '').split(','):
                 groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
-                
+
                 if groups.exists():
                     group = groups[0]
                     for person in group.person_set.all():
@@ -135,7 +135,7 @@ def create_event_from_form(request):
 
     # starttime = request.POST.get("starttime", None)
     # endtime = request.POST.get("endtime", None)
-        
+
     # if form.is_valid() and starttime and endtime:
     #     starttime = dateutil.parser.parse(starttime)
     #     endtime = dateutil.parser.parse(endtime)
@@ -157,7 +157,7 @@ def create_event_from_form(request):
     #         # add groups to events
     #         for group_name in request.POST.get("groups", '').split(','):
     #             groups = Group.objects.filter(name=group_name) # what if there is multiple groups with same name?
-                
+
     #             if groups.exists():
     #                 group = groups[0]
     #                 for person in group.person_set.all():
@@ -189,11 +189,11 @@ def create_group_from_form(request):
 
 # Calculates the relevance score for an event to a user
 def calculateScore(user, event):
-    
+
     # negative relevance for events that have already ended
     now = datetime.datetime.now()
     now = pytz.utc.localize(now)
-    now += timedelta(hours=5) # how to convert timezone?
+    now += timedelta(hours=6) # how to convert timezone?
 
 
     diffStart = event.starttime - now
@@ -209,7 +209,7 @@ def calculateScore(user, event):
         if person in user.person.friends.all():
             score += 1.0
             friends_in_event += 1
-    
+
     for person in event.pendingMembers.all():
         people_in_event += 1.0;
         if person in user.person.friends.all():
@@ -237,7 +237,7 @@ class EventStats:
 def getFormattedTime(event):
     now = datetime.datetime.now()
     now = pytz.utc.localize(now)
-    now += timedelta(hours=5) # how to convert timezone?
+    now += timedelta(hours=6) # how to convert timezone?
 
     diffStart = event.starttime - now
     diffEnd   = event.endtime - now
@@ -263,11 +263,10 @@ def getFormattedTime(event):
             return "In " + str(hours) + " hours"
 
     elif event.starttime.day == now.day and event.starttime.year == now.year:
-        return "Today at " + str( (event.starttime - timedelta(hours=5) ).time().strftime("%I:%M %p"))
+        return "Today at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
 
-    elif event.starttime.day == now.day + 1 and event.starttime.year == now.year: 
-        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5) ).time().strftime("%I:%M %p"))
-
+    elif event.starttime.day == now.day + 1 and event.starttime.year == now.year:
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
     else:
         return event.starttime
 
@@ -279,7 +278,7 @@ def sortEventsByRelevance(user, event_list):
 
     allEventStats = sorted(allEventStats, key=lambda eventstats:eventstats.score, reverse=True)
     # print (eventScores)
-    return allEventStats    
+    return allEventStats
     # events = []
     # for eventScore in eventScores:
     #     events.append(eventScore.event)
@@ -292,15 +291,15 @@ def sortEventsByTime(user, event_list):
     futureEvents = []
     pastEvents = []
     cutoff = datetime.datetime.now()
-    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=5)
+    cutoff = pytz.utc.localize(cutoff) + timedelta(hours=6)
 
     for event in event_list:
         if event.endtime < cutoff:
             pastEvents.append(EventStats(user,event))
-            print ("past:" + event.name)
+            #print ("past:" + event.name)
         else:
             futureEvents.append(EventStats(user,event))
-            print ("future:" + event.name)
+            #print ("future:" + event.name)
 
     pastEvents = sorted(pastEvents, key=lambda eventstats:eventstats.event.starttime, reverse=True)
     futureEvents = sorted(futureEvents, key=lambda eventstats:eventstats.event.starttime, reverse=False)
@@ -320,7 +319,7 @@ def index(request, sortByRelevance=True):
     # Gets rid of old events globally
     full_event_cleanup()
 
-    if sortByRelevance: 
+    if sortByRelevance:
         event_list = sortEventsByRelevance(request.user, request.user.person.events.all())
         invited_event_list = sortEventsByRelevance(request.user, request.user.person.invitedEvents.all())
     else:
@@ -363,12 +362,12 @@ def index(request, sortByRelevance=True):
 
     friends_list = json.dumps([{"label": friend.name, "id": friend.id, "value": friend.name} for friend in request.user.person.friends.all()])
     groups_list = json.dumps([{"label": group.name, "id": group.id, "value": group.name} for group in request.user.person.groups.all()])
-    
-    context = {"event_list": event_list, 
-    'groups_list': groups_list, 
-    'invited_event_list': invited_event_list, 
-    'friend_event_list': friend_event_list, 
-    'form': event_form, 
+
+    context = {"event_list": event_list,
+    'groups_list': groups_list,
+    'invited_event_list': invited_event_list,
+    'friend_event_list': friend_event_list,
+    'form': event_form,
     'friends_list': friends_list,
     'pending_event_count': pending_event_count,
     'pending_friend_count': pending_friend_count,
@@ -377,7 +376,7 @@ def index(request, sortByRelevance=True):
 
     return render(request, 'prototypeApp/index.html', context)
 
-    
+
 ################################################################################
 # Events
 ################################################################################
@@ -403,7 +402,7 @@ def event(request, event_id):
         for currEvent in friend_events:
             if currEvent not in event_list and currEvent not in invited_event_list:
                 friend_event_list.add(event)
-    
+
 
     if request.user.person in event.members.all():
         user_in_event = True
@@ -555,8 +554,8 @@ def people(request):
     pending_friends_list = request.user.person.pendingFriends.all()
     invited_friends_list = request.user.person.invitedFriends.all()
     context = {
-        "friends_list": friends_list, 
-        "people_list": people_list, 
+        "friends_list": friends_list,
+        "people_list": people_list,
         "pending_friends_list": pending_friends_list,
         "invited_friends_list": invited_friends_list,
         "pending_friend_count": pending_friend_count,
@@ -577,7 +576,7 @@ def decline_friend(request, friend_id):
     friend = get_object_or_404(Person, pk=friend_id)
     if request.user.person in friend.invitedFriends.all():
         request.user.person.pendingFriends.remove(friend)
-        
+
     return HttpResponseRedirect(reverse('prototypeApp:people'));
 
 def remove_friend(request, friend_id):
@@ -612,7 +611,7 @@ def login_view(request):
                 #print "Redirecting to next"
                 #print "next: " + next
                 #print request
-                if request.POST.has_key('remember_me'):   
+                if request.POST.has_key('remember_me'):
                     request.session.set_expiry(1209600) # 2 weeks
                 if next == "":
                     return HttpResponseRedirect(reverse('prototypeApp:index'))
@@ -632,10 +631,10 @@ def login_view(request):
 @login_required()
 def profile(request):
     user = request.user;
-
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.has_key('receiving'):
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
+        print ("receivedd a post")
 
 
     receive_reminders = user.person.receiveReminders
@@ -650,9 +649,9 @@ def profile(request):
         image_form = ImageForm()
 
     context = {
-        "user": user, 
-        "form": image_form, 
-        "pending_event_count": pending_event_count, 
+        "user": user,
+        "form": image_form,
+        "pending_event_count": pending_event_count,
         "pending_friend_count": pending_friend_count,
         "receive_reminders": receive_reminders
     }
@@ -674,14 +673,14 @@ def register(request):
         #print "password: " + password
         email = request.POST.get('email', "")
         #print "email: " + email
-        
+
         if User.objects.filter(username=username).exists():
             state = "That name is already taken. Please add a middlename or epithet."
         elif User.objects.filter(email=email).exists():
             state = "That email is already registered."
         # elif re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) == None:
         #         state = "That email address is not valid"
-        else:       
+        else:
             user = None
             user = User.objects.create_user(username, email, password)
             #### Creates a new person object and links it to the user!
@@ -699,9 +698,9 @@ def register(request):
                 return HttpResponseRedirect(reverse('prototypeApp:people'))
             else:
                 state = "Something is wrong with your input. Try again."
-        
+
     context = {'state':state, 'email': email, 'username': username}
-    return render(request, 'prototypeApp/register.html', context)    
+    return render(request, 'prototypeApp/register.html', context)
 
 # after logging out, return to login
 def logout_view(request):
@@ -724,6 +723,26 @@ def full_event_cleanup():
         if (current <= cutoff):
             event.delete()
 
+################################################################################
+# About page
+################################################################################
+
+
+def about(request):
+    user = request.user
+    if user.is_anonymous():
+        context = {
+        "user": user,
+        }
+    else:
+        pending_event_count = len(request.user.person.invitedEvents.all())
+        pending_friend_count = len(request.user.person.pendingFriends.all())
+        context = {
+        "user": user,
+        "pending_event_count": pending_event_count,
+        "pending_friend_count": pending_friend_count,
+        }
+    return render(request, 'prototypeApp/about.html', context)
 
 # What what is this??
 # def signup(request):

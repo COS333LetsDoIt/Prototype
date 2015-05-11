@@ -233,3 +233,9 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 .swirl-thumbnail {
   background-image: url(/media/images/swirl_pattern.png);
 }
+
+.fixed-height {
+  height: 210px;
+  overflow: auto;
+  /*position: relative;*/
+}
