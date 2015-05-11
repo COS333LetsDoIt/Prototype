@@ -35,15 +35,11 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
-      //console.log(existingTokens);
-
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
               event.preventDefault();
@@ -60,8 +56,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
 //------------------------------------------------------------------------------------
@@ -76,18 +70,11 @@
         }
       });
     });
-
   </script>
-  <style type="text/css">
-  .ui-front {
-      z-index: 1000;
-  }
-
-  </style>
 {% endblock %}
 
 {% block header %}
-{% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location=""%}
+  {% include "prototypeApp/header.html" with event_count=pending_event_count friend_count=pending_friend_count location=""%}
 {% endblock %}   
 
 {% block content %}
@@ -131,16 +118,17 @@
     </div>
    
   </div>
-{% if user_in_group %}
-              <a class="btn btn-danger" href = "{% url 'prototypeApp:leave_group' group.id %}" onclick="return confirm('Are you sure you want to leave this group?')" >Leave Group<a>
-              {% endif %}
+    {% if user_in_group %}
+    <a 
+       class="btn btn-danger" 
+       href = "{% url 'prototypeApp:leave_group' group.id %}" 
+       onclick="return confirm('Are you sure you want to leave this group?')">
+      Leave Group
+    </a>
+  {% endif %}
   </div>
 </div>
+<hr>
+{% include "prototypeApp/collectionAGroup.html" with objects=group.person_set.all numCol=4 %}
 
-
-      
-
-
-  <hr>
-  {% include "prototypeApp/collectionAGroup.html" with objects=group.person_set.all numCol=4 %}
 {% endblock %}
