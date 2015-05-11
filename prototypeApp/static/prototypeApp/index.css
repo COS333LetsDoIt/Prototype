@@ -284,8 +284,6 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 
 .filler {
-  left: 50%;
   height:200px;
   width: 95%;
-  display: inline-block;
 }
