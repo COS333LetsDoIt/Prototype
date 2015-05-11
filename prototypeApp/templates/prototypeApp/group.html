@@ -29,7 +29,6 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
     });
 
     // Prevents duplicate tokens

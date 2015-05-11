@@ -35,16 +35,13 @@
     $('#datetimepicker_end_time').datetimepicker({
       defaultDate: d,
     });
-  </script>
-  <script type="text/javascript">
+
     $("#description").click(function () {
       $(this).select();
     });
     $("#location").click(function () {
       $(this).select();
     });
-  </script>
-  <script type="text/javascript">
 
     // Tokenizers for inviting friends when creating events
     $('#tokenfield').tokenfield({
@@ -84,8 +81,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
 //----------------------------------------------------------------------------------
@@ -102,7 +97,6 @@
     $('#tokenfield_groups').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#groupids').val( JSON.stringify(tokens));
-      // console.log(tokens); 
     });
 
     // Prevents duplicate tokens
@@ -124,8 +118,6 @@
       });
       if(exists === true)
           event.preventDefault();
-      //console.log("Attrs:")
-      //console.log(event.attrs)
     })
 
 

@@ -28,12 +28,10 @@
     $('#tokenfield').tokenfield().on('tokenfield:createdtoken', function(e) {
       var tokens = $(this).tokenfield('getTokens');
       $('#friendids').val( JSON.stringify(tokens));
-      console.log(tokens); 
     });
 
     // Prevents duplicate tokens
     $('#tokenfield').on('tokenfield:createtoken', function (event) {
-      //console.log({{friends_list|safe}});
       var existingTokens = $(this).tokenfield('getTokens');
       $.each(existingTokens, function(index, token) {
           if (token.value === event.attrs.value)
