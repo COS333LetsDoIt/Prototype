@@ -263,10 +263,10 @@ def getFormattedTime(event):
             return "In " + str(hours) + " hours"
 
     elif event.starttime.day == now.day and event.starttime.year == now.year:
-        return "Today at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
+        return "Today at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
 
     elif event.starttime.day == now.day + 1 and event.starttime.year == now.year: 
-        return "Tomorrow at " + str( (event.starttime - timedelta(hours=6)).time().strftime("%I:%M %p"))
+        return "Tomorrow at " + str( (event.starttime - timedelta(hours=5)).time().strftime("%I:%M %p"))
 
     else:
         return event.starttime
@@ -635,7 +635,7 @@ def profile(request):
     if request.method == "POST" and request.POST.has_key('receiving'):
         user.person.receiveReminders = request.POST.has_key('receive_reminders')
         user.person.save()
-        print ("receivedd a post")
+        #print ("receivedd a post")
 
 
     receive_reminders = user.person.receiveReminders
