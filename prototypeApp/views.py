@@ -220,6 +220,19 @@ def sortEventsByTime(user, event_list):
 
 ##############################################################################
 
+# Helper function to determine if an event is over and should be allowed 
+#to be joined.
+
+def isEventOver(event):
+    now = datetime.datetime.now()
+    now = pytz.utc.localize(now)
+    now += timedelta(hours=6)
+
+    diffStart = event.starttime - now
+    diffEnd   = event.endtime - now
+
+    return (diffEnd.total_seconds() < 0)
+
 # Helper function to format the time for each event, such as "In 15 minutes"
 # or "Tomorrow at 13:00"
 def getFormattedTime(event):
@@ -397,8 +410,13 @@ def event(request, event_id):
 
 
     # print event.person_set.all()
-    context = {"event": event, "user_in_event": user_in_event, 'pending_event_count': pending_event_count,
-    'pending_friend_count': pending_friend_count}
+    context = {
+        "event": event, 
+        "user_in_event": user_in_event, 
+        "pending_event_count": pending_event_count, 
+        "event_over": isEventOver(event),
+        'pending_friend_count': pending_friend_count
+    }
     return render(request, 'prototypeApp/event.html', context)
 
 ##############################################################################
@@ -408,9 +426,10 @@ def event(request, event_id):
 @login_required()
 def join_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
-     event.members.add(request.user.person)
-     event.pendingMembers.remove(request.user.person)
-     event.save()
+     if (not isEventOver(event)):
+         event.members.add(request.user.person)
+         event.pendingMembers.remove(request.user.person)
+         event.save()
      return HttpResponseRedirect(reverse('prototypeApp:event', args=(event_id,)));
 
 @login_required()
@@ -428,8 +447,9 @@ def invite_event(event, person):
 @login_required()
 def leave_event(request, event_id):
      event = get_object_or_404(Event, pk=event_id)
-     event.members.remove(request.user.person)
-     event.save()
+     if (not isEventOver(event)):
+         event.members.remove(request.user.person)
+         event.save()
      return HttpResponseRedirect(reverse('prototypeApp:index'));
 
 

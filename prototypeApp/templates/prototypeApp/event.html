@@ -18,13 +18,17 @@
       <p>{{event.starttime}} -- {{event.endtime}}</p>
       <p>Location: {{event.location|default:"TBD"}}</p>
       <p>Description: {{event.description|default:"TBD"}}</p>
+      {% if not event_over %}
+      
+        {% if user_in_event %}
+          <p><a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
+        {% else %}
+  
+        <p><a class="btn btn-success btn-large btn-responsive" href = "{% url 'prototypeApp:join_event' event.id %}">Join</a>
+        <a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:decline_event' event.id %}">Decline</a>
+        </p>
+        {% endif %}
 
-      {% if user_in_event %}
-      <p><a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:leave_event' event.id %}">Leave</a></p>
-      {% else %}
-      <p><a class="btn btn-success btn-large btn-responsive" href = "{% url 'prototypeApp:join_event' event.id %}">Join</a>
-      <a class="btn btn-danger btn-large btn-responsive" href = "{% url 'prototypeApp:decline_event' event.id %}">Decline</a>
-      </p>
       {% endif %}
 
       </p>
