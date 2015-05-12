@@ -681,7 +681,7 @@ def register(request):
             if user is not None:
                 user = authenticate(username=username, password=password)
                 login(request, user)
-                return HttpResponseRedirect(reverse('prototypeApp:people'))
+                return HttpResponseRedirect(reverse('prototypeApp:about'))
             else:
                 state = "Something is wrong with your input. Try again."
 
