@@ -44,7 +44,8 @@ interval_minutes = 5
 delay            = 60*interval_minutes # delay in seconds
 priority_cutoff  = 4
 
-
+# Sends event reminders and priority notifications in the interval_minutes
+# about every half an hour before the event
 def main():
 	# Every "interval" minutes
 	while True:
@@ -84,11 +85,12 @@ def main():
 
 		time.sleep(delay)
 
+# Check that an event is in the correct interval to get reminders
 def inSendInterval(event):
 	target = 30*60
 	low = target - delay
 	high = target + delay
-	offset = 6*60*60 # since timezones are screwy
+	offset = 6*60*60
 	now = datetime.datetime.now()
 	now = pytz.utc.localize(now)
 	difference = event.starttime - now

@@ -15,7 +15,11 @@
           {% if object.person_set.all %}
           Group members:
             {% for person in object.person_set.all %}
-            {{ person }},
+              {% if forloop.counter == 1 %}
+              {{ person }}
+              {% else %}
+              , {{ person }}
+              {% endif %}
             {% endfor %}
           {% else %}
             No friends are in group.
