@@ -10,7 +10,7 @@ cloud-init==0.7.6
 colorama==0.2.5
 configobj==4.7.2
 dj-database-url==0.3.0
-Django==1.8.1
+Django==1.11.28
 django-appconf==1.0.1
 django-imagekit==3.2.6
 docutils==0.11
