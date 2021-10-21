@@ -1,6 +1,6 @@
 aws-cfn-bootstrap==1.4
 awscli==1.7.23
-Babel==0.9.4
+Babel==2.9.1
 backports.ssl-match-hostname==3.4.0.2
 bcdoc==0.13.0
 boto==2.38.0
